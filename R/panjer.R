@@ -1,5 +1,13 @@
-"panjer" <-
-function(fx, freq.dist=c("poisson", "negative binomial", "binomial","geometric","logarithmic"), par, p0, TOL=1E-8, echo=FALSE)
+### ===== actuar: an R package for Actuarial Science =====
+###
+### Panjer recursion formula to compute the approximate aggreagte
+### claim amount distribution of a portfolio over a period.
+###
+### AUTHORS:  Vincent Goulet <vincent.goulet@act.ulaval.ca>,
+### Sébastien Auclair and Louis-Philippe Pouliot
+
+panjer <- function(fx, dist, p0 = NULL, x.scale = 1, ...,
+                   TOL = 1e-8, echo = FALSE)
 {
     ## Express TOL as a value close to 1.
     TOL <- 1 - TOL
@@ -8,11 +16,14 @@ function(fx, freq.dist=c("poisson", "negative binomial", "binomial","geometric",
     fx0 <- fx[1]
     fx <- fx[-1]
 
+    ## Argument '...' should contain the values of the parameters of
+    ## 'dist'.
+    par <- list(...)
+
     ## Distributions are expressed as a member of the (a, b, 0) or (a,
     ## b, 1) families of distributions. Assign parameters 'a' and 'b'
     ## depending of the chosen distribution and compute f_S(0) in
     ## every case, and p1 if p0 is specified in argument.
-    dist <- match.arg(freq.dist)
     if (dist == "geometric")
     {
         dist <- "negative binomial"
@@ -24,12 +35,11 @@ function(fx, freq.dist=c("poisson", "negative binomial", "binomial","geometric",
         lambda <- par$lambda
         a <- 0
         b <- lambda
-
-        if (missing(p0))
+        if (is.null(p0))
             fs0 <- exp(-lambda * (1 - fx0))
         else
         {
-            fs0 <- p0 + (1 - p0)*(exp(lambda * fx0) - 1)/(exp(lambda) - 1)
+            fs0 <- p0 + (1 - p0) * (exp(lambda * fx0) - 1)/(exp(lambda) - 1)
             p1 <- (1 - p0) * lambda/(exp(lambda) - 1)
         }
     }
@@ -39,12 +49,12 @@ function(fx, freq.dist=c("poisson", "negative binomial", "binomial","geometric",
         r <- par$size
         a <- beta/(1 + beta)
         b <- (r - 1) * a
-        if (missing(p0))
+        if (is.null(p0))
             fs0 <- (1 - beta * (fx0 - 1))^(-r)
         else
         {
             fs0 <- p0 + (1 - p0) * ((1 + beta * (1 - fx0))^(-r) - (1 + beta)^(-r))/(1 - (1 + beta)^(-r))
-            p1 <- (1 - p0) * r * beta/((1 + beta)^(r+1) - (1 + beta))
+            p1 <- (1 - p0) * r * beta/((1 + beta)^(r + 1) - (1 + beta))
         }
     }
     else if (dist == "binomial")
@@ -53,7 +63,7 @@ function(fx, freq.dist=c("poisson", "negative binomial", "binomial","geometric",
         q <- par$prob
         a <- - q/(1 - q)
         b <- -(m + 1)*a
-        if (missing(p0))
+        if (is.null(p0))
             fs0 <- (1 + q * (fx0 - 1))^m
         else
         {
@@ -63,21 +73,23 @@ function(fx, freq.dist=c("poisson", "negative binomial", "binomial","geometric",
     }
     else if (dist == "logarithmic")
     {
-        if (missing(p0))
-            stop("p0 must be specified with the logarithmic distribution")
+        if (is.null(p0))
+            stop("'p0' must be specified with the logarithmic distribution")
         beta <- (1/par$prob) - 1
         a <- beta/(1 + beta)
         b <- -a
         fs0 <- p0 + (1 - p0)*(1 - log(1 - beta(fx0 - 1))/log(1 + beta))
         p1 <- beta/((1 + beta) * log(1 + beta))
     }
+    else
+        stop("frequency distribution not in the (a, b, 0) or (a, b, 1) families")
 
     ## If fs0 is equal to zero, the recursion will not start. There is
     ## no provision to automatically cope with this situation in the
-    ## current version of this version. Just issue an error message
+    ## current version of this function. Just issue an error message
     ## and let the user do the work by hand.
     if (identical(fs0, 0))
-        stop("the value of fs0 is equal to 0; impossible to start the recursion")
+        stop("Pr[S = 0] is numerically equal to 0; impossible to start the recursion")
 
     ## The recursion formula is slightly different for the (a, b, 0)
     ## and (a, b, 1) cases. We do the split here to avoid repeatedly
@@ -90,15 +102,14 @@ function(fx, freq.dist=c("poisson", "negative binomial", "binomial","geometric",
     cumul <- sum(fs)
 
     ## (a, b, 0) case
-    if (missing(p0))
+    if (is.null(p0))
     {
         ## See in the (a, b, 1) case why this is defined here.
         r <- length(fx)
 
         repeat
         {
-            if (echo)
-                print(tail(cumul, 1))
+            if (echo)  print(tail(cumul, 1))
 
             x <- length(fs)
             m <- min(x, r)
@@ -120,8 +131,7 @@ function(fx, freq.dist=c("poisson", "negative binomial", "binomial","geometric",
 
         repeat
         {
-            if (echo)
-                print(tail(cumul, 1))
+            if (echo) print(tail(cumul, 1))
 
             x <- length(fs)
             m <- min(x, r)
@@ -130,6 +140,10 @@ function(fx, freq.dist=c("poisson", "negative binomial", "binomial","geometric",
                 break
         }
     }
-    fs
-}
 
+    FUN <- stepfun((0:(length(fs) - 1)) * x.scale, c(0, cumsum(fs)))
+    class(FUN) <- c("ecdf", class(FUN))
+    assign("fs", fs, env = environment(FUN))
+    assign("x.scale", x.scale, env = environment(FUN))
+    FUN
+}

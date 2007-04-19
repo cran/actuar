@@ -1,0 +1,105 @@
+<<echo=TRUE>>=
+### TODO
+
+## * Vérifier si l'un des modèles est NULL
+## * Vérifier la prise en compte des poids
+
+### TESTS
+nodes <- list(group = 3,
+              contract = c(3, 4, 2),
+              year = c(5, 4, 3, 4, 3, 5, 4, 4, 5))
+
+model.freq <- expression(group = rexp(0.5),
+    contract = rgamma(group, 1),
+    year = rpois(contract))
+
+model.sev <- expression(group = rnorm(6, 0.1),
+    contract = rnorm(group, 1),
+    year = rlnorm(contract, 1))
+
+## Frequency only
+set.seed(1)
+pf <- simpf(nodes, model.freq, NULL)
+
+set.seed(1)
+psi <- rep(rexp(3, 0.5), c(3, 4, 2))
+lambda <- rep(rgamma(9, psi, 1), c(5, 4, 3, 4, 3, 5, 4, 4, 5))
+N <- rpois(37, lambda)
+
+## Severity only
+set.seed(1)
+pf <- simpf(nodes = list(group = 1, contract = 2, year = 5), NULL, model.sev)
+
+set.seed(1)
+phi <- rep(rnorm(1, 6, 0.1), 2)
+theta <- rep(rnorm(2, phi, 1), c(5, 5))
+X <- rlnorm(10, theta, 1)
+
+## Frequency and severity
+set.seed(1)
+pf <- simpf(nodes = list(group = 1, contract = 2, year = 5),
+            model.freq, model.sev)
+
+set.seed(1)
+psi <- rep(rexp(1, 0.5), 2)
+lambda <- rep(rgamma(2, psi, 1), c(5, 5))
+N <- rpois(10, lambda)
+phi <- rep(rnorm(1, 6, 0.1), 2)
+theta <- rep(rnorm(2, phi, 1), c(5, 5))
+X <- rlnorm(sum(N), rep(theta, N), 1)
+
+## Weights
+model.freq <- expression(contract = rgamma(2, 1),
+    year = rpois(contract * weights))
+
+weights <- rep(c(1, 10, 100), each = 5)
+
+set.seed(1)
+pf <- simpf(nodes = list(contract = 3, year = 5), model.freq, model.sev = NULL, weights = weights)
+
+set.seed(1)
+lambda <- rep(rgamma(3, 2, 1), c(5, 5, 5))
+N <- rpois(15, lambda * weights)
+
+
+###
+
+nodes <- list(sector = 2,
+              unit = c(3, 4),
+              contract = c(3, 4, 3, 4, 2, 3, 4),
+              year = 5)
+
+model.freq <- expression(sector = rexp(1),
+    unit = rexp(sector),
+    contract = rgamma(unit, 1),
+    year = rpois(contract))
+
+model.sev <- expression(sector = rnorm(6, 0.1),
+    unit = rnorm(sector, 1),
+    contract = rnorm(unit, 1),
+    year = rlnorm(contract, 1))
+
+pf <- simpf(nodes, model.freq, model.sev)
+
+
+modelfreq <- list(dist1 = "pois",
+                  par1 = list(lambda = quote(Lambda * weights)),
+                  dist2 = "gamma",
+                  par2 = c(shape = 2, rate = 1))
+modelsev<-list(dist1 = "lnorm",
+               par1 = list(meanlog = quote(Theta), sdlog = 1),
+               dist2 = "norm",
+               par2 = c(mean = 5, sd = 1))
+system.time(simpf(1000, 12, modelfreq, modelsev))
+
+model.freq <- expression(contrat = rgamma(2, 1),
+    year = rpois(contrat))
+model.sev <- expression(contrat = rnorm(5, 1),
+    year = rlnorm(contrat, 1))
+pf <- simpf(nodes = list(contrat = 1000, year = 12), model.freq, model.sev)
+simpf(nodes = list(contrat = 100, year = 5), model.freq, model.sev)
+
+
+
+
+@

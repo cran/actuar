@@ -1,0 +1,205 @@
+\documentclass{article}
+  \usepackage{amsmath}
+
+  %\VignetteIndexEntry{Complete formulas used by coverage}
+  %\VignettePackage{actuar}
+
+  \newcommand{\D}{\displaystyle}
+  \newcommand{\coverage}{\texttt{coverage}}
+
+  \title{Complete formulas used by coverage}
+  \author{Vincent Goulet}
+
+\usepackage{/usr/share/R/share/texmf/Sweave}
+\begin{document}
+
+\maketitle
+
+
+\section{Ordinary deductible, payment per loss}
+
+
+\begin{align*}
+  Y^L
+  &=
+  \begin{cases}
+    0,
+      & X < \D \frac{d}{1 + r} \\
+    \alpha ((1 + r) X - d),
+      & \D\frac{d}{1 + r} \leq X < \frac{u}{1 + r} \\
+    \alpha (u - d),
+      & \D X \geq \frac{u}{1 + r}
+  \end{cases} & \\
+  F_{Y^L}(y)
+  &=
+  \begin{cases}
+    F_X \left( \D\frac{d}{1 + r} \right),
+      & y = 0 \\
+    F_X \left( \D\frac{y + \alpha d}{\alpha(1 + r)} \right),
+      & 0 < y < \alpha (u - d) \\
+    1,
+      & y \geq \alpha(u - d)
+  \end{cases} &
+  \begin{minipage}{0.4\linewidth}
+\includegraphics{coverage-003}
+  \end{minipage} \\
+  f_{Y^L}(y)
+  &=
+  \begin{cases}
+    F_X \left( \D\frac{d}{1 + r} \right),
+      & y = 0 \\
+    \D\frac{1}{\alpha (1 + r)} f_X \left( \D\frac{y + \alpha
+        d}{\alpha(1 + r)} \right),
+      & 0 < y < \alpha (u - d) \\
+    1 - F_X \left( \D\frac{u}{1 + r} \right),
+      & y = \alpha(u - d)
+  \end{cases} &
+  \begin{minipage}{0.4\linewidth}
+\includegraphics{coverage-004}
+  \end{minipage}
+\end{align*}
+
+
+\section{Ordinary deductible, payment per payment}
+
+\begin{align*}
+  Y^P
+  &=
+  \begin{cases}
+    \text{undefined},
+      & X < \D \frac{d}{1 + r} \\
+    \alpha ((1 + r) X - d),
+      & \D\frac{d}{1 + r} \leq X < \frac{u}{1 + r} \\
+    \alpha (u - d),
+      & \D X \geq \frac{u}{1 + r}
+  \end{cases} & \\
+  F_{Y^P}(y)
+  &=
+  \begin{cases}
+    0,
+      & y = 0 \\
+    \D\frac{F_X \left( \frac{y + \alpha d}{\alpha (1 + r)} \right) - F_X
+      \left( \frac{d}{1 + r} \right)}{%
+      1 - F_X \left( \frac{d}{1 + r} \right)},
+      & 0 < y < \alpha (u - d) \\
+    1,
+      & y \geq \alpha(u - d)
+  \end{cases} &
+  \begin{minipage}{0.4\linewidth}
+\includegraphics{coverage-005}
+  \end{minipage} \\
+  f_{Y^P}(y)
+  &=
+  \begin{cases}
+    0,
+      & y = 0 \\
+    \left( \D\frac{1}{\alpha (1 + r)} \right)
+    \D\frac{f_X \left( \frac{y + \alpha d}{\alpha(1 + r)} \right)}{%
+      1 - F_X \left( \frac{d}{1 + r} \right)},
+      & 0 < y < \alpha (u - d) \\
+    \D\frac{1 - F_X \Big( \frac{u}{1 + r} \Big)}{%
+      1 - F_X \left( \frac{d}{1 + r} \right)},
+      & y = \alpha(u - d)
+  \end{cases} &
+  \begin{minipage}{0.4\linewidth}
+\includegraphics{coverage-006}
+  \end{minipage}
+\end{align*}
+
+
+
+\section{Franchise deductible, payment per loss}
+
+
+\begin{align*}
+  Y^L
+  &=
+  \begin{cases}
+    0,
+      & X < \D \frac{d}{1 + r} \\
+    \alpha (1 + r) X,
+      & \D\frac{d}{1 + r} \leq X < \frac{u}{1 + r} \\
+    \alpha u,
+      & \D X \geq \frac{u}{1 + r}
+  \end{cases} & \\
+  F_{Y^L}(y)
+  &=
+  \begin{cases}
+    F_X \left( \D\frac{d}{1 + r} \right),
+      & 0 \leq y \leq \alpha d \\
+    F_X \left( \D\frac{y}{\alpha(1 + r)} \right),
+      & \alpha d < y < \alpha u \\
+    1,
+      & y \geq \alpha u
+  \end{cases} &
+  \begin{minipage}{0.4\linewidth}
+\includegraphics{coverage-008}
+  \end{minipage} \\
+  f_{Y^L}(y)
+  &=
+  \begin{cases}
+    F_X \left( \D\frac{d}{1 + r} \right),
+      & y = 0 \\
+    \D\frac{1}{\alpha (1 + r)} f_X \left( \D\frac{y}{\alpha(1 + r)} \right),
+      & \alpha d < y < \alpha u \\
+    1 - F_X \left( \D\frac{u}{1 + r} \right),
+      & y = \alpha u
+  \end{cases} &
+  \begin{minipage}{0.4\linewidth}
+\includegraphics{coverage-009}
+  \end{minipage}
+\end{align*}
+
+
+\section{Franchise deductible, payment per payment}
+
+\begin{align*}
+  Y^P
+  &=
+  \begin{cases}
+    \text{undefined},
+      & X < \D \frac{d}{1 + r} \\
+    \alpha (1 + r) X,
+      & \D\frac{d}{1 + r} \leq X < \frac{u}{1 + r} \\
+    \alpha u,
+      & \D X \geq \frac{u}{1 + r}
+  \end{cases} & \\
+  F_{Y^P}(y)
+  &=
+  \begin{cases}
+    0,
+      & 0 \leq y \leq \alpha d \\
+    \D\frac{F_X \left( \frac{y}{\alpha (1 + r)} \right) - F_X
+      \left( \frac{d}{1 + r} \right)}{%
+      1 - F_X \left( \frac{d}{1 + r} \right)},
+      & \alpha d < y < \alpha u \\
+    1,
+      & y \geq \alpha u
+  \end{cases} &
+  \begin{minipage}{0.4\linewidth}
+\includegraphics{coverage-010}
+  \end{minipage} \\
+  f_{Y^P}(y)
+  &=
+  \begin{cases}
+    0,
+      & 0 \leq y \leq \alpha d \\
+    \left( \D\frac{1}{\alpha (1 + r)} \right)
+    \D\frac{f_X \left( \frac{y}{\alpha(1 + r)} \right)}{%
+      1 - F_X \left( \frac{d}{1 + r} \right)},
+      & \alpha d < y < \alpha u \\
+    \D\frac{1 - F_X \Big( \frac{u}{1 + r} \Big)}{%
+      1 - F_X \left( \frac{d}{1 + r} \right)},
+      & y = \alpha u
+  \end{cases} &
+  \begin{minipage}{0.4\linewidth}
+\includegraphics{coverage-011}
+  \end{minipage}
+\end{align*}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
