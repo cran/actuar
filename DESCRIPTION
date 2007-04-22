@@ -1,8 +1,8 @@
 Package: actuar
 Type: Package
 Title: Actuarial functions
-Version: 0.9-1
-Date: 2007-04-19
+Version: 0.9-2
+Date: 2007-04-22
 Author: Vincent Goulet, Sébastien Auclair, Louis-Philippe Pouliot, Mathieu Pigeon
 Maintainer: Vincent Goulet <vincent.goulet@act.ulaval.ca>
 Description: Collection of functions and data sets related to
@@ -10,4 +10,4 @@ Description: Collection of functions and data sets related to
   credibility theory and risk theory, for the moment.
 Depends: R (>= 2.4.0)
 License: GPL version 2 or newer
-Packaged: Sat Apr 21 23:41:42 2007; vincent
+Packaged: Sun Apr 22 22:15:06 2007; vincent
