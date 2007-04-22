@@ -1,14 +1,13 @@
 Package: actuar
 Type: Package
 Title: Actuarial functions
-Version: 0.1-3
-Date: 2006-02-16
-Author: Vincent Goulet, Sébastien Auclair
+Version: 0.9-1
+Date: 2007-04-19
+Author: Vincent Goulet, Sébastien Auclair, Louis-Philippe Pouliot, Mathieu Pigeon
 Maintainer: Vincent Goulet <vincent.goulet@act.ulaval.ca>
-Description: Collection of functions related to actuarial science
-  applications, namely credibility theory and risk theory, for the
-  moment. The package also includes the famous Hachemeister (1975) data
-  set.
-Depends: R (>= 2.1.0)
+Description: Collection of functions and data sets related to
+  actuarial science applications, mostly loss distributions,
+  credibility theory and risk theory, for the moment.
+Depends: R (>= 2.4.0)
 License: GPL version 2 or newer
-Packaged: Thu Mar 23 10:31:23 2006; vincent
+Packaged: Sat Apr 21 23:41:42 2007; vincent
