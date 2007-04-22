@@ -167,6 +167,9 @@ showgraphs("pareto1", list(shape = 5, min = 10))
 ## Loggamma distribution
 showgraphs("lgamma", list(shapelog = 2, ratelog = 5))
 
+## Generalized beta distribution
+showgraphs("genbeta", list(shape1 = 1, shape2 = 2, shape3 = 3, scale = 2))
+
 
 ###
 ### GROUPED DATA MANIPULATION
@@ -176,6 +179,7 @@ showgraphs("lgamma", list(shapelog = 2, ratelog = 5))
 x <- grouped.data(groups = c(0, 25, 50, 100, 150, 250, 500),
                   line1 = c(30, 31, 57, 42, 65, 84),
                   line2 = c(26, 33, 31, 19, 16, 11))
+x
 
 ## Extraction and replacement: only "[" and "[<-" are officially
 ## supported.
@@ -254,9 +258,18 @@ mde(gdental, levexp, start = list(rate = 1/200), measure = "LAS")
 ## modifications: ordinary or franchise deductible, policy limit,
 ## inflation, coinsurance. The function returned can then be used like
 ## any other pdf or cdf in modeling.
-f <- coverage("gamma", deductible = 1, limit = 7)
-curve(dgamma(x, 3, 1), xlim = c(0, 10), ylim = c(0, 0.3))    # original
-curve(f(x, 3, 1), xlim = c(0.01, 5.99), lty = 2, add = TRUE) # modified
+f <- coverage(dgamma, pgamma, deductible = 1, limit = 7)
+curve(dgamma(x, 3), xlim = c(0, 10), ylim = c(0, 0.3))    # original
+curve(f(x, 3), xlim = c(0.01, 5.99), col = 4, add = TRUE) # modified
 
+x <- rgamma(1000, 3, 1)                 # sample of claim amounts
+x <- pmin(x, 7)[x > 1] - 1              # deductible and limit
+
+library(MASS)                           # for ML estimation
+m <- mean(x)                            # empirical mean
+v <- var(x)                             # empirical variance
+(p <- fitdistr(x, f, start = list(shape = m^2/v, rate = m/v))$estimate ) # MLE
+hist(x + 1, breaks = 0:10, prob = TRUE)  # histogram of observed data
+curve(dgamma(x, p[1], p[2]), add = TRUE) # fit of underlying distribution
 
 par(op)
