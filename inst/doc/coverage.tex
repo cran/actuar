@@ -13,9 +13,6 @@
 
 \begin{document}
 
-<<echo=FALSE>>=
-library(actuar)
-@
 
 \maketitle
 
@@ -54,31 +51,9 @@ plots, a dot indicates a probability mass at the given point.
 In definitions below, $X$ is the nonnegative random variable of the
 losses with cdf $F_X(\cdot)$ and pdf $f_X(\cdot)$.
 
-<<echo=FALSE>>=
-deductible <- 5
-limit <- 13
-@
 
 \section{Payment per payment, ordinary deductible}
 
-<<echo=FALSE>>=
-pgammaL <- coverage(cdf = pgamma, deductible = deductible, limit = limit,
-                     per.loss = TRUE)
-dgammaL <- coverage(dgamma, pgamma, deductible = deductible, limit = limit,
-                     per.loss = TRUE)
-pgammaP <- coverage(cdf = pgamma, deductible = deductible, limit = limit)
-dgammaP <- coverage(dgamma, pgamma, deductible = deductible, limit = limit)
-
-formals(pgammaL)[c("shape", "rate")] <- c(5, 0.6)
-formals(dgammaL)[c("shape", "rate")] <- c(5, 0.6)
-formals(pgammaP)[c("shape", "rate")] <- c(5, 0.6)
-formals(dgammaP)[c("shape", "rate")] <- c(5, 0.6)
-
-d <- deductible
-u <- limit - d
-e <- 0.001
-ylim <- c(0, dgammaL(0))
-@
 
 \begin{align*}
   Y^P
@@ -104,14 +79,7 @@ ylim <- c(0, dgammaL(0))
       & y \geq \alpha(u - d)
   \end{cases} &
   \begin{minipage}{0.4\linewidth}
-<<echo=FALSE, fig=TRUE, width=4, height=3>>=
-par(mar = c(2, 3, 1, 1))
-curve(pgammaP(x), from = 0, to = u - e,
-      xlim = c(0, limit), ylim = c(0, 1),
-      xlab = "", ylab = "", xaxt = "n", lwd = 2)
-curve(pgammaP(x), from = u, add = TRUE, lwd = 2)
-axis(1, at = c(0, u), labels = c("0", "u - d"))
-@
+\includegraphics{coverage-004}
   \end{minipage} \\
   f_{Y^P}(y)
   &=
@@ -127,14 +95,7 @@ axis(1, at = c(0, u), labels = c("0", "u - d"))
       & y = \alpha(u - d)
   \end{cases} &
   \begin{minipage}{0.4\linewidth}
-<<echo=FALSE, fig=TRUE, width=4, height=3>>=
-par(mar = c(2, 3, 1, 1))
-curve(dgammaP(x), from = 0 + e, to = u - e,
-      xlim = c(0, limit), ylim = ylim,
-      xlab = "", ylab = "", xaxt = "n", lwd = 2)
-points(u, dgammaP(u), pch = 16)
-axis(1, at = c(0, u), labels = c("0", "u - d"))
-@
+\includegraphics{coverage-005}
   \end{minipage}
 \end{align*}
 
@@ -163,14 +124,7 @@ axis(1, at = c(0, u), labels = c("0", "u - d"))
       & y \geq \alpha(u - d)
   \end{cases} &
   \begin{minipage}{0.4\linewidth}
-<<echo=FALSE, fig=TRUE, width=4, height=3>>=
-par(mar = c(2, 3, 1, 1))
-curve(pgammaL(x), from = 0, to = u - e,
-      xlim = c(0, limit), ylim = c(0, 1),
-      xlab = "", ylab = "", xaxt = "n", lwd = 2)
-curve(pgammaL(x), from = u, add = TRUE, lwd = 2)
-axis(1, at = c(0, u), labels = c("0", "u - d"))
-@
+\includegraphics{coverage-006}
   \end{minipage} \\
   f_{Y^L}(y)
   &=
@@ -184,40 +138,13 @@ axis(1, at = c(0, u), labels = c("0", "u - d"))
       & y = \alpha(u - d)
   \end{cases} &
   \begin{minipage}{0.4\linewidth}
-<<echo=FALSE, fig=TRUE, width=4, height=3>>=
-par(mar = c(2, 3, 1, 1))
-curve(dgammaL(x), from = 0 + e, to = u - e,
-      xlim = c(0, limit), ylim = ylim,
-      xlab = "", ylab = "", xaxt = "n", lwd = 2)
-points(c(0, u), dgammaL(c(0, u)), pch = 16)
-axis(1, at = c(0, u), labels = c("0", "u - d"))
-@
+\includegraphics{coverage-007}
   \end{minipage}
 \end{align*}
 
 
 \section{Payment per payment, franchise deductible}
 
-<<echo=FALSE>>=
-pgammaL <- coverage(cdf = pgamma, deductible = deductible, limit = limit,
-                     per.loss = TRUE, franchise = TRUE)
-dgammaL <- coverage(dgamma, pgamma, deductible = deductible, limit = limit,
-                     per.loss = TRUE, franchise = TRUE)
-pgammaP <- coverage(cdf = pgamma, deductible = deductible, limit = limit,
-                    franchise = TRUE)
-dgammaP <- coverage(dgamma, pgamma, deductible = deductible, limit = limit,
-                    franchise = TRUE)
-
-formals(pgammaL)[c("shape", "rate")] <- c(5, 0.6)
-formals(dgammaL)[c("shape", "rate")] <- c(5, 0.6)
-formals(pgammaP)[c("shape", "rate")] <- c(5, 0.6)
-formals(dgammaP)[c("shape", "rate")] <- c(5, 0.6)
-
-d <- deductible
-u <- limit
-e <- 0.001
-ylim <- c(0, dgammaL(0))
-@
 
 \begin{align*}
   \tilde{Y}^P
@@ -243,14 +170,7 @@ ylim <- c(0, dgammaL(0))
       & y \geq \alpha u
   \end{cases} &
   \begin{minipage}{0.4\linewidth}
-<<echo=FALSE, fig=TRUE, width=4, height=3>>=
-par(mar = c(2, 3, 1, 1))
-curve(pgammaP(x), from = 0, to = u - e,
-      xlim = c(0, limit + d), ylim = c(0, 1),
-      xlab = "", ylab = "", xaxt = "n", lwd = 2)
-curve(pgammaP(x), from = u, add = TRUE, lwd = 2)
-axis(1, at = c(0, d, u), labels = c("0", "d", "u"))
-@
+\includegraphics{coverage-009}
   \end{minipage} \\
   f_{\tilde{Y}^P}(y)
   &=
@@ -266,15 +186,7 @@ axis(1, at = c(0, d, u), labels = c("0", "d", "u"))
       & y = \alpha u
   \end{cases} &
   \begin{minipage}{0.4\linewidth}
-<<echo=FALSE, fig=TRUE, width=4, height=3>>=
-par(mar = c(2, 3, 1, 1))
-curve(dgammaP(x), from = d + e, to = u - e,
-      xlim = c(0, limit + d), ylim = ylim,
-      xlab = "", ylab = "", xaxt = "n", lwd = 2)
-curve(dgammaL(x), from = 0 + e, to = d, add = TRUE, lwd = 2)
-points(u, dgammaP(u), pch = 16)
-axis(1, at = c(0, d, u), labels = c("0", "d", "u"))
-@
+\includegraphics{coverage-010}
   \end{minipage}
 \end{align*}
 
@@ -303,14 +215,7 @@ axis(1, at = c(0, d, u), labels = c("0", "d", "u"))
       & y \geq \alpha u
   \end{cases} &
   \begin{minipage}{0.4\linewidth}
-<<echo=FALSE, fig=TRUE, width=4, height=3>>=
-par(mar = c(2, 3, 1, 1))
-curve(pgammaL(x), from = 0, to = u - e,
-      xlim = c(0, limit + d), ylim = c(0, 1),
-      xlab = "", ylab = "", xaxt = "n", lwd = 2)
-curve(pgammaL(x), from = u, add = TRUE, lwd = 2)
-axis(1, at = c(0, d, u), labels = c("0", "d", "u"))
-@
+\includegraphics{coverage-011}
   \end{minipage} \\
   f_{\tilde{Y}^L}(y)
   &=
@@ -323,15 +228,7 @@ axis(1, at = c(0, d, u), labels = c("0", "d", "u"))
       & y = \alpha u
   \end{cases} &
   \begin{minipage}{0.4\linewidth}
-<<echo=FALSE, fig=TRUE, width=4, height=3>>=
-par(mar = c(2, 3, 1, 1))
-curve(dgammaL(x), from = d + e, to = u - e,
-      xlim = c(0, limit + d), ylim = ylim,
-      xlab = "", ylab = "", xaxt = "n", lwd = 2)
-curve(dgammaL(x), from = 0 + e, to = d, add = TRUE, lwd = 2)
-points(c(0, u), dgammaL(c(0, u)), pch = 16)
-axis(1, at = c(0, d, u), labels = c("0", "d", "u"))
-@
+\includegraphics{coverage-012}
   \end{minipage}
 \end{align*}
 
