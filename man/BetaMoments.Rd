@@ -8,8 +8,8 @@
   with parameters \code{shape1} and \code{shape2}.
 }
 \usage{
-  mbeta(order, shape1, shape2)
-  levbeta(limit, shape1, shape2, order = 1)
+mbeta(order, shape1, shape2)
+levbeta(limit, shape1, shape2, order = 1)
 }
 \arguments{
   \item{order}{order of the moment.}
@@ -19,7 +19,7 @@
 \details{
   The \eqn{k}th raw moment of the random variable \eqn{X} is
   \eqn{E[X^k]}{E[X^k]} and the \eqn{k}th limited moment at some limit
-  \eqn{d} is \eqn{E[\min(X, d)]}{E[min(X, d)]}.
+  \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]}.
 
   The noncentral Beta distribution is not supported.
 }

@@ -13,19 +13,22 @@
 
   \code{frequency} computes the frequency of claims for subsets of
   portfolio data.
-  
+
   \code{severity} extracts the individual claim amounts.
 
   \code{weights} extracts the matrix of weights.
 }
 \usage{
-\method{aggregate}{simpf}(x, by = names(x$nodes), FUN = sum, \dots)
+\method{aggregate}{simpf}(x, by = names(x$nodes), FUN = sum,
+        classification = TRUE, prefix = NULL, \dots)
 
-\method{frequency}{simpf}(x, by = names(x$nodes), \dots)
+\method{frequency}{simpf}(x, by = names(x$nodes), 
+        classification = TRUE, prefix = NULL, \dots)
 
-\method{severity}{simpf}(x, by = head(names(x$node), -1), splitcol = NULL, \dots)
+\method{severity}{simpf}(x, by = head(names(x$node), -1), splitcol = NULL, 
+        classification = TRUE, prefix = NULL, \dots)
 
-\method{weights}{simpf}(object, \dots)
+\method{weights}{simpf}(object, classification = TRUE, prefix = NULL, \dots)
 }
 \arguments{
   \item{x, object}{an object of class \code{"simpf"}, typically
@@ -33,12 +36,17 @@
   \item{by}{character vector of grouping elements using the level names
     of the portfolio in \code{x}. The names can be abbreviated.}
   \item{FUN}{the function to be applied to data subsets.}
+  \item{classification}{boolean; if \code{TRUE}, the node identifier
+    columns are included in the output.}
+  \item{prefix}{characters to prefix column names with; if \code{NULL},
+        sensible defaults are used when appropriate.}
   \item{splitcol}{columns of the data matrix to extract separately;
     usual matrix indexing methods are supported.}
-  \item{\dots}{optional arguments to \code{FUN}.}
+  \item{\dots}{optional arguments to \code{FUN}, or passed to or from
+    other methods.}
 }
 \details{
-  By default, \code{aggregate.simpf} computes the aggregate claim amount
+  By default, \code{aggregate.simpf} computes the aggregate claim amounts
   for the grouping specified in \code{by}. Any other statistic based on
   the individual claim amounts can be used through argument \code{FUN}.
 
@@ -47,37 +55,39 @@
     length(x)}.
 
   \code{severity.simpf} extracts individual claim amounts of a portfolio
-  by groupings using the default method of
-  \code{\link{severity}}. Argument \code{splitcol} allows to get the
-  individual claim amounts of specific columns separately.
+  by groupings using the default method of \code{\link{severity}}.
+  Argument \code{splitcol} allows to get the individual claim amounts of
+  specific columns separately.
 
   \code{weights.simpf} extracts the weight matrix of a portfolio.
 }
 \value{
   A matrix or vector depending on the groupings specified in \code{by}.
 
-  For the \code{aggregate} and \code{frequency} methods: if at least
-  one level other than the last one is used for grouping, the result
-  is a matrix obtained by binding the appropriate node identifiers
-  extracted from \code{x$classification} and the summaries per
-  grouping. If the last level is used, the column names of
-  \code{x$data} are retained; otherwise, the column name is replaced
-  by the deparsed name of \code{FUN}.  If only the last level is used
-  (column summaries), a named vector is returned.
+  For the \code{aggregate} and \code{frequency} methods: if at least one
+  level other than the last one is used for grouping, the result is a
+  matrix obtained by binding the appropriate node identifiers extracted
+  from \code{x$classification} if \code{classification = TRUE}, and the
+  summaries per grouping. If the last level is used for grouping, the
+  column names of \code{x$data} are retained; if the last level is not
+  used for grouping, the column name is replaced by the deparsed name of
+  \code{FUN}. If only the last level is used (column summaries), a named
+  vector is returned.
 
   For the \code{severity} method: a list of two elements:
   \item{first}{\code{NULL} or a matrix of claim amounts for the
-    columns not specified in \code{splitcol} with the appropriate node
-    identifiers extracted from \code{x$classification};}
+    columns not specified in \code{splitcol}, with the appropriate node
+    identifiers extracted from \code{x$classification} if
+    \code{classification = TRUE};}
   \item{last}{same as above, but for the columns specified in
     \code{splitcol}.}
-
+  
   For the \code{weights} method: the weight matrix of the portfolio with
-  node identifiers.
+  node identifiers if \code{classification = TRUE}.
 }
 \author{
-  Vincent Goulet \email{vincent.goulet@act.ulaval.ca} and
-  Louis-Philippe Pouliot
+  Vincent Goulet \email{vincent.goulet@act.ulaval.ca},
+  Louis-Philippe Pouliot.
 }
 \seealso{
   \code{\link{simpf}}
@@ -95,12 +105,14 @@ model.sev <- expression(sector = rnorm(6, 0.1),
                         year = rlnorm(employer, 1))
 pf <- simpf(nodes, model.freq, model.sev)
 
-aggregate(pf)        # aggregate claim amount by employer and year
+aggregate(pf)            # aggregate claim amount by employer and year
+aggregate(pf, classification = FALSE) # same, without node identifiers
 aggregate(pf, by = "sector")	      # by sector 
 aggregate(pf, by = "y")		      # by year
 aggregate(pf, by = c("s", "u"), mean) # average claim amount
 
 frequency(pf)			      # number of claims
+frequency(pf, prefix = "freq.")       # more explicit column names
 
 severity(pf)			      # claim amounts by row
 severity(pf, by = "year")	      # by column
@@ -110,6 +122,9 @@ severity(pf, splitcol = 5)            # same
 severity(pf, splitcol = c(FALSE, FALSE, FALSE, FALSE, TRUE)) # same
 
 weights(pf)
+
+## For portfolios with weights, the following computes loss ratios.
+\dontrun{aggregate(pf, classif = FALSE) / weights(pf, classif = FALSE)}
 }
 \keyword{models}
 \keyword{methods}

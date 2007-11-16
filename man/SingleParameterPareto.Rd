@@ -8,17 +8,17 @@
 \alias{levpareto1}
 \title{The Single-parameter Pareto Distribution}
 \description{
-  Density, distribution function, quantile function, random generation,
+  Density function, distribution function, quantile function, random generation,
   raw moments, and limited moments for the Single-parameter Pareto
   distribution with parameter \code{shape}.
 } 
 \usage{
-  dpareto1(x, shape, min, log = FALSE)
-  ppareto1(q, shape, min, lower.tail = TRUE, log.p = FALSE)
-  qpareto1(p, shape, min, lower.tail = TRUE, log.p = FALSE)
-  rpareto1(n, shape, min)
-  mpareto1(order, shape, min)
-  levpareto1(limit, shape, min, order = 1)
+dpareto1(x, shape, min, log = FALSE)
+ppareto1(q, shape, min, lower.tail = TRUE, log.p = FALSE)
+qpareto1(p, shape, min, lower.tail = TRUE, log.p = FALSE)
+rpareto1(n, shape, min)
+mpareto1(order, shape, min)
+levpareto1(limit, shape, min, order = 1)
 }
 \arguments{
   \item{x, q}{vector of quantiles.}
@@ -47,8 +47,8 @@
   advance.
 
   The \eqn{k}th raw moment of the random variable \eqn{X} is
-  \eqn{E[X^k]}{E[X^k]} and the \eqn{k} limited moment at some limit
-  \eqn{d} is \eqn{E[\min(X, d)]}{E[min(X, d)]}.
+  \eqn{E[X^k]}{E[X^k]} and the \eqn{k}th limited moment at some limit
+  \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]}.
 }
 \value{
   \code{dpareto1} gives the density,

@@ -8,17 +8,17 @@
 \alias{levinvpareto}
 \title{The Inverse Pareto Distribution}
 \description{
-  Density, distribution function, quantile function, random generation
+  Density function, distribution function, quantile function, random generation
   raw moments and limited moments for the Inverse Pareto distribution
   with parameters \code{shape} and \code{scale}.
 }
 \usage{
-  dinvpareto(x, shape, scale, log = FALSE)
-  pinvpareto(q, shape, scale, lower.tail = TRUE, log.p = FALSE)
-  qinvpareto(p, shape, scale, lower.tail = TRUE, log.p = FALSE)
-  rinvpareto(n, shape, scale)
-  minvpareto(order, shape, scale)
-  levinvpareto(limit, shape, scale, order = 1)
+dinvpareto(x, shape, scale, log = FALSE)
+pinvpareto(q, shape, scale, lower.tail = TRUE, log.p = FALSE)
+qinvpareto(p, shape, scale, lower.tail = TRUE, log.p = FALSE)
+rinvpareto(n, shape, scale)
+minvpareto(order, shape, scale)
+levinvpareto(limit, shape, scale, order)
 }
 \arguments{
   \item{x, q}{vector of quantiles.}
@@ -42,8 +42,11 @@
   for \eqn{x > 0}, \eqn{\tau > 0}{a > 0} and \eqn{\theta > 0}{s > 0}.
 
   The \eqn{k}th raw moment of the random variable \eqn{X} is
-  \eqn{E[X^k]}{E[X^k]} and the \eqn{k} limited moment at some limit
-  \eqn{d} is \eqn{E[\min(X, d)]}{E[min(X, d)]}.
+  \eqn{E[X^k]}{E[X^k]} and the \eqn{k}th limited moment at some limit
+  \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]}.
+
+  For numerical evaluation purposes, \code{levinvpareto} requires that
+  \code{-shape < order < 1}.
 }
 \value{
   \code{dinvpareto} gives the density,
@@ -67,6 +70,6 @@
 exp(dinvpareto(2, 3, 4, log = TRUE))
 p <- (1:10)/10
 pinvpareto(qinvpareto(p, 2, 3), 2, 3)
-minvpareto(-1, 2, order = 2)
+minvpareto(0.5, 1, 2)
 }
 \keyword{distribution}

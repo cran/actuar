@@ -2,7 +2,7 @@
  *
  *  Functions to compute density, cumulative distribution and quantile
  *  functions, raw and limited moments and to simulate random variates
- *  for the Inverse Gamma distribution. See ../R/invgamma.R for
+ *  for the Inverse Gamma distribution. See ../R/InverseGamma.R for
  *  details.
  *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
@@ -119,4 +119,25 @@ double levinvgamma(double limit, double shape, double scale, double order,
     return R_pow(scale, order) * gammafn(shape - order)
 	* pgamma(u, tmp, 1.0, 0, 0) / gammafn(shape)
 	+ R_VG__0(limit, order) * pgamma(u, shape, 1.0, 1, 0);
+}
+
+double mgfinvgamma(double x, double shape, double scale, int give_log)
+{
+    double tmp;
+
+    if (!R_FINITE(shape) ||
+	!R_FINITE(scale) ||
+	shape <= 0.0 ||
+	scale <= 0.0 ||
+	x > 0.0 )
+	return R_NaN;
+
+    if (x == 0.0)
+	return R_D_exp(0.0);
+
+    tmp = -scale * x;
+
+    return R_D_exp(log(2.0) + shape * log(tmp)/2.0 +
+		   log(bessel_k(sqrt(4 * tmp), shape, 1)) -
+		   lgammafn(shape));
 }

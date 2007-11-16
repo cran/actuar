@@ -14,7 +14,7 @@ aggregateDist(method = c("recursive", "convolution", "normal",
                          "npower", "simulation"),
               model.freq = NULL, model.sev = NULL, p0 = NULL,
               x.scale = 1, moments, nb.simul, \dots,
-              TOL = 1e-06, echo = FALSE)
+              tol = 1e-06, maxit = 500, echo = FALSE)
 
 \method{print}{aggregateDist}(x, \dots)
 
@@ -54,8 +54,10 @@ aggregateDist(method = c("recursive", "convolution", "normal",
   \item{\dots}{parameters of the frequency distribution for the
     \code{"recursive"} method; further arguments to be passed to or
     from other methods otherwise.}
-  \item{TOL}{the recursion in the \code{"recursive"} method stops when the
-    cumulative distribution function is less than \code{TOL} away from 1.}
+  \item{tol}{the recursion in the \code{"recursive"} method stops when the
+    cumulative distribution function is less than \code{tol} away from 1.}
+  \item{maxit}{maximum number of recursions in the \code{"recursive"}
+    method.}
   \item{echo}{logical; echo the recursions to screen in the
     \code{"recursive"} method.}
   \item{x, object}{an object of class \code{"aggregateDist"}.}
@@ -90,8 +92,12 @@ aggregateDist(method = c("recursive", "convolution", "normal",
   negative binomial distribution with size parameter equal to 0.)
 
   \code{model.sev} is a vector of the (discretized) claim amount
-  distribution; the first element \strong{must} be \eqn{f_X(0) = \Pr[X =
-    0]}{fx(0) = Pr[X = 0]}.
+  distribution \eqn{X}; the first element \strong{must} be \eqn{f_X(0) =
+  \Pr[X = 0]}{fx(0) = Pr[X = 0]}.
+
+  Failure to obtain a cumulative distribution function less than
+  \code{tol} away from 1 within \code{maxit} iterations is often due
+  to a too coarse discretization of the severity distribution.
 }
 \section{Convolution method}{
   The cumulative distribution function (cdf) \eqn{F_S(x)}{Fs(x)} of the
@@ -148,7 +154,12 @@ aggregateDist(method = c("recursive", "convolution", "normal",
 }
 \seealso{
   \code{\link{discretize}} to discretize a severity distribution;
-  \code{\link{quantile.aggregateDist}} for the \code{quantile} method;
+  \code{\link{mean.aggregateDist}} to compute the mean of the
+  distribution;
+  \code{\link{quantile.aggregateDist}} to compute the quantiles or the
+  Value at Risk;
+  \code{\link{CTE.aggregateDist}} to compute the Conditional Tail
+  Expectation;
   \code{\link{simpf}}.
 }
 \references{
@@ -189,6 +200,17 @@ Fs <- aggregateDist("simulation", nb.simul = 1000,
                     model.freq, model.sev)
 mean(Fs)
 plot(Fs)
+
+## Evaluation of ruin probabilities using Beekman's formula with
+## Exponential(1) claim severity, Poisson(1) frequency and premium rate
+## c = 1.2.
+fx <- discretize(pexp(x, 1), from = 0, to = 100, method = "lower")
+phi0 <- 0.2/1.2
+Fs <- aggregateDist(method = "recursive", model.freq = "geometric",
+                    model.sev = fx, prob = phi0)
+1 - Fs(400)			# approximate ruin probability
+u <- 0:100
+plot(u, 1 - Fs(u), type = "l", main = "Ruin probability")
 }
 \keyword{distribution}
 \keyword{models}

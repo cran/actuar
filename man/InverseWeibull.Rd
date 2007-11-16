@@ -14,20 +14,20 @@
 \alias{levlgompertz}
 \title{The Inverse Weibull Distribution}
 \description{
-  Density, distribution function, quantile function, random generation,
+  Density function, distribution function, quantile function, random generation,
   raw moments and limited moments for the Inverse Weibull distribution
   with parameters \code{shape} and \code{scale}.
 }
 \usage{
-  dinvweibull(x, shape, rate = 1, scale = 1/rate, log = FALSE)
-  pinvweibull(q, shape, rate = 1, scale = 1/rate,
-              lower.tail = TRUE, log.p = FALSE)
-  qinvweibull(p, shape, rate = 1, scale = 1/rate,
-              lower.tail = TRUE, log.p = FALSE)
-  rinvweibull(n, shape, rate = 1, scale = 1/rate)
-  minvweibull(order, shape, rate = 1, scale = 1/rate)
-  levinvweibull(limit, shape, rate = 1, scale = 1/rate,
-                order = 1)
+dinvweibull(x, shape, rate = 1, scale = 1/rate, log = FALSE)
+pinvweibull(q, shape, rate = 1, scale = 1/rate,
+            lower.tail = TRUE, log.p = FALSE)
+qinvweibull(p, shape, rate = 1, scale = 1/rate,
+            lower.tail = TRUE, log.p = FALSE)
+rinvweibull(n, shape, rate = 1, scale = 1/rate)
+minvweibull(order, shape, rate = 1, scale = 1/rate)
+levinvweibull(limit, shape, rate = 1, scale = 1/rate,
+              order = 1)
 }
 \arguments{
   \item{x, q}{vector of quantiles.}
@@ -54,8 +54,8 @@
   \link[=dinvexp]{Inverse Exponential} distribution.
 
   The \eqn{k}th raw moment of the random variable \eqn{X} is
-  \eqn{E[X^k]}{E[X^k]} and the \eqn{k} limited moment at some limit
-  \eqn{d} is \eqn{E[\min(X, d)]}{E[min(X, d)]}.
+  \eqn{E[X^k]}{E[X^k]} and the \eqn{k}th limited moment at some limit
+  \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]}.
 }
 \value{
   \code{dinvweibull} gives the density,

@@ -1,18 +1,24 @@
 ### C code
 useDynLib(actuar, .registration = TRUE)
 
+### import code
+ImportFrom(Matrix, expm)
+
 ### Exports
 export(## Credibility theory
        bstraub, cm, severity, simpf, unroll,
        ## Risk theory
-       aggregateDist, discretize, discretise,
+       aggregateDist, CTE, discretize, discretise, VaR, adjCoef, ruin,
        ## One parameter distributions
        dinvexp, pinvexp, qinvexp, rinvexp, minvexp, levinvexp,
-       mexp, levexp,
+       mexp, levexp, mgfexp,
        ## Two parameter distributions
+       munif, levunif, mgfunif,
+       mnorm, mgfnorm,
        mbeta, levbeta,
-       mgamma, levgamma,
-       dinvgamma, pinvgamma, qinvgamma, rinvgamma, minvgamma, levinvgamma,
+       mgamma, levgamma, mgfgamma,
+       mchisq, levchisq, mgfchisq,
+       dinvgamma, pinvgamma, qinvgamma, rinvgamma, minvgamma, levinvgamma, mgfinvgamma,
        dinvparalogis, pinvparalogis, qinvparalogis, rinvparalogis, minvparalogis, levinvparalogis,
        dinvpareto, pinvpareto, qinvpareto, rinvpareto, minvpareto, levinvpareto,
        dinvweibull, pinvweibull, qinvweibull, rinvweibull, minvweibull, levinvweibull,
@@ -25,6 +31,8 @@ export(## Credibility theory
        dpareto2, ppareto2, qpareto2, rpareto2, mpareto2, levpareto2, # aliases
        dpareto1, ppareto1, qpareto1, rpareto1, mpareto1, levpareto1,
        mweibull, levweibull,
+       minvGauss, levinvGauss, mgfinvGauss, #notation from SuppDists package
+       minvgauss, levinvgauss, mgfinvgauss,
        ## Three parameter distributions
        dburr, pburr, qburr, rburr, mburr, levburr,
        dgenpareto, pgenpareto, qgenpareto, rgenpareto, mgenpareto, levgenpareto,
@@ -35,9 +43,12 @@ export(## Credibility theory
        dgenbeta, pgenbeta, qgenbeta, rgenbeta, mgenbeta, levgenbeta,
        dtrbeta, ptrbeta, qtrbeta, rtrbeta, mtrbeta, levtrbeta,
        dpearson6, ppearson6, qpearson6, rpearson6, mpearson6, levpearson6, #aliases
+       ## Phase-type distributions
+       dphtype, pphtype, rphtype, mphtype, mgfphtype,
        ## Loss distributions
        grouped.data, ogive, emm, mde, elev, coverage
        )
+
 ### Imports
 import(stats, graphics)
 
@@ -47,13 +58,15 @@ S3method("[<-", grouped.data)
 
 S3method(aggregate, simpf)
 
-S3method(frequency, simpf)
+S3method(CTE, aggregateDist)
 
 S3method(elev, default)
 S3method(elev, grouped.data)
 
 S3method(emm, default)
 S3method(emm, grouped.data)
+
+S3method(frequency, simpf)
 
 S3method(hist, grouped.data)
 
@@ -66,19 +79,21 @@ S3method(mean, grouped.data)
 S3method(plot, aggregateDist)
 S3method(plot, ogive)
 S3method(plot, elev)
+S3method(plot, adjCoef)
 
 S3method(predict, bstraub)
+S3method(predict, bstraub.old)
 S3method(predict, cm)
+S3method(predict, hache)
+S3method(predict, hierarc)
 
 S3method(print, aggregateDist)
-S3method(print, bstraub)
 S3method(print, elev)
 S3method(print, cm)
 S3method(print, mde)
 S3method(print, ogive)
 S3method(print, simpf)
 S3method(print, summary.aggregateDist)
-S3method(print, summary.bstraub)
 S3method(print, summary.cm)
 
 S3method(quantile, aggregateDist)
@@ -87,9 +102,10 @@ S3method(severity, default)
 S3method(severity, simpf)
 
 S3method(summary, aggregateDist)
-S3method(summary, bstraub)
 S3method(summary, cm)
 S3method(summary, elev)
 S3method(summary, ogive)
+
+S3method(VaR, aggregateDist)
 
 S3method(weights, simpf)

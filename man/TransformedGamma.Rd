@@ -8,21 +8,21 @@
 \alias{levtrgamma}
 \title{The Transformed Gamma Distribution}
 \description{
-  Density, distribution function, quantile function, random generation,
+  Density function, distribution function, quantile function, random generation,
   raw moments and limited moments for the Transformed Gamma distribution
   with parameters \code{shape1}, \code{shape2} and \code{scale}.
 }
 \usage{
-  dtrgamma(x, shape1, shape2, rate = 1, scale = 1/rate,
-           log = FALSE)
-  ptrgamma(q, shape1, shape2, rate = 1, scale = 1/rate,
-           lower.tail = TRUE, log.p = FALSE)
-  qtrgamma(p, shape1, shape2, rate = 1, scale = 1/rate,
-           lower.tail = TRUE, log.p = FALSE)
-  rtrgamma(n, shape1, shape2, rate = 1, scale = 1/rate)
-  mtrgamma(order, shape1, shape2, rate = 1, scale = 1/rate)
-  levtrgamma(limit, shape1, shape2, rate = 1, scale = 1/rate,
-             order = 1)
+dtrgamma(x, shape1, shape2, rate = 1, scale = 1/rate,
+         log = FALSE)
+ptrgamma(q, shape1, shape2, rate = 1, scale = 1/rate,
+         lower.tail = TRUE, log.p = FALSE)
+qtrgamma(p, shape1, shape2, rate = 1, scale = 1/rate,
+         lower.tail = TRUE, log.p = FALSE)
+rtrgamma(n, shape1, shape2, rate = 1, scale = 1/rate)
+mtrgamma(order, shape1, shape2, rate = 1, scale = 1/rate)
+levtrgamma(limit, shape1, shape2, rate = 1, scale = 1/rate,
+           order = 1)
 }
 \arguments{
   \item{x, q}{vector of quantiles.}
@@ -70,8 +70,8 @@
   }
 
   The \eqn{k}th raw moment of the random variable \eqn{X} is
-  \eqn{E[X^k]}{E[X^k]} and the \eqn{k} limited moment at some limit
-  \eqn{d} is \eqn{E[\min(X, d)]}{E[min(X, d)]}.
+  \eqn{E[X^k]}{E[X^k]} and the \eqn{k}th limited moment at some limit
+  \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]}.
 }
 \value{
   \code{dtrgamma} gives the density,
