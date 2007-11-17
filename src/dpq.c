@@ -1,41 +1,43 @@
 /*  ===== actuar: an R package for Actuarial Science =====
  *
  *  Functions to compute probability density, cumulative probability
- *  and quantile functions, raw moments and limited moments for some
- *  probability laws not in base R. Function .External() calls
- *  do_dpq() with arguments:
+ *  quantile functions and moment generating functions, raw moments
+ *  and limited moments for some probability laws not in base R (or
+ *  those quantities not provided in base R). Function .External()
+ *  calls do_dpq() with arguments:
  *
- *       1. the name of the distribution from which to simulate, with
- *          a "d", a "p" or "q" prepended to it (e.g. "dpareto",
- *          "pburr");
+ *       1. the name of the distribution, with a "d", a "p" or "q"
+ *          prepended to it (e.g. "dpareto", "pburr");
  *       2. the value(s) where the function is to be evaluated;
  *     3:x. the parameters of the distribution (including the order of
  *          the limited moment for lev*);
  *     x+1. whether to return the lower or upper tail probability or
  *          quantile (p* and q* only); see note below for m* and lev*
  *          functions;
- *     x+2. whether to return probability in log scale (d*, p* and q*
- *          only).
+ *     x+2. whether to return probability in log scale or the cumulant
+ *          generating function (d*, p*, q* and mgf* only).
  *
  *  Function do_dpq() will extract the name of the distribution, look
  *  up in table fun_tab defined in names.c which of do_dpq{1,2,3,4}
- *  should take care of the calculation and dispatch to this
- *  function. In turn, functions do_dpq{1,2,3,4} call function
- *  {d,p,q,m,lev}dist() to get actual values from distribution "dist".
+ *  should take care of the calculation and dispatch to this function.
+ *  In turn, functions do_dpq{1,2,3,4} call function
+ *  {d,p,q,m,lev,mgf}dist() to get actual values from distribution
+ *  "dist".
  *
  *  Note: the m* and lev* functions came later in the process. In
  *  order to easily fit them into this system, I have decided to leave
  *  an unused 'give_log' argument in the C definitions of these
- *  functions. Otherwise, this would require defining functions
+ *  functions. Otherwise, this would have required defining functions
  *  dpq{1,2,3,4,5}_0() below.
  *
  *  Functions therein are essentially identical to those found in
  *  .../src/main/arithmetic.c of R sources with a different naming
  *  scheme.
  *
- *  To add a new distribution: write a {d,p,q,m,lev}dist() function,
- *  add an entry in names.c and in the definition of the corresponding
- *  do_dpq{1,2,3,4} function, declare the function in actuar.h.
+ *  To add a new distribution: write a {d,p,q,m,lev,mgf}dist()
+ *  function, add an entry in names.c and in the definition of the
+ *  corresponding do_dpq{1,2,3,4} function, declare the function in
+ *  actuar.h.
  *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  *          with much indirect help from the R Core Team
@@ -99,7 +101,7 @@ static SEXP dpq1_1(SEXP sx, SEXP sa, SEXP sI, double (*f)())
     }
 
 #define FINISH_DPQ1				\
-    if(naflag)					\
+    if (naflag)					\
 	warning(R_MSG_NA);			\
 						\
     if (n == nx) {				\
@@ -159,6 +161,7 @@ SEXP do_dpq1(int code, SEXP args)
     case  3:  return DPQ1_2(args, pinvexp);
     case  4:  return DPQ1_2(args, qinvexp);
     case  5:  return DPQ1_1(args, minvexp);
+	case  6:  return DPQ1_1(args, mgfexp);
     default:
 	error(_("internal error in do_dpq1"));
     }
@@ -188,6 +191,7 @@ static SEXP dpq2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI, double (*f)())
     double xi, ai, bi, *x, *a, *b, *y;
     int i_1;
     Rboolean naflag = FALSE;
+
 
 #define SETUP_DPQ2						\
     if (!isNumeric(sx) || !isNumeric(sa) || !isNumeric(sb))	\
@@ -228,7 +232,7 @@ static SEXP dpq2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI, double (*f)())
     }
 
 #define FINISH_DPQ2				\
-    if(naflag)					\
+    if (naflag)					\
 	warning(R_MSG_NA);			\
 						\
     if (n == nx) {				\
@@ -287,6 +291,7 @@ static SEXP dpq2_2(SEXP sx, SEXP sa, SEXP sb, SEXP sI, SEXP sJ, double (*f)())
 
 SEXP do_dpq2(int code, SEXP args)
 {
+
     switch (code)
     {
     case  1:  return DPQ2_1(args, mgamma);
@@ -331,6 +336,16 @@ SEXP do_dpq2(int code, SEXP args)
     case 40:  return DPQ2_1(args, levexp);
     case 41:  return DPQ2_1(args, levinvexp);
     case 42:  return DPQ2_1(args, mbeta);
+	case 43:  return DPQ2_1(args, mgfgamma);
+	case 44:  return DPQ2_1(args, mgfnorm);
+	case 45:  return DPQ2_1(args, mgfunif);
+	case 46:  return DPQ2_1(args, mgfinvgamma);
+	case 47:  return DPQ2_1(args, mnorm);
+	case 48:  return DPQ2_1(args, mchisq);
+	case 49:  return DPQ2_1(args, mgfchisq);
+	case 50:  return DPQ2_1(args, minvGauss); //notation from SuppDists package
+	case 51:  return DPQ2_1(args, mgfinvGauss);
+	case 52:  return DPQ2_1(args, munif);
     default:
 	error(_("internal error in do_dpq2"));
     }
@@ -407,7 +422,7 @@ static SEXP dpq3_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sI, double (*f)())
     }
 
 #define FINISH_DPQ3				\
-    if(naflag)					\
+    if (naflag)					\
 	warning(R_MSG_NA);			\
 						\
     if (n == nx) {				\
@@ -508,6 +523,9 @@ SEXP do_dpq3(int code, SEXP args)
     case 31:  return DPQ3_1(args, levpareto1);
     case 32:  return DPQ3_1(args, levweibull);
     case 33:  return DPQ3_1(args, levbeta);
+	case 34:  return DPQ3_1(args, levchisq);
+	case 35:  return DPQ3_1(args, levinvGauss); //notation from SuppDists package
+	case 36:  return DPQ3_1(args, levunif);
     default:
 	error(_("internal error in do_dpq3"));
     }
@@ -594,7 +612,7 @@ static SEXP dpq4_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP sI, double 
     }
 
 #define FINISH_DPQ4				\
-    if(naflag)					\
+    if (naflag)					\
 	warning(R_MSG_NA);			\
 						\
     if (n == nx) {				\
@@ -770,7 +788,7 @@ static SEXP dpq5_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sI
     }
 
 #define FINISH_DPQ5				\
-    if(naflag)					\
+    if (naflag)					\
 	warning(R_MSG_NA);			\
 						\
     if (n == nx) {				\
@@ -825,13 +843,13 @@ SEXP do_dpq5(int code, SEXP args)
 SEXP do_dpq(SEXP args)
 {
     int i;
-    char *name;
+    const char *name;
 
     /* Extract distribution name */
     args = CDR(args);
     name = CHAR(STRING_ELT(CAR(args), 0));
 
-    /* Dispatch to do_random{1,2,3,4,5} */
+    /* Dispatch to do_dpq{1,2,3,4,5} */
     for (i = 0; fun_tab[i].name; i++)
     {
 	if (!strcmp(fun_tab[i].name, name))

@@ -2,7 +2,7 @@
  *
  *  Fonctions to compute density, cumulative distribution and quantile
  *  fonctions, raw and limited moments and to simulate random variates
- *  for the inverse Pareto distribution. See ../R/invpareto.R for
+ *  for the inverse Pareto distribution. See ../R/InversePareto.R for
  *  details.
  *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
@@ -110,7 +110,8 @@ double levinvpareto(double limit, double shape, double scale, double order,
 	!R_FINITE(order) ||
 	shape <= 0.0 ||
 	scale <= 0.0 ||
-	order <= -shape)
+	order <= -shape ||
+	order >= 1.0)
 	return R_NaN;;
 
     if (limit <= 0.0)

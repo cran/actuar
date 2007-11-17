@@ -159,7 +159,7 @@ SEXP do_random2(int code, SEXP args)
 	return(x);
     }
 
-    /* If length of parameters < 1, return NaN */
+    /* If length of parameters < 1, return NA */
     na = LENGTH(CADR(args));
     nb = LENGTH(CADDR(args));
     if (na < 1 || nb < 1)
@@ -388,7 +388,7 @@ SEXP do_random4(int code, SEXP args)
 SEXP do_random(SEXP args)
 {
     int i;
-    char *name;
+    const char *name;
 
     /* Extract distribution name */
     args = CDR(args);

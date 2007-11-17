@@ -7,7 +7,7 @@
 
 quantile.aggregateDist <-
     function(x, probs = c(0.25, 0.5, 0.75, 0.9, 0.95, 0.975, 0.99, 0.995),
-             approx.lin = FALSE, names = TRUE, ...)
+             smooth = FALSE, names = TRUE, ...)
 {
     label <- comment(x)
 
@@ -20,7 +20,7 @@ quantile.aggregateDist <-
                      sqrt(get("variance", environment(x))))
     else if (label == "Normal Power approximation")
     {
-        mean <- get("mean" ,environment(x))
+        mean <- get("mean", environment(x))
         variance <- get("variance", environment(x))
         skewness <- get("skewness", environment(x))
         ## Calling qnorm() and inverting the Normal Power 'standardization'
@@ -38,7 +38,7 @@ quantile.aggregateDist <-
         ind <- sapply(probs, function(q) match(TRUE, Fs >= q))
 
         res <-
-            if (approx.lin)
+            if (smooth)
             {
                 h <- (Fs[ind] - probs) / (Fs[ind] - Fs[ind - 1])
                 (1 - h) * x[ind - 1] + h * x[ind]

@@ -30,8 +30,9 @@ mde(x, fun, start, measure = c("CvM", "chi-square", "LAS"),
 }
 \details{
   The Cramer-von Mises method (\code{"CvM"}) minimizes the squared
-  distance between the theoretical cdf and the empirical cdf (for
-  individual data) or the ogive (for grouped data).
+  difference between the theoretical cdf and the empirical cdf at the
+  data points (for individual data) or the ogive at the knots (for
+  grouped data).
 
   The modified chi-square method (\code{"chi-square"}) minimizes the
   modified chi-square statistic for grouped data, that is the squared
@@ -45,9 +46,8 @@ mde(x, fun, start, measure = c("CvM", "chi-square", "LAS"),
   All sum of squares can be weighted. If arguments \code{weights} is
   missing, weights default to 1 for \code{measure = "CvM"} and
   \code{measure = "LAS"}; for \code{measure = "chi-square"}, weights
-  default to \eqn{n/n_j}{n/n[j]}, where \eqn{n_j}{n[j]} is the frequency
-  in group \eqn{j = 1, \dots, r} and \eqn{n = \sum_{j = 1}^r n_j}{n =
-    sum(j; n[j])}.
+  default to \eqn{1/n_j}{1/n[j]}, where \eqn{n_j}{n[j]} is the frequency
+  in group \eqn{j = 1, \dots, r}.
   
   Optimization is performed using \code{\link{optim}}. For
   one-dimensional problems the Nelder-Mead method is used and for

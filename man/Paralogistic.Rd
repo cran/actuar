@@ -8,20 +8,20 @@
 \alias{levparalogis}
 \title{The Paralogistic Distribution}
 \description{
-  Density, distribution function, quantile function, random generation,
+  Density function, distribution function, quantile function, random generation,
   raw moments and limited moments for the Paralogistic distribution with
   parameters \code{shape} and \code{scale}.
 }
 \usage{
-  dparalogis(x, shape, rate = 1, scale = 1/rate, log = FALSE)
-  pparalogis(q, shape, rate = 1, scale = 1/rate,
-             lower.tail = TRUE, log.p = FALSE)
-  qparalogis(p, shape, rate = 1, scale = 1/rate,
-             lower.tail = TRUE, log.p = FALSE)
-  rparalogis(n, shape, rate = 1, scale = 1/rate)
-  mparalogis(order, shape, rate = 1, scale = 1/rate)
-  levparalogis(limit, shape, rate = 1, scale = 1/rate,
-               order = 1)
+dparalogis(x, shape, rate = 1, scale = 1/rate, log = FALSE)
+pparalogis(q, shape, rate = 1, scale = 1/rate,
+           lower.tail = TRUE, log.p = FALSE)
+qparalogis(p, shape, rate = 1, scale = 1/rate,
+           lower.tail = TRUE, log.p = FALSE)
+rparalogis(n, shape, rate = 1, scale = 1/rate)
+mparalogis(order, shape, rate = 1, scale = 1/rate)
+levparalogis(limit, shape, rate = 1, scale = 1/rate,
+             order = 1)
 }
 \arguments{
   \item{x, q}{vector of quantiles.}
@@ -46,8 +46,8 @@
   for \eqn{x > 0}, \eqn{\alpha > 0}{a > 0} and \eqn{\theta > 0}{b > 0}.
 
   The \eqn{k}th raw moment of the random variable \eqn{X} is
-  \eqn{E[X^k]}{E[X^k]} and the \eqn{k} limited moment at some limit
-  \eqn{d} is \eqn{E[\min(X, d)]}{E[min(X, d)]}.
+  \eqn{E[X^k]}{E[X^k]} and the \eqn{k}th limited moment at some limit
+  \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]}.
 }
 \value{
   \code{dparalogis} gives the density,

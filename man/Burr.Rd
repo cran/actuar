@@ -8,21 +8,21 @@
 \alias{levburr}
 \title{The Burr Distribution}
 \description{
-  Density, distribution function, quantile function, random generation,
+  Density function, distribution function, quantile function, random generation,
   raw moments and limited moments for the Burr distribution with
   parameters \code{shape1}, \code{shape2} and \code{scale}.
 }
 \usage{
-  dburr(x, shape1, shape2, rate = 1, scale = 1/rate,
-        log = FALSE)
-  pburr(q, shape1, shape2, rate = 1, scale = 1/rate,
-        lower.tail = TRUE, log.p = FALSE)
-  qburr(p, shape1, shape2, rate = 1, scale = 1/rate,
-        lower.tail = TRUE, log.p = FALSE)
-  rburr(n, shape1, shape2, rate = 1, scale = 1/rate)
-  mburr(order, shape1, shape2, rate = 1, scale = 1/rate)
-  levburr(limit, shape1, shape2, rate = 1, scale = 1/rate,
-          order = 1)
+dburr(x, shape1, shape2, rate = 1, scale = 1/rate,
+      log = FALSE)
+pburr(q, shape1, shape2, rate = 1, scale = 1/rate,
+      lower.tail = TRUE, log.p = FALSE)
+qburr(p, shape1, shape2, rate = 1, scale = 1/rate,
+      lower.tail = TRUE, log.p = FALSE)
+rburr(n, shape1, shape2, rate = 1, scale = 1/rate)
+mburr(order, shape1, shape2, rate = 1, scale = 1/rate)
+levburr(limit, shape1, shape2, rate = 1, scale = 1/rate,
+        order = 1)
 }
 \arguments{
   \item{x, q}{vector of quantiles.}
@@ -65,7 +65,7 @@
   }    
 
   The \eqn{k}th raw moment of the random variable \eqn{X} is
-  \eqn{E[X^k]}{E[X^k]} and the \eqn{k} limited moment at some limit
+  \eqn{E[X^k]}{E[X^k]} and the \eqn{k}th limited moment at some limit
   \eqn{d} is \eqn{E[\min(X, d)]}{E[min(X, d)]}.
 }
 \value{

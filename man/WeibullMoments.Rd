@@ -8,8 +8,8 @@
   parameters \code{shape} and \code{scale}.
 }
 \usage{
-  mweibull(order, shape, scale = 1)
-  levweibull(limit, shape, scale = 1, order = 1)
+mweibull(order, shape, scale = 1)
+levweibull(limit, shape, scale = 1, order = 1)
 }
 \arguments{
   \item{order}{order of the moment.}
@@ -19,8 +19,8 @@
 }
 \details{
   The \eqn{k}th raw moment of the random variable \eqn{X} is
-  \eqn{E[X^k]}{E[X^k]} and the \eqn{k} limited moment at some limit
-  \eqn{d} is \eqn{E[\min(X, d)]}{E[min(X, d)]}.
+  \eqn{E[X^k]}{E[X^k]} and the \eqn{k}th limited moment at some limit
+  \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]}.
 }
 \value{
   \code{mweibull} gives the \eqn{k}th raw moment and

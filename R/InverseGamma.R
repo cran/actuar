@@ -1,6 +1,6 @@
 ### ===== actuar: an R package for Actuarial Science =====
 ###
-### Definition of the {d,p,q,r,m,lev}invgamma functions to compute
+### Definition of the {d,p,q,r,m,lev,mgf}invgamma functions to compute
 ### characteristics of the Inverse Gamma distribution. The version
 ### used in these functions has cumulative distribution function
 ###
@@ -11,9 +11,11 @@
 ###   Pr[X <= x] = 1 - pgamma(1/x, shape1, scale = 1/scale).
 ###
 ### See Appendix A of Klugman, Panjer & Willmot, Loss Models, Second
-### Edition, Wiley, 2004.
+### Edition, Wiley, 2004 and
+### <http://en.wikipedia.org/wiki/Inverse-gamma_distribution>
 ###
-### AUTHORS:  Mathieu Pigeon, Vincent Goulet <vincent.goulet@act.ulaval.ca>
+### AUTHORS:  Mathieu Pigeon, Christophe Dutang and
+### Vincent Goulet <vincent.goulet@act.ulaval.ca>
 
 dinvgamma <- function (x, shape, rate = 1, scale = 1/rate, log = FALSE)
      .External("do_dpq", "dinvgamma", x, shape, scale, log)
@@ -35,3 +37,6 @@ minvgamma <- function(order, shape, rate = 1, scale = 1/rate)
 levinvgamma <- function(limit, shape, rate = 1, scale = 1/rate,
                         order = 1)
      .External("do_dpq", "levinvgamma", limit, shape, scale, order, FALSE)
+
+mgfinvgamma <- function(x, shape, rate = 1, scale = 1/rate, log = FALSE)
+    .External("do_dpq", "mgfinvgamma", x, shape, scale, log)

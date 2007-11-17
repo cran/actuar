@@ -15,22 +15,22 @@
 \alias{levpearson6}
 \title{The Transformed Beta Distribution}
 \description{
-  Density, distribution function, quantile function, random generation,
+  Density function, distribution function, quantile function, random generation,
   raw moments and limited moments for the Transformed Beta distribution
   with parameters \code{shape1}, \code{shape2}, \code{shape3} and
   \code{scale}.
 }
 \usage{
-  dtrbeta(x, shape1, shape2, shape3, rate = 1, scale = 1/rate,
-          log = FALSE)
-  ptrbeta(q, shape1, shape2, shape3, rate = 1, scale = 1/rate,
-          lower.tail = TRUE, log.p = FALSE)
-  qtrbeta(p, shape1, shape2, shape3, rate = 1, scale = 1/rate,
-          lower.tail = TRUE, log.p = FALSE)
-  rtrbeta(n, shape1, shape2, shape3, rate = 1, scale = 1/rate)
-  mtrbeta(order, shape1, shape2, shape3, rate = 1, scale = 1/rate)
-  levtrbeta(limit, shape1, shape2, shape3, rate = 1, scale = 1/rate,
-            order = 1)
+dtrbeta(x, shape1, shape2, shape3, rate = 1, scale = 1/rate,
+        log = FALSE)
+ptrbeta(q, shape1, shape2, shape3, rate = 1, scale = 1/rate,
+        lower.tail = TRUE, log.p = FALSE)
+qtrbeta(p, shape1, shape2, shape3, rate = 1, scale = 1/rate,
+        lower.tail = TRUE, log.p = FALSE)
+rtrbeta(n, shape1, shape2, shape3, rate = 1, scale = 1/rate)
+mtrbeta(order, shape1, shape2, shape3, rate = 1, scale = 1/rate)
+levtrbeta(limit, shape1, shape2, shape3, rate = 1, scale = 1/rate,
+          order = 1)
 }
 \arguments{
   \item{x, q}{vector of quantiles.}
@@ -89,8 +89,8 @@
   }
 
   The \eqn{k}th raw moment of the random variable \eqn{X} is
-  \eqn{E[X^k]}{E[X^k]} and the \eqn{k} limited moment at some limit
-  \eqn{d} is \eqn{E[\min(X, d)]}{E[min(X, d)]}.
+  \eqn{E[X^k]}{E[X^k]} and the \eqn{k}th limited moment at some limit
+  \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]}.
 }
 \value{
   \code{dtrbeta} gives the density,
