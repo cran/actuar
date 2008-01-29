@@ -1,4 +1,4 @@
-/*  ===== actuar: an R package for Actuarial Science =====
+/*  ===== actuar: An R Package for Actuarial Science =====
  *
  *  Functions to compute density, cumulative distribution and quantile
  *  functions, raw and limited moments and to simulate random variates
@@ -32,6 +32,9 @@ double dparalogis(double x, double shape, double scale, int give_log)
 
     if (!R_FINITE(x) || x < 0.0)
         return R_D__0;
+
+    /* handle x == 0 separately */
+    if (x == 0) R_D_mode(shape > 1);
 
     tmp = shape * (log(x) - log(scale));
     logu = - log1p(exp(tmp));
