@@ -1,5 +1,46 @@
 === actuar: an R package for Actuarial Science ===
 
+Version 0.9-5
+=============
+
+Mostly bug fix release, along with a few improvements.
+
+NEW FEATURES
+
+  o New "simulation" vignette on usage of function simul(). Most of
+    the material was previously in the "credibility" vignette.
+
+  o Examples of ruin() and adjCoef() added to the "risk" demo.
+
+
+USER-VISIBLE CHANGES
+
+  o Following some negative comments on a function name VG had been
+    using for years, function simpf() is renamed to simul() and the
+    class of the output from 'simpf' to 'portfolio'.
+
+  o The components of the list returned by severity.portfolio() are
+    renamed from "first" and "last" to "main" and "split",
+    respectively.
+
+BUG FIXES
+
+  o levinvgauss() returned wrong results.
+
+  o Restructuring of the weights matrix in simpf() may fail with an
+    incorrect number of columns.
+
+  o Fixed index entry of the credibility theory vignette.
+
+  o adjCoef() would only accept as argument 'h' a function named 'h'.
+
+  o ruin() built incorrect probability vector and intensity matrix for
+    mixture or Erlangs.
+
+  o CTE.aggregateDist sometimes gave values smaller than the VaR for
+    recursive and simulation methods.
+
+
 Version 0.9-4
 =============
 
@@ -166,8 +207,10 @@ NEW FEATURES -- LOSS DISTRIBUTIONS
      Generalized Pareto        genpareto
      Inverse Burr              invburr
      Inverse exponential       invexp
+     Inverse gamma	       invgamma
      Inverse Pareto            invpareto
      Inverse paralogistic      invparalogis
+     Inverse transformed gamma invtrgamma
      Inverse Weibull           invweibull
      Loggamma                  loggamma
      Loglogistic               llogis
