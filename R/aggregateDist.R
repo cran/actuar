@@ -38,7 +38,6 @@ aggregateDist <-
         FUN <- npower(moments[1], moments[2], moments[3])
         comment(FUN) <- "Normal Power approximation"
     }
-
     else if (method == "simulation")
     {
         if (missing(nb.simul))
@@ -48,7 +47,6 @@ aggregateDist <-
         FUN <- simS(nb.simul, model.freq = model.freq, model.sev = model.sev)
         comment(FUN) <- "Approximation by simulation"
     }
-
     else
     {
         ## "recursive" and "convolution" cases. Both require a

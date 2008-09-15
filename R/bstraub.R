@@ -1,13 +1,16 @@
 ### ===== actuar: an R package for Actuarial Science =====
 ###
-### Bühlmann-Straub credibility model calculations
+### Bühlmann-Straub credibility model calculations.
+###
+### Computation of the between variance estimators has been moved to
+### external functions bvar.unbiased() and bvar.iterative() to share
+### with hache().
 ###
 ### AUTHORS: Vincent Goulet <vincent.goulet@act.ulaval.ca>,
-### Sébastien Auclair, and Louis-Philippe Pouliot
+### Sébastien Auclair, Louis-Philippe Pouliot
 
 bstraub <- function(ratios, weights, method = c("unbiased", "iterative"),
-                    tol = sqrt(.Machine$double.eps), maxit = 100,
-                    echo = FALSE, old.format = TRUE)
+                    tol = sqrt(.Machine$double.eps), maxit = 100, echo = FALSE)
 {
     ## If weights are not specified, use equal weights as in
     ## Bühlmann's model.
@@ -24,7 +27,7 @@ bstraub <- function(ratios, weights, method = c("unbiased", "iterative"),
     if (nrow(ratios) < 2)
         stop("there must be more than one node")
     if (!identical(which(is.na(ratios)), which(is.na(weights))))
-        stop("missing values are not in the same positions in weights and in ratios")
+        stop("missing values are not in the same positions in 'weights' and in 'ratios'")
     if (all(!weights, na.rm = TRUE))
         stop("no available data to fit model")
 
@@ -44,102 +47,50 @@ bstraub <- function(ratios, weights, method = c("unbiased", "iterative"),
 
     ## Collective weighted average.
     weights.ss <- sum(weights.s)
-    ratios.ww <- sum(weights.s * ratios.w) / weights.ss
 
-    ## Estimation of s^2.
+    ## Estimation of s^2
     s2 <-  sum(weights * (ratios - ratios.w)^2, na.rm = TRUE) / (ntotal - ncontracts)
 
     ## First estimation of a. Always compute the unbiased estimator.
-    ac <- weights.ss * (sum(weights.s * (ratios.w - ratios.ww)^2) - (ncontracts - 1) * s2) / (weights.ss^2 - sum(weights.s^2))
+    a <- bvar.unbiased(ratios.w, weights.s, s2, ncontracts)
 
     ## Iterative estimation of a. Compute only if
     ## 1. asked to in argument;
-    ## 2. the unbiased estimator is > 0;
-    ## 3. weights are not all equal (Bühlmann model).
+    ## 2. weights are not all equal (Bühlmann model).
+    ## 3. the unbiased estimator is > 0;
     method <- match.arg(method)
 
-    if (method == "iterative")
+    if (method == "iterative" &&
+        diff(range(weights, na.rm = TRUE)) > .Machine$double.eps^0.5)
     {
-        if (ac > 0)
-        {
-            if (diff(range(weights, na.rm = TRUE)) > .Machine$double.eps^0.5)
-            {
-                if (echo)
-                {
-                    cat("Iteration\tBetween variance estimator\n")
-                    exp <- expression(cat(" ", count, "\t\t ", at1 <- at,
-                                          fill = TRUE))
-                }
-                else
-                    exp <- expression(at1 <-  at)
-
-                at <- ac
-                count <- 0
-                repeat
-                {
-                    eval(exp)
-
-                    if (maxit < (count <- count + 1))
-                    {
-                        warning("maximum number of iterations reached before obtaining convergence")
-                        break
-                    }
-
-                    cred <- 1 / (1 + s2/(weights.s * at))
-                    ratios.zw <- sum(cred * ratios.w) / sum(cred)
-                    at <- sum(cred * (ratios.w - ratios.zw)^2) / (ncontracts - 1)
-
-                    if (abs((at - at1)/at1) < tol)
-                        break
-                }
-            }
+        a <-
+            if (a > 0)
+                bvar.iterative(ratios.w, weights.s, s2, ncontracts, start = a,
+                               tol = tol, maxit = maxit, echo = echo)
             else
-                at <- ac
-        }
-        else
-            at <- 0
-        a <- at
-    }
-    else
-    {
-        a <- ac
-        at <- NULL
+                0
     }
 
     ## Final credibility factors and estimator of the collective mean.
     if (a > 0)
     {
         cred <- 1 / (1 + s2/(weights.s * a))
-        ratios.zw <- sum(cred * ratios.w) / sum(cred)
+        ratios.zw <- drop(crossprod(cred, ratios.w)) / sum(cred)
     }
     else
     {
         cred <- numeric(length(weights.s))
-        ratios.zw <- ratios.ww
+        ratios.zw <- drop(crossprod(weights.s, ratios.w)) / sum(weights.s)
     }
 
-    if (old.format)
-    {
-        warning("this output format is deprecated")
-        structure(list(individual = ratios.w,
-                       collective = ratios.zw,
-                       weights = weights.s,
-                       s2 = s2,
-                       unbiased = ac,
-                       iterative = at,
-                       cred = cred),
-                  class = "bstraub.old",
-                  model = "Buhlmann-Straub")
-    }
-    else
-        structure(list(means = list(ratios.zw, ratios.w),
-                       weights = list(if (a > 0) sum(cred) else weights.ss, weights.s),
-                       unbiased = c(ac, s2),
-                       iterative = if (!is.null(at)) c(at, s2),
-                       cred = cred,
-                       nodes = list(nrow(weights))),
-                  class = "bstraub",
-                  model = "Buhlmann-Straub")
+    structure(list(means = list(ratios.zw, ratios.w),
+                   weights = list(if (a > 0) sum(cred) else weights.ss, weights.s),
+                   unbiased = if (method == "unbiased") c(a, s2),
+                   iterative = if (method == "iterative") c(a, s2),
+                   cred = cred,
+                   nodes = list(nrow(weights))),
+              class = "bstraub",
+              model = "Buhlmann-Straub")
 }
 
 predict.bstraub.old <- function(object, ...)
@@ -147,3 +98,46 @@ predict.bstraub.old <- function(object, ...)
 
 predict.bstraub <- function(object, levels = NULL, newdata, ...)
     object$means[[1]] + object$cred * (object$means[[2]] - object$means[[1]])
+
+bvar.unbiased <- function(x, w, within, n)
+{
+    w.s <- sum(w)
+    x.w <- drop(crossprod(w, x)) / w.s
+
+    w.s * (drop(crossprod(w, (x - x.w)^2)) - (n - 1) * within) / (w.s^2 - sum(w^2))
+}
+
+bvar.iterative <- function(x, w, within, n, start,
+                           tol = sqrt(.Machine$double.eps), maxit = 100,
+                           echo = FALSE)
+{
+    if (echo)
+    {
+        cat("Iteration\tBetween variance estimator\n")
+        exp <- expression(cat(" ", count, "\t\t ", a1 <- a, fill = TRUE))
+    }
+    else
+        exp <- expression(a1 <-  a)
+
+    a <- start
+    count <- 0
+
+    repeat
+    {
+        eval(exp)
+
+        if (maxit < (count <- count + 1))
+        {
+            warning("maximum number of iterations reached before obtaining convergence")
+            break
+        }
+
+        cred <- 1 / (1 + within/(w * a))
+        x.z <- drop(crossprod(cred, x)) / sum(cred)
+        a <- drop(crossprod(cred, (x - x.z)^2)) / (n - 1)
+
+        if (abs((a - a1)/a1) < tol)
+            break
+    }
+    a
+}

@@ -14,7 +14,8 @@ quantile.aggregateDist <-
     ## The Normal and Normal Power approximations are the only
     ## continuous distributions of class 'aggregateDist'. They are
     ## therefore treated differently, using the 'base' quantile
-    ## function qnorm().
+    ## function qnorm() or numerical optimization through the 'base'
+    ## optimize function.
     if (label == "Normal approximation")
         res <- qnorm(probs, get("mean", environment(x)),
                      sqrt(get("variance", environment(x))))
@@ -33,18 +34,20 @@ quantile.aggregateDist <-
         ## An empirical and discrete approach is used for
         ## 'aggregateDist' objects obtained from methods other than
         ## Normal and Normal Power.
-        Fs <- get("y", environment(x))
+        y <- get("y", environment(x))
         x <- get("x", environment(x))
-        ind <- sapply(probs, function(q) match(TRUE, Fs >= q))
 
-        res <-
-            if (smooth)
-            {
-                h <- (Fs[ind] - probs) / (Fs[ind] - Fs[ind - 1])
-                (1 - h) * x[ind - 1] + h * x[ind]
-            }
-            else
-                x[ind]
+        ## Create the inverse function of either the cdf or the ogive.
+        fun <-
+            if (smooth)                     # ogive
+                approxfun(y, x, yleft = 0, yright = max(x),
+                          method = "linear", ties = "ordered")
+            else                            # cdf
+                fun <- approxfun(y, x, yleft = 0, yright = max(x),
+                          method = "constant", ties = "ordered")
+
+        ## Quantiles
+        res <- fun(probs)
     }
 
     if (names)

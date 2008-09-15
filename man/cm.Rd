@@ -6,12 +6,13 @@
 \alias{print.summary.cm}
 \title{Credibility Models}
 \description{
-  Fit any of the following credibility models: \enc{Bühlmann}{Buhlmann},
+  Fit the following credibility models: \enc{Bühlmann}{Buhlmann},
   \enc{Bühlmann}{Buhlmann}-Straub, hierarchical or regression
   (Hachemeister).
 }
 \usage{
-cm(formula, data, ratios, weights, subset, xreg = NULL,
+cm(formula, data, ratios, weights, subset,
+   regformula = NULL, regdata, adj.intercept = FALSE,
    method = c("Buhlmann-Gisler", "Ohlsson", "iterative"),
    tol = sqrt(.Machine$double.eps), maxit = 100, echo = FALSE)
 
@@ -24,8 +25,9 @@ cm(formula, data, ratios, weights, subset, xreg = NULL,
 \method{print}{summary.cm}(x, \dots)
 }
 \arguments{
-  \item{formula}{a symbolic description of the model to be fit.
-    The details of model specification are given below.}
+  \item{formula}{an object of class \code{"\link{formula}"}: a symbolic
+    description of the model to be fit. The details of model
+    specification are given below.}
   \item{data}{a matrix or a data frame containing the portfolio
     structure, the ratios or claim amounts and their associated weights,
     if any.}
@@ -36,7 +38,16 @@ cm(formula, data, ratios, weights, subset, xreg = NULL,
   \item{subset}{an optional logical expression indicating a subset of
     observations to be used in the modeling process. All observations
     are included by default.}
-  \item{xreg}{an optional vector or matrix of regressors.}
+  \item{regformula}{an object of class \code{"\link{formula}"}: symbolic
+    description of the regression component (see \code{"\link{lm}"} for
+    details). No left hand side is needed in the formula; if present it
+    is ignored. If \code{NULL}, no regression is done on the data.}
+  \item{regdata}{an optional data frame, list or environment (or object
+    coercible by \code{\link{as.data.frame}} to a data frame) containing
+    the variables in the regression model.}
+  \item{adj.intercept}{if \code{TRUE}, the intercept of the regression
+    model is located at the barycenter of the regressor instead of the
+    origin.}
   \item{method}{estimation method for the variance components of the
     model; see details below.}
   \item{tol}{tolerance level for the stopping criteria for iterative
@@ -47,8 +58,8 @@ cm(formula, data, ratios, weights, subset, xreg = NULL,
   \item{x, object}{an object of class \code{"cm"}}
   \item{levels}{character vector indicating the levels to predict or to
     include in the summary; if \code{NULL} all levels are included.}
-  \item{newdata}{vector or data frame containing the variables used to
-    predict credibility regression models.}
+  \item{newdata}{data frame containing the variables used to predict
+    credibility regression models.}
   \item{\dots}{additional attributes to attach to the result for the
     \code{predict} and \code{summary} methods; further arguments to
     \code{\link[base]{format}} for the \code{print.summary} method;
@@ -73,11 +84,13 @@ cm(formula, data, ratios, weights, subset, xreg = NULL,
   \code{data}. In general, the formula should be of the form \eqn{~ a +
   a:b + a:b:c + a:b:c:d + ...}.
 
-  If argument \code{xreg} is not \code{NULL}, the regression model of
-  Hachemeister will be fit to data. Hierarchical classification
-  structures are not supported with this model. Regression models
-  fitting is currently less robust than hierarchical models fitting. In
-  particular, one should avoid nodes with no data.
+  If argument \code{regformula} is not \code{NULL}, the regression model
+  of Hachemeister is fit to the data. The response is usually time. By
+  default, the intercept of the model is located at time origin. If
+  argument \code{adj.intercept} is \code{TRUE}, the intercept is moved
+  to the (collective) barycenter of time, by orthogonalization of the
+  design matrix. Note that the regression coefficients may be difficult
+  to interpret in this case.
 
   Arguments \code{ratios}, \code{weights} and \code{subset} are used
   like arguments \code{select}, \code{select} and \code{subset},
@@ -113,18 +126,19 @@ cm(formula, data, ratios, weights, subset, xreg = NULL,
   regression coefficients, \eqn{Z_i}{Z[i]} is the credibility matrix and
   \eqn{I} is the identity matrix. The credibility matrix of node \eqn{i}
   is equal to
-  \deqn{\frac{W_i}{W_i + s^2/A},}{W[i]/(W[i] + s2/A),}
-  where \eqn{W_i}{W[i]} is the unscaled regression covariance matrix of
+  \deqn{A^{-1} (A + s^2 S_i),}{A^(-1) (A + s2 S[i]),}
+  where \eqn{S_i}{S[i]} is the unscaled regression covariance matrix of
   the node, \eqn{s^2}{s2} is the average within node variance and
   \eqn{A} is the within node covariance matrix.
 
-  If argument \code{xreg} is a matrix, it is strongly recommended to
-  name the columns.
+  If the intercept is positioned at the barycenter of time, matrices
+  \eqn{S_i}{S[i]} and \eqn{A} (and hence \eqn{Z_i}{Z[i]}) are diagonal.
+  This amounts to use \enc{Bühlmann}{Buhlmann}-Straub models for each
+  regression coefficient.
 
   Argument \code{newdata} provides the \dQuote{future} value of the
-  regressors for prediction purposes. It is either as defined in
-  \code{\link[stats]{predict.lm}} or else a vector of length one for
-  regression models with a single regressor.
+  regressors for prediction purposes. It should be given as specified in
+  \code{\link[stats]{predict.lm}}.
 }
 \section{Variance components estimation}{
   For hierarchical models, two sets of estimators of the variance
@@ -174,8 +188,11 @@ cm(formula, data, ratios, weights, subset, xreg = NULL,
   level minus the effective number of nodes of the level above. The
   Ohlsson estimators are used as starting values.
 
-  For regression models, only iterative estimators are available, hence
-  argument \code{method} is not taken into account.
+  For regression models, with the intercept at time origin, only
+  iterative estimators are available. If \code{method} is different from
+  \code{"iterative"}, a warning is issued. With the intercept at the
+  barycenter of time, the choice of estimators is the same as in the
+  \enc{Bühlmann}{Buhlmann}-Straub model.
 }
 \value{
   Function \code{cm} computes the structure parameters estimators of the
@@ -202,9 +219,14 @@ cm(formula, data, ratios, weights, subset, xreg = NULL,
   \item{ordering}{a list containing, for each level, the affiliation of
     a node to the node of the level above.}
 
-  Regression fits have in addition the following component:
+  Regression fits have in addition the following components:
   \item{adj.models}{a list containing, for each node, the credibility
-    adjusted regression model as obtained with \code{\link[stats]{lm}}.}
+    adjusted regression model as obtained with
+    \code{\link[stats]{lm.fit}} or \code{\link[stats]{lm.wfit}}.}
+  \item{transition}{if \code{adj.intercept} is \code{TRUE}, a transition
+    matrix from the basis of the orthogonal design matrix to the basis
+    of the original design matrix.}
+  \item{terms}{the \code{\link[stats]{terms}} object used.}
 
   The method of \code{predict} for objects of class \code{"cm"} computes
   the credibility premiums for the nodes of every level included in
@@ -225,7 +247,7 @@ cm(formula, data, ratios, weights, subset, xreg = NULL,
 }
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca},
-  Tommy Ouellet, Louis-Philippe Pouliot
+  Xavier Milhaud, Tommy Ouellet, Louis-Philippe Pouliot
 }
 \seealso{
   \code{\link[base]{subset}}, \code{\link[base]{formula}},
@@ -250,12 +272,20 @@ predict(fit, levels = "unit")	# unit credibility premiums only
 summary(fit)
 summary(fit, levels = "unit")	# unit summaries only
 
-## Regression model
-fit <- cm(~state, hachemeister, xreg = 12:1,
+## Regression model with intercept at time origin
+fit <- cm(~state, hachemeister,
+          regformula = ~time, regdata = data.frame(time = 12:1),
           ratios = ratio.1:ratio.12, weights = weight.1:weight.12)
 fit
-predict(fit, newdata = 0)	# future value of regressor
-summary(fit, newdata = 0)
+predict(fit, newdata = data.frame(time = 0))
+summary(fit, newdata = data.frame(time = 0))
 
+## Same regression model, with intercept at barycenter of time
+fit <- cm(~state, hachemeister, adj.intercept = TRUE,
+          regformula = ~time, regdata = data.frame(time = 12:1),
+          ratios = ratio.1:ratio.12, weights = weight.1:weight.12)
+fit
+predict(fit, newdata = data.frame(time = 0))
+summary(fit, newdata = data.frame(time = 0))
 }
 \keyword{models}

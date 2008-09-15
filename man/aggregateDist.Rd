@@ -48,8 +48,8 @@ aggregateDist(method = c("recursive", "convolution", "normal",
     unit). Used only with \code{"recursive"} and \code{"convolution"}
     methods.}
   \item{moments}{vector of the true moments of the aggregate claim
-    amount distribution; required only by the \code{"normal"}
-    or \code{"npower"} methods.}
+    amount distribution; required only by the \code{"normal"} or
+    \code{"npower"} methods.}
   \item{nb.simul}{number of simulations for the \code{"simulation"} method.}
   \item{\dots}{parameters of the frequency distribution for the
     \code{"recursive"} method; further arguments to be passed to or
