@@ -1,146 +1,88 @@
 ### ===== actuar: an R package for Actuarial Science =====
 ###
-### Credibility in the Regression Case
+### Credibility in the regression case using the Hachemeister (1975)
+### model with possibly an adjustment to put the intercept at the
+### barycenter of time (see Buhlmann & Gisler, 2005).
 ###
-### The Hachemeister Regression Model (1975).
-###
-### AUTHORS: Tommy Ouellet, Vincent Goulet <vincent.goulet@act.ulaval.ca>
+### AUTHORS: Xavier Milhaud, Tommy Ouellet, Vincent Goulet
+### <vincent.goulet@act.ulaval.ca>
 
-hache <- function(ratios, weights, xreg, tol = sqrt(.Machine$double.eps),
+hache <- function(ratios, weights, formula, data, adj.intercept = FALSE,
+                  method = c("unbiased", "iterative"),
+                  tol = sqrt(.Machine$double.eps),
                   maxit = 100, echo = FALSE)
 {
     Call <- match.call()
 
-    ## Frequently used values
-    ncontracts <- NROW(ratios)          # number of contracts
-    nyears <- NCOL(ratios)              # number of years
-    p <- NCOL(xreg) + 1                 # dimension of design matrix
-    s <- seq_len(ncontracts)            # 1:ncontracts
-
-    ## Fit linear model to each contract and make summary of each
-    ## model for later extraction of key quantities.
-    xreg <- cbind(xreg)                 # force dims and colnames
-    fo <- as.formula(paste("y ~ ", paste(colnames(xreg), collapse = "+")))
-    f <- function(i)
+    ## If weights are not specified, use equal weights as in
+    ## Buhlmann's model.
+    if (missing(weights))
     {
-        DF <- data.frame(y = ratios[i, ], xreg, w = weights[i, ])
-        lm(fo, data = DF, weights = w)
-    }
-    fits <- lapply(s, f)
-    sfits <- lapply(fits, summary)
-
-    ## Regression coefficients, residuals and the analog of the inverse
-    ## of the total contract weights (to be used to compute the
-    ## credibility matrices). for each contract
-    ind <- sapply(fits, coef)
-    r <- sapply(fits, residuals)
-    sigma2 <- sapply(sfits, "[[", "sigma")^2
-    weights.s <- lapply(sfits, "[[", "cov.unscaled")
-
-    ## === ESTIMATION OF WITHIN VARIANCE ===
-    s2 <- mean(sigma2)
-
-    ## === ESTIMATION OF THE BETWEEN VARIANCE-COVARIANCE MATRIX ===
-    ##
-    ## This is an iterative procedure similar to the Bischel-Straub
-    ## estimator. Following Goovaerts & Hoogstad, stopping criterion
-    ## is based in the collective regression coefficients estimates.
-    ##
-    ## Starting credibility matrices and collective regression
-    ## coefficients. The credibility matrices are stored in an array
-    ## of dimension p x p x ncontracts.
-    cred <- array(diag(p), dim = c(p, p, ncontracts)) # identity matrices
-    coll <- rowMeans(ind)         # coherent with above cred. matrices
-
-    ## If printing of iterations was asked for, start by printing a
-    ## header and the starting values.
-    if (echo)
-    {
-        cat("Iteration\tCollective regression coefficients\n")
-        exp <- expression(cat(" ", count, "\t\t ", coll1 <- coll,
-                              fill = TRUE))
-    }
-    else
-        exp <- expression(coll1 <-  coll)
-
-    ## Iterative procedure
-    count <- 0
-    repeat
-    {
-        eval(exp)
-
-        ## Stop after 'maxit' iterations
-        if (maxit < (count <- count + 1))
-        {
-            warning("maximum number of iterations reached before obtaining convergence")
-            break
-        }
-
-        ## As calculated here, the between variance-covariance matrix
-        ## is actually a vector. It is turned into a matrix by adding
-        ## a 'dim' attribute.
-        A <- rowSums(sapply(s,
-                            function(i) cred[, , i] %*% tcrossprod(ind[, i] - coll))) / (ncontracts - 1)
-        dim(A) <- c(p, p)
-
-        ## Symmetrize A
-        A <- (A + t(A))/2
-
-        ## New credibility matrices
-        cred <- sapply(weights.s, function(w) A %*% solve(A + s2 * w))
-        dim(cred) <- c(p, p, ncontracts)
-
-        ## New collective regression coefficients
-        cred.s <- apply(cred, c(1, 2), sum)
-        coll <- solve(cred.s,
-                      rowSums(sapply(s, function(i) cred[, , i] %*% ind[, i])))
-
-        ## Test for convergence
-        if (max(abs((coll - coll1)/coll1)) < tol)
-            break
+        if (any(is.na(ratios)))
+            stop("missing ratios not allowed when weights are not supplied")
+        weights <- array(1, dim(ratios))
     }
 
-    ## Final calculation of the between variance-covariance matrix and
-    ## credibility matrices.
-    A <- rowSums(sapply(s,
-                        function(i) cred[, , i] %*% tcrossprod(ind[, i] - coll))) / (ncontracts - 1)
-    dim(A) <- c(p, p)
-    A <- (A + t(A))/2
-    cred <- sapply(weights.s, function(w) A %*% solve(A + s2 * w))
-    dim(cred) <- c(p, p, ncontracts)
+    ## Check other bad arguments.
+    if (NCOL(ratios) < 2)
+        stop("there must be at least one node with more than one period of experience")
+    if (NROW(ratios) < 2)
+        stop("there must be more than one node")
+    if (!identical(which(is.na(ratios)), which(is.na(weights))))
+        stop("missing values are not in the same positions in 'weights' and in 'ratios'")
+    if (all(!weights, na.rm = TRUE))
+        stop("no available data to fit model")
 
-    ## Credibility adjusted coefficients. The coefficients of the
-    ## models are replaced with these values. That way, prediction
-    ## will be trivial using predict.lm().
-    for (i in s)
-        fits[[i]]$coefficients <- coll + drop(cred[, , i] %*% (ind[, i] - coll))
+    ## Build the design matrix
+    mf <- model.frame(formula, data, drop.unused.levels = TRUE)
+    mt <- attr(mf, "terms")
+    xreg <- model.matrix(mt, mf)
 
-    ## Add names to the collective coefficients vector.
-    names(coll) <- rownames(ind)
+    ## Do computations in auxiliary functions.
+    res <-
+        if (adj.intercept)
+            hache.barycenter(ratios, weights, xreg,
+                             method = match.arg(method),
+                             tol = tol, maxit = maxit, echo = echo)
+        else
+            hache.origin(ratios, weights, xreg,
+                         tol = tol, maxit = maxit, echo = echo)
+
+    ## Add the terms object to the result for use in predict.hache()
+    ## [and thus predict.lm()].
+    res$terms <- mt
 
     ## Results
-    structure(list(means = list(coll, ind),
-                   weights = list(cred.s, lapply(weights.s, solve)),
-                   unbiased = NULL,
-                   iterative = list(A, s2),
-                   cred = cred,
-                   adj.models = fits,
-                   nodes = list(ncontracts)),
-              class = "hache",
-              model = "regression")
+    attr(res, "class") <- "hache"
+    attr(res, "model") <- "regression"
+    res
 }
 
 predict.hache <- function(object, levels = NULL, newdata, ...)
 {
-    ## Predictors can be given as a simple vector for one dimensional
-    ## models. For use in predict.lm(), these must be converted into a
-    ## data frame.
-    if (is.null(dim(newdata)))
-        newdata <- data.frame(xreg = newdata)
+    ## If model was fitted at the barycenter of time (there is a
+    ## transition matrix in the object), then also convert the
+    ## regression coefficients in the base of the (original) design
+    ## matrix.
+    if (!is.null(R <- object$transition))
+    {
+        for (i in seq_along(object$adj.models))
+        {
+            b <- coefficients(object$adj.models[[i]])
+            object$adj.models[[i]]$coefficients <- solve(R, b)
+        }
+    }
 
     ## Prediction (credibility premiums) using predict.lm() on each of
-    ## the adjusted individual models.
-    sapply(object$adj.models, predict, newdata = newdata)
+    ## the adjusted individual models. This first requires to add a
+    ## 'terms' component to each adjusted model.
+    f <- function(z, ...)
+    {
+        z$terms <- object$terms
+        unname(predict.lm(z, ...))
+    }
+
+    sapply(object$adj.models, f, newdata = newdata)
 }
 
 print.hache <- function(x, ...)

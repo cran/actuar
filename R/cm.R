@@ -5,7 +5,8 @@
 ### AUTHORS: Louis-Philippe Pouliot, Tommy Ouellet,
 ### Vincent Goulet <vincent.goulet@act.ulaval.ca>.
 
-cm <- function(formula, data, ratios, weights, subset, xreg = NULL,
+cm <- function(formula, data, ratios, weights, subset,
+               regformula = NULL, regdata, adj.intercept = FALSE,
                method = c("Buhlmann-Gisler", "Ohlsson", "iterative"),
                tol = sqrt(.Machine$double.eps), maxit = 100,
                echo = FALSE)
@@ -38,7 +39,7 @@ cm <- function(formula, data, ratios, weights, subset, xreg = NULL,
     ##
     if (any(duplicated(level.numbers)))
         stop("unsupported interactions in 'formula'")
-    if (nlevels > 1 && !is.null(xreg))
+    if (nlevels > 1 && !is.null(regformula))
         stop("hierarchical regression models not supported")
     if (missing(ratios) & !missing(weights))
         stop("ratios have to be supplied if weights are")
@@ -107,30 +108,44 @@ cm <- function(formula, data, ratios, weights, subset, xreg = NULL,
             as.matrix(eval(cl, parent.frame())) # weights as matrix
         }
 
-    ## Dispatch to appropriate calculation function
+    ## == DISPATCH TO APPROPRIATE CALCULATION FUNCTION ==
+    ##
+    ## Buhlmann-Straub models are handled by bstraub(), regression
+    ## models by hache() and hierarcahical models by hierarc().
     if (nlevels < 2)                    # one-dimensional model
     {
-        if (is.null(xreg))              # Buhlmann-Straub
-        {
-            ## bstraub() accepts only "unbiased" and "iterative" for
-            ## argument 'method'.
-            method <- match.arg(method)
-            if (method == "Buhlmann-Gisler" || method == "Ohlsson")
-                method <- "unbiased"
+        ## One-dimensional models accept only "unbiased" and
+        ## "iterative" for argument 'method'.
+        method <- match.arg(method)
+        if (method == "Buhlmann-Gisler" || method == "Ohlsson")
+            method <- "unbiased"
 
-            ## *** The 'old.format = FALSE' argument is necessary in
-            ## *** the deprecation phase of the output format of ***
-            ## bstraub(). To delete later.
+        if (is.null(regformula))        # Buhlmann-Straub
+        {
             res <- bstraub(ratios, weights, method = method,
-                           tol = tol, maxit = maxit, echo = echo,
-                           old.format = FALSE)
+                           tol = tol, maxit = maxit, echo = echo)
         }
         else                            # Hachemeister
-            res <- hache(ratios, weights, xreg, tol = tol,
-                         maxit = maxit, echo = echo)
+        {
+            ## If regression model is actually empty or has only an
+            ## intercept, call bstraub().
+            trf <- terms(regformula)
+            res <-
+                if (length(attr(trf, "factors")) == 0)
+                {
+                    warning("empty regression model; fitting with Buhlmann-Straub's model")
+                    bstraub(ratios, weights, method = method,
+                            tol = tol, maxit = maxit, echo = echo,
+                            old.format = FALSE)
+                }
+                else
+                    hache(ratios, weights, regformula, regdata,
+                          adj.intercept = adj.intercept,
+                          method = method, tol = tol,
+                          maxit = maxit, echo = echo)
+        }
 
-        ## Add quantities not taken into account in calculation
-        ## functions to results list.
+        ## Add missing quantities to results.
         res$classification <- levs
         res$ordering <- list(seq_along(levs))
     }

@@ -30,13 +30,6 @@ fit <- cm(~state, hachemeister, ratios = ratio.1:ratio.12,
 summary(fit)
 predict(fit)
 
-## Fitting of a Hachemeister regression model. This requires to
-## specify a vector or matrix of regressors with argument 'xreg'.
-fit <- cm(~state, hachemeister, ratios = ratio.1:ratio.12,
-          weights = weight.1:weight.12, xreg = 12:1)
-summary(fit, newdata = 0)     # 'newdata' is future value of regressor
-predict(fit, newdata = 0)
-
 ## Simulation of a three level hierarchical portfolio.
 nodes <- list(sector = 2, unit = c(3, 4),
               contract = c(10, 5, 8, 5, 7, 11, 4), year = 6)
@@ -64,3 +57,16 @@ predict(fit)                          # credibility premiums
 predict(fit, levels = "unit")         # unit credibility premiums only
 summary(fit)                          # portfolio summary
 summary(fit, levels = "unit")         # unit portfolio summary only
+
+## Fitting of Hachemeister regression model with intercept at time origin.
+fit <- cm(~state, hachemeister, ratios = ratio.1:ratio.12,
+          weights = weight.1:weight.12, regformula = ~time,
+          regdata = data.frame(time = 1:12))
+summary(fit, newdata = data.frame(time = 13)) # 'newdata' is the future value of regressor
+predict(fit, newdata = data.frame(time = 13))
+
+## Position the intercept at the barycenter of time.
+fit <- cm(~state, hachemeister, ratios = ratio.1:ratio.12,
+          weights = weight.1:weight.12, regformula = ~time,
+          regdata = data.frame(time = 1:12), adj.intercept = TRUE)
+summary(fit, newdata = data.frame(time = 13))
