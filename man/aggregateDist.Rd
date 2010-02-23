@@ -4,6 +4,7 @@
 \alias{plot.aggregateDist}
 \alias{summary.aggregateDist}
 \alias{mean.aggregateDist}
+\alias{diff.aggregateDist}
 \title{Aggregate Claim Amount Distribution}
 \description{
   Compute the aggregate claim amount cumulative distribution function of
@@ -13,7 +14,7 @@
 aggregateDist(method = c("recursive", "convolution", "normal",
                          "npower", "simulation"),
               model.freq = NULL, model.sev = NULL, p0 = NULL,
-              x.scale = 1, moments, nb.simul, \dots,
+              x.scale = 1, convolve = 0, moments, nb.simul, \dots,
               tol = 1e-06, maxit = 500, echo = FALSE)
 
 \method{print}{aggregateDist}(x, \dots)
@@ -25,6 +26,8 @@ aggregateDist(method = c("recursive", "convolution", "normal",
 \method{summary}{aggregateDist}(object, \dots)
 
 \method{mean}{aggregateDist}(x, \dots)
+
+\method{diff}{aggregateDist}(x, \dots)
 }
 \arguments{
   \item{method}{method to be used}
@@ -47,6 +50,8 @@ aggregateDist(method = c("recursive", "convolution", "normal",
   \item{x.scale}{value of an amount of 1 in the severity model (monetary
     unit). Used only with \code{"recursive"} and \code{"convolution"}
     methods.}
+  \item{convolve}{number of times to convolve the resulting distribution
+    with itself. Used only with \code{"recursive"} method.}
   \item{moments}{vector of the true moments of the aggregate claim
     amount distribution; required only by the \code{"normal"} or
     \code{"npower"} methods.}
@@ -54,8 +59,9 @@ aggregateDist(method = c("recursive", "convolution", "normal",
   \item{\dots}{parameters of the frequency distribution for the
     \code{"recursive"} method; further arguments to be passed to or
     from other methods otherwise.}
-  \item{tol}{the recursion in the \code{"recursive"} method stops when the
-    cumulative distribution function is less than \code{tol} away from 1.}
+  \item{tol}{the resulting cumulative distribution in the
+    \code{"recursive"} method will get less than \code{tol} away from
+    1.}
   \item{maxit}{maximum number of recursions in the \code{"recursive"}
     method.}
   \item{echo}{logical; echo the recursions to screen in the
@@ -93,8 +99,13 @@ aggregateDist(method = c("recursive", "convolution", "normal",
 
   \code{model.sev} is a vector of the (discretized) claim amount
   distribution \eqn{X}; the first element \strong{must} be \eqn{f_X(0) =
-  \Pr[X = 0]}{fx(0) = Pr[X = 0]}.
+    \Pr[X = 0]}{fx(0) = Pr[X = 0]}.
 
+  The recursion will fail to start if the expected number of claims is
+  too large. One may divide the appropriate parameter of the frequency
+  distribution by \eqn{2^n} and convolve the resulting distribution
+  \eqn{n =} \code{convolve} times.
+  
   Failure to obtain a cumulative distribution function less than
   \code{tol} away from 1 within \code{maxit} iterations is often due
   to a too coarse discretization of the severity distribution.
@@ -110,7 +121,8 @@ aggregateDist(method = c("recursive", "convolution", "normal",
   the (discrete) claim amount random variable.
 
   \code{model.freq} is vector \eqn{p_n}{pn} of the number of claims
-  probabilities; the first element \strong{must} be \eqn{Pr[N = 0]}.
+  probabilities; the first element \strong{must} be \eqn{\Pr[N =
+  0]}{Pr[N = 0]}.
 
   \code{model.sev} is vector \eqn{f_X(x)}{fx(x)} of the (discretized)
   claim amount distribution; the first element \strong{must} be
@@ -151,30 +163,34 @@ aggregateDist(method = c("recursive", "convolution", "normal",
   (\code{print}), plot (\code{plot}), compute quantiles
   (\code{quantile}) and compute the mean (\code{mean}) of
   \code{"aggregateDist"} objects.
+
+  For the \code{diff} method: a numeric vector of probabilities
+  corresponding to the probability mass function evaluated
+  at the knots of the distribution.
 }
 \seealso{
   \code{\link{discretize}} to discretize a severity distribution;
   \code{\link{mean.aggregateDist}} to compute the mean of the
   distribution;
   \code{\link{quantile.aggregateDist}} to compute the quantiles or the
-  Value at Risk;
+  Value-at-Risk;
   \code{\link{CTE.aggregateDist}} to compute the Conditional Tail
-  Expectation;
+  Expectation (or Tail Value-at-Risk);
   \code{\link{simul}}.
 }
 \references{
-  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2004),
-  \emph{Loss Models, From Data to Decisions, Second Edition}, Wiley.
+  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2008),
+  \emph{Loss Models, From Data to Decisions, Third Edition}, Wiley.
 
-  Daykin, C.D., Pentikäinen, T. and Pesonen, M. (1994), \emph{Practical
-    Risk Theory for Actuaries}, Chapman & Hall.
+  Daykin, C.D., \enc{Pentikäinen}{Pentikainen}, T. and Pesonen, M.
+  (1994), \emph{Practical Risk Theory for Actuaries}, Chapman & Hall.
 }
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca} and
   Louis-Philippe Pouliot
 }
 \examples{
-## Convolution method (example 6.6 of Klugman et al. (2004))
+## Convolution method (example 9.5 of Klugman et al. (2008))
 fx <- c(0, 0.15, 0.2, 0.25, 0.125, 0.075,
         0.05, 0.05, 0.05, 0.025, 0.025)
 pn <- c(0.05, 0.1, 0.15, 0.2, 0.25, 0.15, 0.06, 0.03, 0.01)
@@ -187,6 +203,15 @@ plot(Fs)
 ## Recursive method
 Fs <- aggregateDist("recursive", model.freq = "poisson",
                     model.sev = fx, lambda = 3, x.scale = 25)
+plot(Fs)
+Fs(knots(Fs))		      # cdf evaluated at its knots
+diff(Fs)                      # probability mass function
+
+## Recursive method (high frequency)
+\dontrun{Fs <- aggregateDist("recursive", model.freq = "poisson",
+                    model.sev = fx, lambda = 1000)}
+Fs <- aggregateDist("recursive", model.freq = "poisson",
+                    model.sev = fx, lambda = 250, convolve = 2, maxit = 1500)
 plot(Fs)
 
 ## Normal Power approximation

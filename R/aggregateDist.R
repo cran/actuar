@@ -10,7 +10,8 @@
 aggregateDist <-
     function(method = c("recursive", "convolution", "normal", "npower", "simulation"),
              model.freq = NULL, model.sev = NULL, p0 = NULL, x.scale = 1,
-             moments, nb.simul, ..., tol = 1e-06, maxit = 500, echo = FALSE)
+             convolve = 0, moments, nb.simul, ...,
+             tol = 1e-06, maxit = 500, echo = FALSE)
 {
     Call <- match.call()
 
@@ -64,7 +65,7 @@ aggregateDist <-
                               c("poisson", "geometric", "negative binomial",
                                 "binomial", "logarithmic"))
             FUN <- panjer(fx = model.sev, dist = dist, p0 = p0,
-                          x.scale = x.scale, ...,
+                          x.scale = x.scale, ..., convolve = convolve,
                           tol = tol, maxit = maxit, echo = echo)
             comment(FUN) <- "Recursive method approximation"
         }
@@ -190,4 +191,18 @@ mean.aggregateDist <- function(x, ...)
     ## environment of the object.
     drop(crossprod(get("x", envir = environment(x)),
                    get("fs", envir = environment(x))))
+}
+
+diff.aggregateDist <- function(x, ...)
+{
+    label <- comment(x)
+
+    ## The 'diff' method is defined for the recursive, exact and
+    ## simulation methods only.
+    if (label == "Normal approximation" || label == "Normal Power approximation")
+        stop("function not defined for approximating distributions")
+
+    ## The probability vector is already stored in the environment of
+    ## the "aggregateDist" object.
+    get("fs", environment(x))
 }
