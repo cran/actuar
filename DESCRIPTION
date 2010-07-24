@@ -1,8 +1,8 @@
 Package: actuar
 Type: Package
 Title: Actuarial functions
-Version: 1.1-0
-Date: 2010-02-23
+Version: 1.1-1
+Date: 2010-07-20
 Author: Vincent Goulet, Sébastien Auclair, Christophe Dutang, Xavier
         Milhaud, Tommy Ouellet, Louis-Philippe Pouliot, Mathieu Pigeon
 Maintainer: Vincent Goulet <vincent.goulet@act.ulaval.ca>
@@ -17,6 +17,6 @@ Encoding: latin1
 LazyLoad: yes
 LazyData: yes
 ZipData: yes
-Packaged: 2010-02-23 06:28:59 UTC; vincent
+Packaged: 2010-07-20 20:04:16 UTC; vincent
 Repository: CRAN
-Date/Publication: 2010-02-23 07:49:36
+Date/Publication: 2010-07-24 19:42:53
