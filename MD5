@@ -1,4 +1,4 @@
-d701d89540dc028c9821206850ff6aad *DESCRIPTION
+060d321b9bb079c5bb46dcba267bb0af *DESCRIPTION
 17ff27d6f44a6c78ae606a0e3359da70 *NAMESPACE
 2b47500be0644b64b6c9ab14f2356ac3 *R/BetaMoments.R
 6d215e392a1b2b70f856cd1e49f6d99e *R/Burr.R
@@ -42,7 +42,7 @@ ad486fab27687ecdc47a75a88869f35f *R/emm.R
 35e809d6304965fb36d56dd51c69f690 *R/grouped.data.R
 4f6f6db6a6319a9c7069e4627fe4d285 *R/hache.R
 a7a0d7117b87cd6711d35f067735b625 *R/hache.barycenter.R
-f62c34aa01f4c59d7eea95b3fbf5065c *R/hache.origin.R
+167400ef9013ea24a9092db5a012a63e *R/hache.origin.R
 e439b2ad83846d7de0a61f3a3653e820 *R/hierarc.R
 edb051fc0253083324a5ec69089bf8ac *R/hist.grouped.data.R
 ceec1a5dbf244493dd8152dc4d9ee7c2 *R/mde.R
@@ -58,6 +58,7 @@ b88bc663d9eede0140d56ef5124e7229 *R/ruin.R
 5d145f19c1188fe32bcdffddd2744e7d *R/simul.R
 e4a14df798676b7e96ec6f26350996c9 *R/simul.summaries.R
 2ad9f9c27e3b5f1750088a9f49c4cd92 *R/unroll.R
+c9484b4a720885d5af153d0bade7c4a5 *actuar-Ex.R
 da6fbdff847094e9912fa30c9face3a3 *data/dental.rda
 e886a1fe6ab8ec18a541f6b8ea5c6683 *data/gdental.rda
 6380487493d31ef00477ec198b042f95 *data/hachemeister.rda
@@ -69,17 +70,17 @@ b80efa324a92b9837bac5dc570703220 *demo/simulation.R
 72cebb6e34e6fc91c3f49e94076e49b3 *inst/CITATION
 1f379c29c9f54ff924f5cf4062142cbb *inst/NEWS.Rd
 1e75afa48b6e13b943ee62e8734c6d26 *inst/doc/actuar.Rnw
-64fd789a5220cbd93386dd62720cf4f6 *inst/doc/actuar.pdf
+284290dc5accdbcdc3780e1765107c29 *inst/doc/actuar.pdf
 78bbb13165709f6fa51a91828f2e47c7 *inst/doc/coverage.Rnw
-eff6c6bf23da6fd26771de04f37482f7 *inst/doc/coverage.pdf
+8d6caec940a769f9cca22162ba442f3f *inst/doc/coverage.pdf
 6a56532d23580a11645794c329bbc6f7 *inst/doc/credibility.Rnw
-80c22b954ae4965cf5d306ba8589ce87 *inst/doc/credibility.pdf
+713e6ade4203d203ef63561d836a9ede *inst/doc/credibility.pdf
 1ff63cbe4a73147451f7807ebc26d704 *inst/doc/lossdist.Rnw
-bda20394c02262e167ba95d24ed49b5e *inst/doc/lossdist.pdf
+bf9d3fc0b019ae7c733d64adfe43a346 *inst/doc/lossdist.pdf
 030c28e042ad6fb45a3b63ec4a26e5ba *inst/doc/risk.Rnw
-b96e87068595341151bc8f83ec728ec0 *inst/doc/risk.pdf
+0889906f9b295cb122b172bf30df2e50 *inst/doc/risk.pdf
 51441d46d497f553be2a62dc9a92fe6e *inst/doc/simulation.Rnw
-1692303aa65075bed12ccdbf7d143ad5 *inst/doc/simulation.pdf
+cef7c9c20cf24fbdd62b78666d0ff09f *inst/doc/simulation.pdf
 25a89a90b2752190b903e48de4cca869 *inst/po/fr/LC_MESSAGES/R-actuar.mo
 d1fc1ad0e4e29aaff6f44b58b1c62d58 *inst/po/fr/LC_MESSAGES/actuar.mo
 4920e65f829fae0596babf70fc453816 *man/BetaMoments.Rd
