@@ -2,6 +2,39 @@
 \title{actuar News}
 \encoding{UTF-8}
 
+\section{CHANGES IN VERSION 1.2-1}{
+  \subsection{(MORE OR LESS) USER-VISIBLE CHANGES}{
+    \itemize{
+      \item The package now depends on R >= 3.3.0 since it uses
+      chkDots() in a few methods that do not use the content of their
+      '...' argument.
+      \item ogive() lost its argument '...' as it was unused anyway.
+      \item severity.portfolio() calls unroll() directly instead of
+      relying on the default method to be identical to unroll().
+    }
+  }
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item Deleted an unwanted debugging message ("local") printed by
+      CTE() at every execution.
+      \item predict.cm() and summary.cm() now treat the '...' argument
+      as advertised in the help file.
+      \item Fixed bad examples in a few probability law help files that
+      returned unintended results such as Inf or NaN.
+    }
+  }
+  \subsection{MAINTENANCE}{
+    \itemize{
+      \item C-level function log1pexp(...) used in a few places in lieu
+      of log1p(exp(...)).
+      \item Names of the internal utility macros defined in dpq.h
+      changed from "R_<...>" to "ACT_<...>" to make it clearer that they
+      are defined by the package (although they were copied from R
+      sources).
+    }
+  }
+}
+
 \section{CHANGES IN VERSION 1.2-0}{
   \subsection{NEW FEATURE}{
     \itemize{

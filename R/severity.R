@@ -10,6 +10,10 @@
 severity <- function(x, ...) UseMethod("severity")
 
 ### Default method. Currently identical to 'unroll' by lack of a
-### better alternative.
+### better alternative. This default method is never called in the
+### package.
 severity.default <- function(x, bycol = FALSE, drop = TRUE, ...)
+{
+    chkDots(...)                        # method does not use '...'
     unroll(x, bycol, drop)
+}

@@ -10,6 +10,8 @@ CTE <- function(x, ...)
 CTE.aggregateDist <- function(x, conf.level = c(0.9, 0.95, 0.99),
                               names = TRUE, ...)
 {
+    chkDots(...)                        # method does not use '...'
+
     label <- comment(x)
 
     ## Normal approximation; an exact formula is available
@@ -50,7 +52,6 @@ CTE.aggregateDist <- function(x, conf.level = c(0.9, 0.95, 0.99),
         names(res) <- formatC(paste(100 * conf.level, "%", sep = ""),
                               format = "fg", width = 1, digits = dig)
     }
-    print("local")
     res
 }
 
