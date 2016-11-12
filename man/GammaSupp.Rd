@@ -11,7 +11,7 @@
 \usage{
 mgamma(order, shape, rate = 1, scale = 1/rate)
 levgamma(limit, shape, rate = 1, scale = 1/rate, order = 1)
-mgfgamma(x, shape, rate = 1, scale = 1/rate, log = FALSE)
+mgfgamma(t, shape, rate = 1, scale = 1/rate, log = FALSE)
 }
 \arguments{
   \item{order}{order of the moment.}
@@ -19,7 +19,7 @@ mgfgamma(x, shape, rate = 1, scale = 1/rate, log = FALSE)
   \item{rate}{an alternative way to specify the scale.}
   \item{shape, scale}{shape and scale parameters. Must be strictly
     positive.}
-  \item{x}{numeric vector.}
+  \item{t}{numeric vector.}
   \item{log}{logical; if \code{TRUE}, the cumulant generating function
     is returned.}
 }
@@ -27,25 +27,26 @@ mgfgamma(x, shape, rate = 1, scale = 1/rate, log = FALSE)
   The \eqn{k}th raw moment of the random variable \eqn{X} is
   \eqn{E[X^k]}{E[X^k]}, the \eqn{k}th limited moment at some limit
   \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]} and the moment
-  generating function is \eqn{E[e^{xX}]}.
+  generating function is \eqn{E[e^{tX}]}, \eqn{k >
+  -\alpha}{k > -shape}.
 }
 \value{
   \code{mgamma} gives the \eqn{k}th raw moment,
   \code{levgamma} gives the \eqn{k}th moment of the limited loss
   variable, and
-  \code{mgfgamma} gives the moment generating function in \code{x}.
-  
+  \code{mgfgamma} gives the moment generating function in \code{t}.
+
   Invalid arguments will result in return value \code{NaN}, with a warning.
 }
 \seealso{
   \code{\link[stats]{GammaDist}}
 }
 \references{
-  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2008),
-  \emph{Loss Models, From Data to Decisions, Third Edition}, Wiley.
- 
   Johnson, N. L. and Kotz, S. (1970), \emph{Continuous Univariate
     Distributions, Volume 1}, Wiley.
+
+  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),
+  \emph{Loss Models, From Data to Decisions, Fourth Edition}, Wiley.
 }
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca},

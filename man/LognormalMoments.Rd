@@ -4,7 +4,7 @@
 \alias{levlnorm}
 \title{Raw and Limited Moments of the Lognormal Distribution}
 \description{
-  Raw moments and limited moments for the lognormal distribution whose
+  Raw moments and limited moments for the Lognormal distribution whose
   logarithm has mean equal to \code{meanlog} and standard deviation
   equal to \code{sdlog}.
 }
@@ -28,11 +28,11 @@ levlnorm(limit, meanlog = 0, sdlog = 1, order = 1)
 }
 \seealso{
   \code{\link{Lognormal}} for details on the lognormal distribution and
-  functions \code{{d,p,q,r}lnorm}.
+  functions \code{[dpqr]lnorm}.
 }
 \references{
-  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2008),
-  \emph{Loss Models, From Data to Decisions, Third Edition}, Wiley.
+  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),
+  \emph{Loss Models, From Data to Decisions, Fourth Edition}, Wiley.
 }
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca} and

@@ -13,6 +13,10 @@
 
 double mgamma(double order, double shape, double scale, int give_log)
 {
+#ifdef IEEE_754
+    if (ISNAN(order) || ISNAN(shape) || ISNAN(scale))
+	return order + shape + scale;
+#endif
     if (!R_FINITE(shape) ||
         !R_FINITE(scale) ||
         !R_FINITE(order) ||
@@ -29,6 +33,10 @@ double mgamma(double order, double shape, double scale, int give_log)
 double levgamma(double limit, double shape, double scale, double order,
                 int give_log)
 {
+#ifdef IEEE_754
+    if (ISNAN(limit) || ISNAN(shape) || ISNAN(scale) || ISNAN(order))
+	return limit + shape + scale + order;
+#endif
     if (!R_FINITE(shape) ||
         !R_FINITE(scale) ||
         !R_FINITE(order) ||
@@ -52,17 +60,21 @@ double levgamma(double limit, double shape, double scale, double order,
         ACT_DLIM__0(limit, order) * pgamma(u, shape, 1.0, 0, 0);
 }
 
-double mgfgamma(double x, double shape, double scale, int give_log)
+double mgfgamma(double t, double shape, double scale, int give_log)
 {
+#ifdef IEEE_754
+    if (ISNAN(t) || ISNAN(shape) || ISNAN(scale))
+	return t + shape + scale;
+#endif
     if (!R_FINITE(shape) ||
         !R_FINITE(scale) ||
         shape <= 0.0 ||
         scale <= 0.0 ||
-        scale * x > 1.)
+        scale * t > 1.)
         return R_NaN;
 
-    if (x == 0.0)
-        return ACT_D_exp(0.0);
+    if (t == 0.0)
+        return ACT_D__1;
 
-    return ACT_D_exp(-shape * log1p(-scale * x));
+    return ACT_D_exp(-shape * log1p(-scale * t));
 }

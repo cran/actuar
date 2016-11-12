@@ -12,6 +12,7 @@
 #include <Rmath.h>
 #include "locale.h"
 #include "dpq.h"
+#include "actuar.h"
 
 double dgenpareto(double x, double shape1, double shape2, double scale,
                   int give_log)
@@ -23,8 +24,10 @@ double dgenpareto(double x, double shape1, double shape2, double scale,
      *  with u = v/(1 + v) = 1/(1 + 1/v), v = x/scale.
      */
 
-    double tmp, logu, log1mu;
-
+#ifdef IEEE_754
+    if (ISNAN(x) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(scale))
+	return x + shape1 + shape2 + scale;
+#endif
     if (!R_FINITE(shape1) ||
         !R_FINITE(shape2) ||
         !R_FINITE(scale)  ||
@@ -37,7 +40,7 @@ double dgenpareto(double x, double shape1, double shape2, double scale,
         return ACT_D__0;
 
     /* handle x == 0 separately */
-    if (x == 0)
+    if (x == 0.0)
     {
 	if (shape2 < 1) return R_PosInf;
 	if (shape2 > 1) return ACT_D__0;
@@ -46,6 +49,8 @@ double dgenpareto(double x, double shape1, double shape2, double scale,
 	    - log(scale) - lbeta(shape2, shape1) :
 	    1 / (scale * beta(shape2, shape1));
     }
+
+    double tmp, logu, log1mu;
 
     tmp = log(x) - log(scale);
     logu = - log1pexp(-tmp);
@@ -58,8 +63,10 @@ double dgenpareto(double x, double shape1, double shape2, double scale,
 double pgenpareto(double q, double shape1, double shape2, double scale,
                   int lower_tail, int log_p)
 {
-    double u;
-
+#ifdef IEEE_754
+    if (ISNAN(q) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(scale))
+	return q + shape1 + shape2 + scale;
+#endif
     if (!R_FINITE(shape1) ||
         !R_FINITE(scale)  ||
         !R_FINITE(shape2) ||
@@ -71,7 +78,7 @@ double pgenpareto(double q, double shape1, double shape2, double scale,
     if (q <= 0)
         return ACT_DT_0;
 
-    u = exp(-log1pexp(log(scale) - log(q)));
+    double u = exp(-log1pexp(log(scale) - log(q)));
 
     return pbeta(u, shape2, shape1, lower_tail, log_p);
 }
@@ -79,6 +86,10 @@ double pgenpareto(double q, double shape1, double shape2, double scale,
 double qgenpareto(double p, double shape1, double shape2, double scale,
                   int lower_tail, int log_p)
 {
+#ifdef IEEE_754
+    if (ISNAN(p) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(scale))
+	return p + shape1 + shape2 + scale;
+#endif
     if (!R_FINITE(shape1) ||
         !R_FINITE(shape2) ||
         !R_FINITE(scale)  ||
@@ -109,6 +120,10 @@ double rgenpareto(double shape1, double shape2, double scale)
 double mgenpareto(double order, double shape1, double shape2, double scale,
                   int give_log)
 {
+#ifdef IEEE_754
+    if (ISNAN(order) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(scale))
+	return order + shape1 + shape2 + scale;
+#endif
     if (!R_FINITE(shape1) ||
         !R_FINITE(shape2) ||
         !R_FINITE(scale)  ||
@@ -118,8 +133,8 @@ double mgenpareto(double order, double shape1, double shape2, double scale,
         scale  <= 0.0)
         return R_NaN;
 
-    if (order  <= -shape2 ||
-        order  >= shape1)
+    if (order <= -shape2 ||
+        order >= shape1)
 	return R_PosInf;
 
     return R_pow(scale, order) * beta(shape1 - order, shape2 + order)
@@ -129,8 +144,10 @@ double mgenpareto(double order, double shape1, double shape2, double scale,
 double levgenpareto(double limit, double shape1, double shape2, double scale,
                     double order, int give_log)
 {
-    double u, tmp1, tmp2;
-
+#ifdef IEEE_754
+    if (ISNAN(limit) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(scale) || ISNAN(order))
+	return limit + shape1 + shape2 + scale + order;
+#endif
     if (!R_FINITE(shape1) ||
         !R_FINITE(shape2) ||
         !R_FINITE(scale)  ||
@@ -140,18 +157,16 @@ double levgenpareto(double limit, double shape1, double shape2, double scale,
         scale  <= 0.0)
         return R_NaN;
 
-    if (order  <= -shape2)
+    if (order <= -shape2)
 	return R_PosInf;
 
     if (limit <= 0.0)
         return 0.0;
 
-    tmp1 = shape1 - order;
-    tmp2 = shape2 + order;
+    double u = exp(-log1pexp(log(scale) - log(limit)));
 
-    u = exp(-log1pexp(log(scale) - log(limit)));
-
-    return R_pow(scale, order) * beta(tmp1, tmp2) / beta(shape1, shape2)
-        * pbeta(u, tmp2, tmp1, 1, 0)
+    return R_pow(scale, order)
+	* betaint_raw(u, shape2 + order, shape1 - order)
+	/ (gammafn(shape1) * gammafn(shape2))
         + ACT_DLIM__0(limit, order) * pbeta(u, shape2, shape1, 0, 0);
 }

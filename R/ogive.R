@@ -1,35 +1,86 @@
 ### ===== actuar: An R Package for Actuarial Science =====
 ###
-### Ogive for grouped data
+### Ogive for grouped data.
 ###
-### See Klugman, Panjer & Willmot, Loss Models, Wiley, 1998.
+### A default method exists for either a vector of individual data or
+### two vectors of group boundaries and group frequencies. It first
+### creates a grouped data object using 'grouped.data' and then
+### dispatches to the main method to get the ogive.
+###
+### For the definition of the ogive, see Klugman, Panjer & Willmot,
+### Loss Models, Wiley, 1998.
+###
+### More details on the admissible arguments for the default method
+### are to be found in ./grouped.data.R.
 ###
 ### AUTHORS: Vincent Goulet <vincent.goulet@act.ulaval.ca>,
 ### Mathieu Pigeon
+###
+### CREDITS: Arguments, 'breaks', 'nclass' and their treatment taken
+### from R function hist().
 
-ogive <- function(x, y = NULL)
+ogive <- function(x, ...)
 {
-    ## Can compute the ogive either from an object of class
-    ## 'grouped.data', or from a vector of class boundaries and a
-    ## vector of class frequencies. The second vector is one element
-    ## shorter than the first.
-    if (inherits(x, "grouped.data"))
+    Call <- match.call()
+    UseMethod("ogive")
+}
+
+ogive.default <- function(x, y = NULL,
+                          breaks = "Sturges", nclass = NULL, ...)
+{
+    if (!exists("Call", inherits = FALSE))
+        Call <- match.call()
+    chkDots(...)           # method does not use '...'
+
+    ## Avoid using calling 'hist' with 'nclass' specified.
+    if (!missing(breaks))
     {
-        y <- x[, 2L]
-        x <- eval(expression(cj), envir = environment(x))
+        if (!missing(nclass))
+            warning("'nclass' not used when 'breaks' is specified")
     }
-    else
-    {
-        if (length(x) - length(y) != 1L)
-            stop("invalid number of group boundaries and frequencies")
-    }
+    else if (!is.null(nclass) && length(nclass) == 1L)
+        breaks <- nclass
+
+    ## Create the "grouped.data" object.
+    x <- if (is.null(y))   # one argument: individual data
+             grouped.data(x, breaks = breaks)
+         else              # two arguments: boundaries and frequencies
+             grouped.data(x, y)
+
+    ## Group frequencies in the second column of the data frame; group
+    ## boundaries in the environment of 'x'.
+    y <- x[, 2L]
+    x <- eval(expression(cj), envir = environment(x))
 
     ## Create an object of class 'ogive'.
-    res <- approxfun(x, cumsum(c(0, y)) / sum(y), yleft = 0, yright = 1,
-                     method = "linear", ties = "ordered")
-    class(res) <- c("ogive", class(res))
-    attr(res, "call") <- sys.call()
+    res <- .ogiveFUN(x, y)
+    attr(res, "call") <- Call
     res
+}
+
+ogive.grouped.data <- function(x, ...)
+{
+    if (!exists("Call", inherits = FALSE))
+        Call <- match.call()
+    chkDots(...)                      # method does not use '...'
+
+    ## Group frequencies in the second column of the data frame; group
+    ## boundaries in the environment of 'x'.
+    y <- x[, 2L]
+    x <- eval(expression(cj), envir = environment(x))
+
+    ## Create an object of class 'ogive'.
+    res <- .ogiveFUN(x, y)
+    attr(res, "call") <- Call
+    res
+}
+
+.ogiveFUN <- function(x, y)
+{
+    FUN <- approxfun(x, cumsum(c(0, y)) / sum(y), yleft = 0, yright = 1,
+                     method = "linear", ties = "ordered")
+    class(FUN) <- c("ogive", class(FUN))
+    FUN
 }
 
 ### Essentially identical to stats::print.ecdf().
@@ -86,6 +137,6 @@ plot.ogive <- function(x, main = NULL, xlab = "x", ylab = "F(x)", ...)
 
     kn <- knots(x)
     Fn <- x(kn)
-    plot(kn, Fn,  ..., type = "o", pch = 16,
+    plot(kn, Fn, ..., type = "o", pch = 16,
          main = main, xlab = xlab, ylab = ylab)
 }

@@ -34,7 +34,7 @@ levinvpareto(limit, shape, scale, order = 1)
   \item{limit}{limit of the loss variable.}
 }
 \details{
-  The Inverse Pareto distribution with parameters \code{shape} \eqn{=
+  The inverse Pareto distribution with parameters \code{shape} \eqn{=
     \tau}{= a} and \code{scale} \eqn{= \theta}{= s} has density:
   \deqn{f(x) = \frac{\tau \theta x^{\tau - 1}}{%
       (x + \theta)^{\tau + 1}}}{%
@@ -42,10 +42,11 @@ levinvpareto(limit, shape, scale, order = 1)
   for \eqn{x > 0}, \eqn{\tau > 0}{a > 0} and \eqn{\theta > 0}{s > 0}.
 
   The \eqn{k}th raw moment of the random variable \eqn{X} is
-  \eqn{E[X^k]}{E[X^k]} and the \eqn{k}th limited moment at some limit
-  \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]}.
+  \eqn{E[X^k]}, \eqn{-\tau < k < 1}{-shape < k < 1}.
 
-  Evaluation of \code{levinvpareto} is done using numerical integration.
+  The \eqn{k}th limited moment at some limit
+  \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]},
+  \eqn{k > -\tau}{k > -shape}.
 }
 \value{
   \code{dinvpareto} gives the density,
@@ -57,9 +58,12 @@ levinvpareto(limit, shape, scale, order = 1)
 
   Invalid arguments will result in return value \code{NaN}, with a warning.
 }
+\note{
+  Evaluation of \code{levinvpareto} is done using numerical integration.
+}
 \references{
-  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2008),
-  \emph{Loss Models, From Data to Decisions, Third Edition}, Wiley.
+  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),
+  \emph{Loss Models, From Data to Decisions, Fourth Edition}, Wiley.
 }
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca} and

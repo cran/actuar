@@ -11,13 +11,13 @@
 \usage{
 munif(order, min = 0, max = 1)
 levunif(limit, min = 0, max =1, order = 1)
-mgfunif(x, min = 0, max = 1, log = FALSE)
+mgfunif(t, min = 0, max = 1, log = FALSE)
 }
 \arguments{
   \item{order}{order of the moment.}
   \item{min, max}{lower and upper limits of the distribution. Must be finite.}
   \item{limit}{limit of the random variable.}
-  \item{x}{numeric vector.}
+  \item{t}{numeric vector.}
   \item{log}{logical; if \code{TRUE}, the cumulant generating function
     is returned.}
 }
@@ -25,13 +25,13 @@ mgfunif(x, min = 0, max = 1, log = FALSE)
   The \eqn{k}th raw moment of the random variable \eqn{X} is
   \eqn{E[X^k]}{E[X^k]}, the \eqn{k}th limited moment at some limit
   \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]} and the moment
-  generating function is \eqn{E[e^{xX}]}.
+  generating function is \eqn{E[e^{tX}]}.
 }
 \value{
   \code{munif} gives the \eqn{k}th raw moment,
   \code{levunif} gives the \eqn{k}th moment of the limited random
   variable, and
-  \code{mgfunif} gives the moment generating function in \code{x}.
+  \code{mgfunif} gives the moment generating function in \code{t}.
 
   Invalid arguments will result in return value \code{NaN}, with a warning.
 }

@@ -1,59 +1,75 @@
-\documentclass{article}
+\documentclass[x11names]{article}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-  \usepackage{amsmath,color,hyperref}
+  \usepackage{amsmath}
   \usepackage[round]{natbib}
   \usepackage[english]{babel}
   \usepackage[scaled=0.9]{helvet}
   \usepackage[sc]{mathpazo}
-  \usepackage{booktabs,paralist}
+  \usepackage{framed}
+  \usepackage[shortlabels]{enumitem}
   \usepackage[noae]{Sweave}
 
   %\VignetteIndexEntry{Risk and ruin theory}
   %\VignettePackage{actuar}
 
-  \title{Risk theory features of \pkg{actuar}}
-  \author{Christophe Dutang \\ ISFA, Université Claude Bernard Lyon 1 \\[3ex]
-    Vincent Goulet \\ École d'actuariat, Université Laval \\[3ex]
-    Mathieu Pigeon \\ École d'actuariat, Université Laval}
+  \title{Risk and ruin theory features of \pkg{actuar}}
+  \author{Christophe Dutang \\ Université du Mans \\[3ex]
+    Vincent Goulet \\ Université Laval \\[3ex]
+    Mathieu Pigeon \\ Université du Québec à Montréal}
   \date{}
+
+  %% Colors
+  \usepackage{xcolor}
+  \definecolor{link}{rgb}{0,0.4,0.6}             % internal links
+  \definecolor{url}{rgb}{0.6,0,0}                % external links
+  \definecolor{citation}{rgb}{0,0.5,0}           % citations
+  \definecolor{codebg}{named}{LightYellow1}      % R code background
+
+  %% Hyperlinks
+  \usepackage{hyperref}
+  \hypersetup{%
+    pdfauthor={Vincent Goulet},
+    colorlinks = {true},
+    linktocpage = {true},
+    urlcolor = {url},
+    linkcolor = {link},
+    citecolor = {citation},
+    pdfpagemode = {UseOutlines},
+    pdfstartview = {Fit},
+    bookmarksopen = {true},
+    bookmarksnumbered = {true},
+    bookmarksdepth = {subsubsection}}
+
+  %% Sweave environments redefined to have a color background (using
+  %% environment snugshade* of package framed).
+  \DefineVerbatimEnvironment{Sinput}{Verbatim}{}
+  \DefineVerbatimEnvironment{Soutput}{Verbatim}{}
+  \fvset{listparameters={\setlength{\topsep}{0pt}}}
+  \renewenvironment{Schunk}{%
+    \setlength{\topsep}{0pt}
+    \colorlet{shadecolor}{codebg}
+    \begin{snugshade*}}%
+    {\end{snugshade*}}
+
+  %% Flush left enumerate environment.
+  \setlist[enumerate]{leftmargin=*,align=left}
 
   %% Some new commands
   \newcommand{\E}[1]{E[ #1 ]}
   \newcommand{\VAR}[1]{\mathrm{Var} [ #1 ]}
   \newcommand{\VaR}{\mathrm{VaR}}
   \newcommand{\CTE}{\mathrm{CTE}}
-  \newcommand{\mat}[1]{\mathbf{#1}}
+  \newcommand{\mat}[1]{\mathbold{#1}} % with mathpazo
   \newcommand{\proglang}[1]{\textsf{#1}}
   \newcommand{\pkg}[1]{\textbf{#1}}
   \newcommand{\code}[1]{\texttt{#1}}
 
-  %% Redefine Sweave environments with smaller font
-  \RecustomVerbatimEnvironment{Sinput}{Verbatim}{%
-    fontshape=sl,fontsize=\small,xleftmargin=0pt}
-  \RecustomVerbatimEnvironment{Soutput}{Verbatim}{%
-    fontsize=\small,xleftmargin=0pt}
-
   \bibliographystyle{plainnat}
-
-  \definecolor{Red}{rgb}{0.7,0,0}
-  \definecolor{Blue}{rgb}{0,0,0.8}
-  \hypersetup{%
-    hyperindex = {true},
-    colorlinks = {true},
-    linktocpage = {true},
-    plainpages = {false},
-    linkcolor = {Blue},
-    citecolor = {Blue},
-    urlcolor = {Red},
-    pdfstartview = {Fit},
-    pdfpagemode = {UseOutlines},
-    pdfview = {XYZ null null null}
-  }
 
 <<echo=FALSE>>=
 library(actuar)
-options(width = 62, digits = 4)
+options(width = 60, digits = 4)
 @
 
 \begin{document}
@@ -74,7 +90,7 @@ that the surplus becomes negative, in which case technical ruin of the
 insurance company occurs.
 
 The interested reader can read more on these subjects in
-\cite{LossModels3e,Gerber_MRT,DenuitCharpentier1,MART}, among others.
+\cite{LossModels4e,Gerber_MRT,DenuitCharpentier1,MART:2e}, among others.
 
 The current version of \pkg{actuar} \citep{actuar} contains four
 visible functions related to the above problems: two for the
@@ -129,7 +145,7 @@ $I\{\mathcal{A}\} = 0$ otherwise.
 \label{sec:discretization}
 
 Some numerical techniques to compute the aggregate claim amount
-distribution (see Section~\ref{sec:aggregate}) require a
+distribution (see \autoref{sec:aggregate}) require a
 discrete arithmetic claim amount distribution; that is, a distribution
 defined on $0, h, 2h, \dots$ for some step (or span, or lag) $h$. The
 package provides function \code{discretize} to discretize a
@@ -188,7 +204,7 @@ following four discretization methods.
   probability and expected value on $(a, b)$.
 \end{enumerate}
 
-Figure \ref{fig:discretization-methods} illustrates the four methods.
+\autoref{fig:discretization-methods} illustrates the four methods.
 It should be noted that although very close in this example, the
 rounding and unbiased methods are not identical.
 \begin{figure}[t]
@@ -257,10 +273,11 @@ supported.
   This requires the severity distribution to be discrete arithmetic on
   $0, 1, 2, \dots, m$ for some monetary unit and the frequency
   distribution to be a member of either the $(a, b, 0)$ or $(a, b, 1)$
-  family of distributions \citep{LossModels3e}. (These families
+  class of distributions \citep{LossModels4e}. (These classes
   contain the Poisson, binomial, negative binomial and logarithmic
-  distributions and their extensions with an arbitrary mass at $x =
-  0$.) The general recursive formula is:
+  distributions and their zero-truncated and zero-modified extensions
+  allowing for a zero or arbitrary mass at $x = 0$.) The general
+  recursive formula is:
   \begin{displaymath}
     f_S(x) = \frac{(p_1 - (a + b)p_0)f_C(x) + \sum_{y=1}^{\min(x,
         m)}(a + by/x)f_C(y)f_S(x - y)}{1 - a f_C(0)},
@@ -314,7 +331,7 @@ supported.
     F_n(x) = \frac{1}{n} \sum_{j = 1}^n I\{x_j \leq x\}.
   \end{equation}
   The simulation itself is done with function \code{simul} (see the
-  \code{"simulation"} vignette)). This function admits very general
+  \code{"simulation"} vignette). This function admits very general
   hierarchical models for both the frequency and the severity
   components.
 \end{enumerate}
@@ -322,16 +339,16 @@ supported.
 Here also, adding other methods to \code{aggregateDist} is simple due
 to its modular conception.
 
-The arguments of \code{aggregateDist} differ depending on the
+The arguments of \code{aggregateDist} differ according to the chosen
 calculation method; see the help page for details. One interesting
 argument to note is \code{x.scale} to specify the monetary unit of
 the severity distribution. This way, one does not have to mentally do
 the conversion between the support of $0, 1, 2, \dots$ assumed by the
-recursive and convolution methods and the true support of $S$.
+recursive and convolution methods, and the true support of $S$.
 
 The recursive method fails when the expected number of claims is so
 large that $f_S(0)$ is numerically equal to zero. One solution
-proposed by \citet{LossModels3e} consists in dividing the appropriate
+proposed by \citet{LossModels4e} consists in dividing the appropriate
 parameter of the frequency distribution by $2^n$, with $n$ such that
 $f_S(0) > 0$ and the recursions can start. One then computes the
 aggregate claim amount distribution using the recursive method and
@@ -339,9 +356,17 @@ then convolves the resulting distribution $n$ times with itself to
 obtain the final distribution. Function \code{aggregateDist} supports
 this procedure through its argument \code{convolve}.
 
-The function returns an object of class \code{"aggregateDist"}
-inheriting from the \code{"function"} class. Thus, one can use the
-object as a function to compute the value of $F_S(x)$ in any $x$.
+A common problem with the recursive method is failure to obtain a
+cumulative distribution function that reaching (close to) $1$. This is
+usually due to too coarse a discretization of the severity
+distribution. One should make sure to use a small enough
+discretization step and to discretize the severity distribution far in
+the right tail.
+
+The function \code{aggregateDist} returns an object of class
+\code{"aggregateDist"} inheriting from the \code{"function"} class.
+Thus, one can use the object as a function to compute the value of
+$F_S(x)$ in any $x$.
 
 For illustration purposes, consider the following model: the
 distribution of $S$ is a compound Poisson with parameter $\lambda =
@@ -350,8 +375,9 @@ approximation of the cdf of $S$ we first discretize the gamma
 distribution on $(0, 22)$ with the unbiased method and a step of
 $0.5$, and then use the recursive method in \code{aggregateDist}:
 <<echo=TRUE>>=
-fx <- discretize(pgamma(x, 2, 1), from = 0, to = 22, step = 0.5,
-                 method = "unbiased", lev = levgamma(x, 2, 1))
+fx <- discretize(pgamma(x, 2, 1), method = "unbiased",
+                 from = 0, to = 22, step = 0.5,
+                 lev = levgamma(x, 2, 1))
 Fs <- aggregateDist("recursive", model.freq = "poisson",
                     model.sev = fx, lambda = 10, x.scale = 0.5)
 summary(Fs)                           # summary method
@@ -360,16 +386,17 @@ Although useless here, the following is essentially equivalent, except
 in the far right tail for numerical reasons:
 <<echo=TRUE>>=
 Fsc <- aggregateDist("recursive", model.freq = "poisson",
-                     model.sev = fx, lambda = 5, convolve = 1, x.scale = 0.5)
+                     model.sev = fx, lambda = 5, convolve = 1,
+                     x.scale = 0.5)
 summary(Fsc)                           # summary method
 @
 
 We return to object \code{Fs}. It contains an empirical cdf with support
 <<echo=TRUE>>=
-knots(Fs)                             # support of Fs.b (knots)
+knots(Fs)                      # support of Fs.b (knots)
 @
 A nice graph of this function is obtained with a method of \code{plot} (see
-Figure \ref{fig:Fs}):
+\autoref{fig:Fs}):
 <<echo=TRUE, eval=FALSE>>=
 plot(Fs, do.points = FALSE, verticals = TRUE, xlim = c(0, 60))
 @
@@ -423,7 +450,7 @@ VaR(Fs)
 CTE(Fs)
 @
 
-To conclude on the subject, Figure \ref{fig:Fs-comparison} shows the
+To conclude on the subject, \autoref{fig:Fs-comparison} shows the
 cdf of $S$ using five of the many combinations of discretization and
 calculation method supported by \pkg{actuar}.
 \begin{figure}[t]
@@ -576,12 +603,12 @@ defines a method of \code{plot} for these objects.
 For example, using the same assumptions as above with proportional
 reinsurance and a 30\% safety loading for the reinsurer, the
 adjustment coefficient as a function of $\alpha \in [0, 1]$ is (see
-Figure \ref{fig:adjcoef} for the graph):
+\autoref{fig:adjcoef} for the graph):
 <<echo=TRUE, fig=FALSE>>=
 mgfx <- function(x, y) mgfexp(x * y)
 p <- function(x) 2.6 * x - 0.2
-rho <- adjCoef(mgfx, mgfexp(x, 2), premium = p, upper = 1, reins = "prop",
-              from = 0, to = 1)
+rho <- adjCoef(mgfx, mgfexp(x, 2), premium = p, upper = 1,
+               reins = "prop", from = 0, to = 1)
 rho(c(0.75, 0.8, 0.9, 1))
 plot(rho)
 @
@@ -618,15 +645,15 @@ Fortunately, phase-type distributions have come to the rescue since
 the early 1990s. \cite{AsmussenRolski_91} first show that in the
 classical Cramér--Lundberg model where interarrival times are
 Exponential$(\lambda)$ distributed, if claim amounts are
-Phase-type$(\pmb{\pi}, \mat{T})$ distributed, then $\psi(u) = 1
-- F(u)$, where $F$ is Phase-type$(\pmb{\pi}_+, \mat{Q})$ with
+Phase-type$(\mat{\pi}, \mat{T})$ distributed, then $\psi(u) = 1
+- F(u)$, where $F$ is Phase-type$(\mat{\pi}_+, \mat{Q})$ with
 \begin{equation}
   \label{eq:prob-ruin:cramer-lundberg}
   \begin{split}
-    \pmb{\pi}_+
-    &= - \frac{\lambda}{c}\, \pmb{\pi} \mat{T}^{-1} \\
+    \mat{\pi}_+
+    &= - \frac{\lambda}{c}\, \mat{\pi} \mat{T}^{-1} \\
     \mat{Q}
-    &= \mat{T} + \mat{t} \pmb{\pi}_+,
+    &= \mat{T} + \mat{t} \mat{\pi}_+,
   \end{split}
 \end{equation}
 and $\mat{t} = -\mat{T} \mat{e}$, $\mat{e}$ is a column vector with
@@ -637,10 +664,10 @@ In the more general Sparre~Andersen model where interarrival times can
 have any Phase-type$(\mat{\nu}, \mat{S})$ distribution,
 \cite{AsmussenRolski_91} also show that using the same claim severity
 assumption as above, one still has $\psi(u) = 1 - F(u)$ where $F$ is
-Phase-type$(\pmb{\pi}_+, \mat{Q})$, but with parameters
+Phase-type$(\mat{\pi}_+, \mat{Q})$, but with parameters
 \begin{equation}
   \label{eq:prob-ruin:sparre:pi+}
-  \pmb{\pi}_+  = \frac{\mat{e}^\prime (\mat{Q} - \mat{T})}{%
+  \mat{\pi}_+  = \frac{\mat{e}^\prime (\mat{Q} - \mat{T})}{%
     c \mat{e}^\prime \mat{t}}
 \end{equation}
 and $\mat{Q}$ solution of
@@ -649,7 +676,7 @@ and $\mat{Q}$ solution of
   \begin{split}
     \mat{Q}
     &= \Psi(\mat{Q}) \\
-    &= \mat{T} - \mat{t} \pmb{\pi}
+    &= \mat{T} - \mat{t} \mat{\pi}
     \left[
       (\mat{I}_n \otimes \mat{\nu})
       (\mat{Q} \oplus \mat{S})^{-1}
@@ -698,9 +725,14 @@ psi(0:10)
 
 Second, for a mixture of two exponentials claim amount model and
 exponential interarrival times, the simplest call to \code{ruin} is
+<<echo=FALSE>>=
+op <- options(width=50)
+@
 <<echo=TRUE>>=
-ruin(claims = "e", par.claims = list(rate = c(3, 7), weights = 0.5),
-     wait   = "e", par.wait   = list(rate = 3))
+ruin(claims = "e",
+     par.claims = list(rate = c(3, 7), weights = 0.5),
+     wait = "e",
+     par.wait = list(rate = 3))
 @
 
 Finally, one will obtain a function to compute ruin probabilities in a
@@ -709,18 +741,25 @@ interarrival times with
 <<echo=TRUE>>=
 prob <- c(0.5614, 0.4386)
 rates <- matrix(c(-8.64, 0.101, 1.997, -1.095), 2, 2)
-ruin(claims = "p", par.claims = list(prob = prob, rates = rates),
-     wait   = "e", par.wait   = list(rate = c(5, 1), weights = c(0.4, 0.6)))
+ruin(claims = "p",
+     par.claims = list(prob = prob, rates = rates),
+     wait = "e",
+     par.wait = list(rate = c(5, 1), weights = c(0.4, 0.6)))
 @
 
 To ease plotting of the probability of ruin function, the package
 provides a method of \code{plot} for objects returned by \code{ruin}
-that is a simple wrapper for \code{curve} (see Figure
-\ref{fig:prob-ruin}):
+that is a simple wrapper for \code{curve} (see \autoref{fig:prob-ruin}):
 <<echo=TRUE, fig=FALSE>>=
-psi <- ruin(claims = "p", par.claims = list(prob = prob, rates = rates),
-     wait   = "e", par.wait   = list(rate = c(5, 1), weights = c(0.4, 0.6)))
+psi <- ruin(claims = "p",
+            par.claims = list(prob = prob, rates = rates),
+            wait = "e",
+            par.wait = list(rate = c(5, 1),
+                            weights = c(0.4, 0.6)))
 plot(psi, from = 0, to = 50)
+@
+<<echo=FALSE>>=
+options(op)
 @
 
 \begin{figure}[t]
@@ -764,7 +803,7 @@ and
   \label{eq:beekman:H}
   H(x) = \int_0^x \frac{1 - P(y)}{\mu}\, dy.
 \end{equation}
-In other words, we have (compare with \eqref{eq:cdf-S})
+In other words, we have (compare with \eqref{eq:cdf-S}):
 \begin{equation}
   \label{eq:beekman:prob-ruin-long}
   \psi(u) = 1 - \sum_{n = 0}^\infty  H^{*n}(u) p (1 - p)^n.
@@ -796,16 +835,20 @@ One can get functions to compute lower bounds and upper bounds for
 $F(u)$ with functions \code{discretize} and \code{aggregateDist}
 as follows:
 <<echo=TRUE>>=
-f.L <- discretize(ppareto(x, 4, 4), from = 0, to = 200, step = 1, method = "lower")
-f.U <- discretize(ppareto(x, 4, 4), from = 0, to = 200, step = 1, method = "upper")
-F.L <- aggregateDist(method = "recursive", model.freq = "geometric",
+f.L <- discretize(ppareto(x, 4, 4), from = 0, to = 200,
+                  step = 1, method = "lower")
+f.U <- discretize(ppareto(x, 4, 4), from = 0, to = 200,
+                  step = 1, method = "upper")
+F.L <- aggregateDist(method = "recursive",
+                     model.freq = "geometric",
                      model.sev = f.L, prob = 1/6)
-F.U <- aggregateDist(method = "recursive", model.freq = "geometric",
+F.U <- aggregateDist(method = "recursive",
+                     model.freq = "geometric",
                      model.sev = f.U, prob = 1/6)
 @
 
 Corresponding functions for the probability of ruin $\psi(u)$ lower
-and upper bounds are (see figure \ref{fig:beekman:prob-ruin} for the
+and upper bounds are (see \autoref{fig:beekman:prob-ruin} for the
 graphic):
 <<echo=TRUE>>=
 psi.L <- function(u) 1 - F.U(u)

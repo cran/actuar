@@ -2,14 +2,14 @@
 ### Encoding: UTF-8
 
 ###################################################
-### code chunk number 1: risk.Rnw:54-56
+### code chunk number 1: risk.Rnw:70-72
 ###################################################
 library(actuar)
-options(width = 62, digits = 4)
+options(width = 60, digits = 4)
 
 
 ###################################################
-### code chunk number 2: risk.Rnw:196-222
+### code chunk number 2: risk.Rnw:212-238
 ###################################################
 fu <- discretize(plnorm(x), method = "upper", from = 0, to = 5)
 fl <- discretize(plnorm(x), method = "lower", from = 0, to = 5)
@@ -40,7 +40,7 @@ plot(stepfun(0:5, diffinv(fb)), pch = 20, add = TRUE)
 
 
 ###################################################
-### code chunk number 3: risk.Rnw:236-241 (eval = FALSE)
+### code chunk number 3: risk.Rnw:252-257 (eval = FALSE)
 ###################################################
 ## fx <- discretize(pgamma(x, 2, 1), method = "upper",
 ##                  from = 0, to = 17, step = 0.5)
@@ -50,43 +50,45 @@ plot(stepfun(0:5, diffinv(fb)), pch = 20, add = TRUE)
 
 
 ###################################################
-### code chunk number 4: risk.Rnw:352-357
+### code chunk number 4: risk.Rnw:377-383
 ###################################################
-fx <- discretize(pgamma(x, 2, 1), from = 0, to = 22, step = 0.5,
-                 method = "unbiased", lev = levgamma(x, 2, 1))
+fx <- discretize(pgamma(x, 2, 1), method = "unbiased",
+                 from = 0, to = 22, step = 0.5,
+                 lev = levgamma(x, 2, 1))
 Fs <- aggregateDist("recursive", model.freq = "poisson",
                     model.sev = fx, lambda = 10, x.scale = 0.5)
 summary(Fs)                           # summary method
 
 
 ###################################################
-### code chunk number 5: risk.Rnw:361-364
+### code chunk number 5: risk.Rnw:387-391
 ###################################################
 Fsc <- aggregateDist("recursive", model.freq = "poisson",
-                     model.sev = fx, lambda = 5, convolve = 1, x.scale = 0.5)
+                     model.sev = fx, lambda = 5, convolve = 1,
+                     x.scale = 0.5)
 summary(Fsc)                           # summary method
 
 
 ###################################################
-### code chunk number 6: risk.Rnw:368-369
+### code chunk number 6: risk.Rnw:395-396
 ###################################################
-knots(Fs)                             # support of Fs.b (knots)
+knots(Fs)                      # support of Fs.b (knots)
 
 
 ###################################################
-### code chunk number 7: risk.Rnw:373-374 (eval = FALSE)
+### code chunk number 7: risk.Rnw:400-401 (eval = FALSE)
 ###################################################
 ## plot(Fs, do.points = FALSE, verticals = TRUE, xlim = c(0, 60))
 
 
 ###################################################
-### code chunk number 8: risk.Rnw:378-379
+### code chunk number 8: risk.Rnw:405-406
 ###################################################
 plot(Fs, do.points = FALSE, verticals = TRUE, xlim = c(0, 60))
 
 
 ###################################################
-### code chunk number 9: risk.Rnw:390-393
+### code chunk number 9: risk.Rnw:417-420
 ###################################################
 mean(Fs)                              # empirical mean
 quantile(Fs)                          # quantiles
@@ -94,20 +96,20 @@ quantile(Fs, 0.999)                   # quantiles
 
 
 ###################################################
-### code chunk number 10: risk.Rnw:398-399
+### code chunk number 10: risk.Rnw:425-426
 ###################################################
 diff(Fs)
 
 
 ###################################################
-### code chunk number 11: risk.Rnw:421-423
+### code chunk number 11: risk.Rnw:448-450
 ###################################################
 VaR(Fs)
 CTE(Fs)
 
 
 ###################################################
-### code chunk number 12: risk.Rnw:431-457
+### code chunk number 12: risk.Rnw:458-484
 ###################################################
 fx.u <- discretize(pgamma(x, 2, 1), from = 0, to = 22, step = 0.5,
                    method = "upper")
@@ -138,31 +140,31 @@ legend(30, 0.4, c("recursive + unbiased", "recursive + upper", "recursive + lowe
 
 
 ###################################################
-### code chunk number 13: risk.Rnw:548-550
+### code chunk number 13: risk.Rnw:575-577
 ###################################################
 adjCoef(mgf.claim = mgfexp(x), mgf.wait = mgfexp(x, 2),
         premium.rate = 2.4, upper = 1)
 
 
 ###################################################
-### code chunk number 14: risk.Rnw:580-586
+### code chunk number 14: risk.Rnw:607-613
 ###################################################
 mgfx <- function(x, y) mgfexp(x * y)
 p <- function(x) 2.6 * x - 0.2
-rho <- adjCoef(mgfx, mgfexp(x, 2), premium = p, upper = 1, reins = "prop",
-              from = 0, to = 1)
+rho <- adjCoef(mgfx, mgfexp(x, 2), premium = p, upper = 1,
+               reins = "prop", from = 0, to = 1)
 rho(c(0.75, 0.8, 0.9, 1))
 plot(rho)
 
 
 ###################################################
-### code chunk number 15: risk.Rnw:591-592
+### code chunk number 15: risk.Rnw:618-619
 ###################################################
 plot(rho)
 
 
 ###################################################
-### code chunk number 16: risk.Rnw:692-696
+### code chunk number 16: risk.Rnw:719-723
 ###################################################
 psi <- ruin(claims = "e", par.claims = list(rate = 5),
             wait   = "e", par.wait   = list(rate = 3))
@@ -171,48 +173,71 @@ psi(0:10)
 
 
 ###################################################
-### code chunk number 17: risk.Rnw:701-703
+### code chunk number 17: risk.Rnw:728-729
 ###################################################
-ruin(claims = "e", par.claims = list(rate = c(3, 7), weights = 0.5),
-     wait   = "e", par.wait   = list(rate = 3))
+op <- options(width=50)
 
 
 ###################################################
-### code chunk number 18: risk.Rnw:709-713
+### code chunk number 18: risk.Rnw:731-735
+###################################################
+ruin(claims = "e",
+     par.claims = list(rate = c(3, 7), weights = 0.5),
+     wait = "e",
+     par.wait = list(rate = 3))
+
+
+###################################################
+### code chunk number 19: risk.Rnw:741-747
 ###################################################
 prob <- c(0.5614, 0.4386)
 rates <- matrix(c(-8.64, 0.101, 1.997, -1.095), 2, 2)
-ruin(claims = "p", par.claims = list(prob = prob, rates = rates),
-     wait   = "e", par.wait   = list(rate = c(5, 1), weights = c(0.4, 0.6)))
+ruin(claims = "p",
+     par.claims = list(prob = prob, rates = rates),
+     wait = "e",
+     par.wait = list(rate = c(5, 1), weights = c(0.4, 0.6)))
 
 
 ###################################################
-### code chunk number 19: risk.Rnw:720-723
+### code chunk number 20: risk.Rnw:753-759
 ###################################################
-psi <- ruin(claims = "p", par.claims = list(prob = prob, rates = rates),
-     wait   = "e", par.wait   = list(rate = c(5, 1), weights = c(0.4, 0.6)))
+psi <- ruin(claims = "p",
+            par.claims = list(prob = prob, rates = rates),
+            wait = "e",
+            par.wait = list(rate = c(5, 1),
+                            weights = c(0.4, 0.6)))
 plot(psi, from = 0, to = 50)
 
 
 ###################################################
-### code chunk number 20: risk.Rnw:728-729
+### code chunk number 21: risk.Rnw:761-762
+###################################################
+options(op)
+
+
+###################################################
+### code chunk number 22: risk.Rnw:767-768
 ###################################################
 plot(psi, from = 0, to = 50)
 
 
 ###################################################
-### code chunk number 21: risk.Rnw:798-804
+### code chunk number 23: risk.Rnw:837-847
 ###################################################
-f.L <- discretize(ppareto(x, 4, 4), from = 0, to = 200, step = 1, method = "lower")
-f.U <- discretize(ppareto(x, 4, 4), from = 0, to = 200, step = 1, method = "upper")
-F.L <- aggregateDist(method = "recursive", model.freq = "geometric",
+f.L <- discretize(ppareto(x, 4, 4), from = 0, to = 200,
+                  step = 1, method = "lower")
+f.U <- discretize(ppareto(x, 4, 4), from = 0, to = 200,
+                  step = 1, method = "upper")
+F.L <- aggregateDist(method = "recursive",
+                     model.freq = "geometric",
                      model.sev = f.L, prob = 1/6)
-F.U <- aggregateDist(method = "recursive", model.freq = "geometric",
+F.U <- aggregateDist(method = "recursive",
+                     model.freq = "geometric",
                      model.sev = f.U, prob = 1/6)
 
 
 ###################################################
-### code chunk number 22: risk.Rnw:810-816
+### code chunk number 24: risk.Rnw:853-859
 ###################################################
 psi.L <- function(u) 1 - F.U(u)
 psi.U <- function(u) 1 - F.L(u)
@@ -223,7 +248,7 @@ curve(psi.U, add = TRUE, col = "green")
 
 
 ###################################################
-### code chunk number 23: risk.Rnw:821-823
+### code chunk number 25: risk.Rnw:864-866
 ###################################################
 curve(psi.L, from = 0, to = 100, col = "blue")
 curve(psi.U, add = TRUE, col = "green")

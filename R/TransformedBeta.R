@@ -8,8 +8,7 @@
 ###
 ### where Y has a Beta distribution with parameters shape3 and shape1.
 ###
-### See Appendix A of Klugman, Panjer & Willmot, Loss Models, Second
-### Edition, Wiley, 2004.
+### See Appendix A of Klugman, Panjer & Willmot, Loss Models, Wiley.
 ###
 ### AUTHORS:  Mathieu Pigeon, Vincent Goulet <vincent.goulet@act.ulaval.ca>
 
@@ -41,8 +40,8 @@ mtrbeta <-
 levtrbeta <-
     function (limit, shape1, shape2, shape3, rate = 1, scale = 1/rate,
               order = 1)
-    .External("actuar_do_dpq", "levtrbeta", limit, shape1, shape2, shape3, scale,
-              order, FALSE)
+    .External("actuar_do_dpq", "levtrbeta", limit, shape1, shape2, shape3, scale, order, FALSE)
+
 
 ## Aliases
 dpearson6 <- dtrbeta

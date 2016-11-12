@@ -13,6 +13,10 @@
 
 double mchisq(double order, double df, double ncp, int give_log)
 {
+#ifdef IEEE_754
+    if (ISNAN(order) || ISNAN(df) || ISNAN(ncp))
+	return order + df + ncp;
+#endif
     if (!R_FINITE(df)    ||
         !R_FINITE(ncp)   ||
         !R_FINITE(order) ||
@@ -56,6 +60,10 @@ double mchisq(double order, double df, double ncp, int give_log)
 
 double levchisq(double limit, double df, double ncp, double order, int give_log)
 {
+#ifdef IEEE_754
+    if (ISNAN(limit) || ISNAN(df) || ISNAN(ncp) || ISNAN(order))
+	return limit + df + ncp + order;
+#endif
     if (!R_FINITE(df)    ||
         !R_FINITE(ncp)   ||
         !R_FINITE(order) ||
@@ -84,17 +92,21 @@ double levchisq(double limit, double df, double ncp, double order, int give_log)
         return R_NaN;
 }
 
-double mgfchisq(double x, double df, double ncp, int give_log)
+double mgfchisq(double t, double df, double ncp, int give_log)
 {
+#ifdef IEEE_754
+    if (ISNAN(t) || ISNAN(df) || ISNAN(ncp))
+	return t + df + ncp;
+#endif
     if (!R_FINITE(df)  ||
         !R_FINITE(ncp) ||
         df <= 0.0 ||
         ncp < 0.0 ||
-        2.0 * x > 1.0)
+        2.0 * t > 1.0)
         return R_NaN;
 
-    if (x == 0.0)
-        return ACT_D_exp(0.0);
+    if (t == 0.0)
+        return ACT_D__1;
 
-    return ACT_D_exp(ncp * x / (1.0 - 2.0 * x) - df/2.0 * log1p(-2.0 * x));
+    return ACT_D_exp(ncp * t / (1.0 - 2.0 * t) - df/2.0 * log1p(-2.0 * t));
 }

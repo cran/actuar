@@ -11,7 +11,7 @@
   Density function, distribution function, quantile function, random generation,
   raw moments, and limited moments for the Single-parameter Pareto
   distribution with parameter \code{shape}.
-} 
+}
 \usage{
 dpareto1(x, shape, min, log = FALSE)
 ppareto1(q, shape, min, lower.tail = TRUE, log.p = FALSE)
@@ -35,20 +35,21 @@ levpareto1(limit, shape, min, order = 1)
   \item{limit}{limit of the loss variable.}
 }
 \details{
-  The Single-parameter Pareto distribution with parameter \code{shape}
+  The single-parameter Pareto distribution with parameter \code{shape}
   \eqn{= \alpha}{= a} has density:
   \deqn{f(x) = \frac{\alpha \theta^\alpha}{x^{\alpha + 1}}}{%
     f(x) = a b^a/x^(a + 1)}
   for \eqn{x > \theta}{x > b}, \eqn{\alpha > 0}{a > 0} and \eqn{\theta >
     0}{b > 0}.
-  
+
   Although there appears to be two parameters, only \code{shape} is a true
   parameter. The value of \code{min} \eqn{= \theta}{= b} must be set in
   advance.
 
   The \eqn{k}th raw moment of the random variable \eqn{X} is
-  \eqn{E[X^k]}{E[X^k]} and the \eqn{k}th limited moment at some limit
-  \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]}.
+  \eqn{E[X^k]}{E[X^k]}, \eqn{k < \alpha}{k < shape} and the \eqn{k}th
+  limited moment at some limit \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X,
+  d)^k]}, \eqn{x \ge \theta}{x \ge min}.
 }
 \value{
   \code{dpareto1} gives the density,
@@ -62,8 +63,8 @@ levpareto1(limit, shape, min, order = 1)
   Invalid arguments will result in return value \code{NaN}, with a warning.
 }
 \references{
-  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2008),
-  \emph{Loss Models, From Data to Decisions, Third Edition}, Wiley.
+  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),
+  \emph{Loss Models, From Data to Decisions, Fourth Edition}, Wiley.
 }
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca} and

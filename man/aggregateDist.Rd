@@ -84,18 +84,51 @@ aggregateDist(method = c("recursive", "convolution", "normal",
   \code{"simulation"} method using simulations. More details follow.
 }
 \section{Recursive method}{
-  The frequency distribution is a member of the \eqn{(a, b, 0)} family
-  of discrete distributions if \code{p0} is \code{NULL} and a member of
-  the \eqn{(a, b, 1)} family if \code{p0} is specified.
+  The frequency distribution must be a member of the \eqn{(a, b, 0)} or
+  \eqn{(a, b, 1)} families of discrete distributions.
 
-  \code{model.freq} must be one of \code{"binomial"},
-  \code{"geometric"}, \code{"negative binomial"}, \code{"poisson"} or
-  \code{"logarithmic"} (these can abbreviated). The parameters of the
-  frequency distribution must be specified using names identical to the
-  arguments of functions \code{\link{dbinom}}, \code{\link{dgeom}},
-  \code{\link{dnbinom}}, \code{\link{dpois}} and \code{\link{dnbinom}},
-  respectively. (The logarithmic distribution is a limiting case of the
-  negative binomial distribution with size parameter equal to 0.)
+  To use a distribution from the \eqn{(a, b, 0)} family,
+  \code{model.freq} must be one of
+  \code{"binomial"},
+  \code{"geometric"},
+  \code{"negative binomial"} or
+  \code{"poisson"},
+  and \code{p0} must be \code{NULL}.
+
+  To use a zero-truncated distribution from the \eqn{(a, b, 1)} family,
+  \code{model.freq} may be one of the strings above together with
+  \code{p0 = 0}. As a shortcut, \code{model.freq} may also be one of
+  \code{"zero-truncated binomial"},
+  \code{"zero-truncated geometric"},
+  \code{"zero-truncated negative binomial"},
+  \code{"zero-truncated poisson"} or
+  \code{"logarithmic"},
+  and \code{p0} is then ignored (with a warning if non \code{NULL}).
+
+  (Note: since the logarithmic distribution is always zero-truncated.
+  \code{model.freq = "logarithmic"} may be used with either \code{p0 =
+  NULL} or \code{p0 = 0}.)
+
+  To use a zero-modified distribution from the \eqn{(a, b, 1)} family,
+  \code{model.freq} may be one of standard frequency distributions
+  mentioned above with \code{p0} set to some probability that the
+  distribution takes the value \eqn{0}. It is equivalent, but more
+  explicit, to set \code{model.freq} to one of
+  \code{"zero-modified binomial"},
+  \code{"zero-modified geometric"},
+  \code{"zero-modified negative binomial"},
+  \code{"zero-modified poisson"} or
+  \code{"zero-modified logarithmic"}.
+
+  The parameters of the frequency distribution must be specified using
+  names identical to the arguments of the appropriate function
+  \code{\link{dbinom}}, \code{\link{dgeom}}, \code{\link{dnbinom}},
+  \code{\link{dpois}} or \code{\link{dlogarithmic}}. In the latter case,
+  do take note that the parametrization of \code{dlogarithmic} is
+  different from Appendix B of Klugman et al. (2012).
+
+  If the length of \code{p0} is greater than one, only the first element
+  is used, with a warning.
 
   \code{model.sev} is a vector of the (discretized) claim amount
   distribution \eqn{X}; the first element \strong{must} be \eqn{f_X(0) =
@@ -108,16 +141,16 @@ aggregateDist(method = c("recursive", "convolution", "normal",
 
   Failure to obtain a cumulative distribution function less than
   \code{tol} away from 1 within \code{maxit} iterations is often due
-  to a too coarse discretization of the severity distribution.
+  to too coarse a discretization of the severity distribution.
 }
 \section{Convolution method}{
   The cumulative distribution function (cdf) \eqn{F_S(x)}{Fs(x)} of the
   aggregate claim amount of a portfolio in the collective risk model is
   \deqn{F_S(x) = \sum_{n = 0}^{\infty} F_X^{*n}(x) p_n,}{%
-    Fs(x) = sum(n; Fx^*n(x) * pn)}
+    Fs(x) = sum(n; Fx^\{*n\}(x) * pn)}
   for \eqn{x = 0, 1, \dots}; \eqn{p_n = \Pr[N = n]}{pn = Pr[N = n]} is
   the frequency probability mass function and
-  \eqn{F_X^{*n}(x)}{Fx^*n(x)} is the cdf of the \eqn{n}th convolution of
+  \eqn{F_X^{*n}(x)}{Fx^\{*n\}(x)} is the cdf of the \eqn{n}th convolution of
   the (discrete) claim amount random variable.
 
   \code{model.freq} is vector \eqn{p_n}{pn} of the number of claims
@@ -179,8 +212,8 @@ aggregateDist(method = c("recursive", "convolution", "normal",
   \code{\link{simul}}.
 }
 \references{
-  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2008),
-  \emph{Loss Models, From Data to Decisions, Third Edition}, Wiley.
+  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),
+  \emph{Loss Models, From Data to Decisions, Fourth Edition}, Wiley.
 
   Daykin, C.D., \enc{Pentikäinen}{Pentikainen}, T. and Pesonen, M.
   (1994), \emph{Practical Risk Theory for Actuaries}, Chapman & Hall.
@@ -190,7 +223,7 @@ aggregateDist(method = c("recursive", "convolution", "normal",
   Louis-Philippe Pouliot
 }
 \examples{
-## Convolution method (example 9.5 of Klugman et al. (2008))
+## Convolution method (example 9.5 of Klugman et al. (2012))
 fx <- c(0, 0.15, 0.2, 0.25, 0.125, 0.075,
         0.05, 0.05, 0.05, 0.025, 0.025)
 pn <- c(0.05, 0.1, 0.15, 0.2, 0.25, 0.15, 0.06, 0.03, 0.01)
@@ -200,19 +233,43 @@ summary(Fs)
 c(Fs(0), diff(Fs(25 * 0:21))) # probability mass function
 plot(Fs)
 
-## Recursive method
+## Recursive method (example 9.10 of Klugman et al. (2012))
+fx <- c(0, crossprod(c(2, 1)/3,
+                     matrix(c(0.6, 0.7, 0.4, 0, 0, 0.3), 2, 3)))
 Fs <- aggregateDist("recursive", model.freq = "poisson",
-                    model.sev = fx, lambda = 3, x.scale = 25)
+                    model.sev = fx, lambda = 3)
 plot(Fs)
 Fs(knots(Fs))		      # cdf evaluated at its knots
 diff(Fs)                      # probability mass function
 
 ## Recursive method (high frequency)
+fx <- c(0, 0.15, 0.2, 0.25, 0.125, 0.075,
+        0.05, 0.05, 0.05, 0.025, 0.025)
 \dontrun{Fs <- aggregateDist("recursive", model.freq = "poisson",
                     model.sev = fx, lambda = 1000)}
 Fs <- aggregateDist("recursive", model.freq = "poisson",
                     model.sev = fx, lambda = 250, convolve = 2, maxit = 1500)
 plot(Fs)
+
+## Recursive method (zero-modified distribution; example 9.11 of
+## Klugman et al. (2012))
+Fn <- aggregateDist("recursive", model.freq = "binomial",
+                    model.sev = c(0.3, 0.5, 0.2), x.scale = 50,
+                    p0 = 0.4, size = 3, prob = 0.3)
+diff(Fn)
+
+## Equivalent but more explicit call
+aggregateDist("recursive", model.freq = "zero-modified binomial",
+              model.sev = c(0.3, 0.5, 0.2), x.scale = 50,
+              p0 = 0.4, size = 3, prob = 0.3)
+
+## Recursive method (zero-truncated distribution). Using 'fx' above
+## would mean that both Pr[N = 0] = 0 and Pr[X = 0] = 0, therefore
+## Pr[S = 0] = 0 and recursions would not start.
+fx <- discretize(pexp(x, 1), from = 0, to = 100, method = "upper")
+fx[1L] # non zero
+aggregateDist("recursive", model.freq = "zero-truncated poisson",
+              model.sev = fx, lambda = 3, x.scale = 25, echo=TRUE)
 
 ## Normal Power approximation
 Fs <- aggregateDist("npower", moments = c(200, 200, 0.5))

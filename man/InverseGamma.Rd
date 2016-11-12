@@ -23,7 +23,7 @@ rinvgamma(n, shape, rate = 1, scale = 1/rate)
 minvgamma(order, shape, rate = 1, scale = 1/rate)
 levinvgamma(limit, shape, rate = 1, scale = 1/rate,
             order = 1)
-mgfinvgamma(x, shape, rate =1, scale = 1/rate, log =FALSE)
+mgfinvgamma(t, shape, rate =1, scale = 1/rate, log =FALSE)
 }
 \arguments{
   \item{x, q}{vector of quantiles.}
@@ -38,9 +38,10 @@ mgfinvgamma(x, shape, rate =1, scale = 1/rate, log =FALSE)
     \eqn{P[X \le x]}{P[X <= x]}, otherwise, \eqn{P[X > x]}.}
   \item{order}{order of the moment.}
   \item{limit}{limit of the loss variable.}
+  \item{t}{numeric vector.}
 }
 \details{
-  The Inverse Gamma distribution with parameters \code{shape} \eqn{=
+  The inverse gamma distribution with parameters \code{shape} \eqn{=
     \alpha}{= a} and \code{scale} \eqn{= \theta}{= s} has density:
   \deqn{f(x) = \frac{u^\alpha e^{-u}}{x \Gamma(\alpha)}, %
     \quad u = \theta/x}{%
@@ -53,29 +54,37 @@ mgfinvgamma(x, shape, rate =1, scale = 1/rate, log =FALSE)
   \link[=dinvexp]{Inverse Exponential} distribution.
 
   The \eqn{k}th raw moment of the random variable \eqn{X} is
-  \eqn{E[X^k]}{E[X^k]} and the \eqn{k}th limited moment at some limit
-  \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X, d)^k]}.
+  \eqn{E[X^k]}{E[X^k]}, \eqn{k < \alpha}{k < shape}, and the \eqn{k}th
+  limited moment at some limit \eqn{d} is \eqn{E[\min(X, d)^k]}{E[min(X,
+  d)^k]}, all \eqn{k}.
 
-  The moment generating function is given by \eqn{E[e^{xX}]}.
+  The moment generating function is given by \eqn{E[e^{tX}]}.
 }
 \value{
   \code{dinvgamma} gives the density,
   \code{pinvgamma} gives the distribution function,
   \code{qinvgamma} gives the quantile function,
   \code{rinvgamma} generates random deviates,
-  \code{minvgamma} gives the \eqn{k}th raw moment, and
+  \code{minvgamma} gives the \eqn{k}th raw moment,
   \code{levinvgamma} gives the \eqn{k}th moment of the limited loss
-  variable,
-  \code{mgfinvgamma} gives the moment generating function in \code{x}.
+  variable, and
+  \code{mgfinvgamma} gives the moment generating function in \code{t}.
 
   Invalid arguments will result in return value \code{NaN}, with a warning.
 }
 \note{
-  Also known as the Vinci distribution.
+  \code{levinvgamma} computes the limited expected value using
+  \code{\link{gammaint}}.
+
+  Also known as the Vinci distribution. See also Kleiber and
+  Kotz (2003) for alternative names and parametrizations.
 }
 \references{
-  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2008),
-  \emph{Loss Models, From Data to Decisions, Third Edition}, Wiley.
+  Kleiber, C. and Kotz, S. (2003), \emph{Statistical Size Distributions
+  in Economics and Actuarial Sciences}, Wiley.
+
+  Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),
+  \emph{Loss Models, From Data to Decisions, Fourth Edition}, Wiley.
 }
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca} and

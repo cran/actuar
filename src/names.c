@@ -13,9 +13,9 @@
 #include <Rinternals.h>
 #include "actuar.h"
 
-FUNTAB fun_tab[] = {
-    /* DENSITY, CUMULATIVE PROBABILITY AND QUANTILE FUNCTIONS,
-     * RAW AND LIMITED MOMENTS */
+/* DENSITY, CUMULATIVE PROBABILITY AND QUANTILE FUNCTIONS,
+ * RAW AND LIMITED MOMENTS */
+DPQTAB dpq_tab[] = {
     /* One parameter distributions */
     {"mexp",            actuar_do_dpq1,        1},
     {"dinvexp",         actuar_do_dpq1,        2},
@@ -23,6 +23,15 @@ FUNTAB fun_tab[] = {
     {"qinvexp",         actuar_do_dpq1,        4},
     {"minvexp",         actuar_do_dpq1,        5},
     {"mgfexp",          actuar_do_dpq1,        6},
+    {"dlogarithmic",    actuar_do_dpq1,       101},
+    {"plogarithmic",    actuar_do_dpq1,       102},
+    {"qlogarithmic",    actuar_do_dpq1,       103},
+    {"dztpois",         actuar_do_dpq1,       104},
+    {"pztpois",         actuar_do_dpq1,       105},
+    {"qztpois",         actuar_do_dpq1,       106},
+    {"dztgeom",         actuar_do_dpq1,       107},
+    {"pztgeom",         actuar_do_dpq1,       108},
+    {"qztgeom",         actuar_do_dpq1,       109},
     /* Two parameter distributions */
     {"mgamma",          actuar_do_dpq2,         1},
     {"dinvgamma",       actuar_do_dpq2,         2},
@@ -73,9 +82,37 @@ FUNTAB fun_tab[] = {
     {"mnorm",           actuar_do_dpq2,        47},
     {"mchisq",          actuar_do_dpq2,        48},
     {"mgfchisq",        actuar_do_dpq2,        49},
-    {"minvGauss",       actuar_do_dpq2,        50},
-    {"mgfinvGauss",     actuar_do_dpq2,        51},
+    {"minvGauss",       actuar_do_dpq2,        50}, /* deprecated v2.0-0 */
+    {"mgfinvGauss",     actuar_do_dpq2,        51}, /* deprecated v2.0-0 */
     {"munif",           actuar_do_dpq2,        52},
+    {"dgumbel",         actuar_do_dpq2,        53},
+    {"pgumbel",         actuar_do_dpq2,        54},
+    {"qgumbel",         actuar_do_dpq2,        55},
+    {"mgumbel",         actuar_do_dpq2,        56},
+    {"mgfgumbel",       actuar_do_dpq2,        57},
+    {"dinvgauss",       actuar_do_dpq2,        58},
+    {"pinvgauss",       actuar_do_dpq2,        59},
+    {"qinvgauss",       actuar_do_dpq2,        60},
+    {"minvgauss",       actuar_do_dpq2,        61},
+    {"mgfinvgauss",     actuar_do_dpq2,        62},
+    {"dztnbinom",       actuar_do_dpq2,        101},
+    {"pztnbinom",       actuar_do_dpq2,        102},
+    {"qztnbinom",       actuar_do_dpq2,        103},
+    {"dztbinom",        actuar_do_dpq2,        104},
+    {"pztbinom",        actuar_do_dpq2,        105},
+    {"qztbinom",        actuar_do_dpq2,        106},
+    {"dzmlogarithmic",  actuar_do_dpq2,        107},
+    {"pzmlogarithmic",  actuar_do_dpq2,        108},
+    {"qzmlogarithmic",  actuar_do_dpq2,        109},
+    {"dzmpois",         actuar_do_dpq2,        110},
+    {"pzmpois",         actuar_do_dpq2,        111},
+    {"qzmpois",         actuar_do_dpq2,        112},
+    {"dzmgeom",         actuar_do_dpq2,        113},
+    {"pzmgeom",         actuar_do_dpq2,        114},
+    {"qzmgeom",         actuar_do_dpq2,        115},
+    {"dpoisinvgauss",   actuar_do_dpq2,        116},
+    {"ppoisinvgauss",   actuar_do_dpq2,        117},
+    {"qpoisinvgauss",   actuar_do_dpq2,        118},
     /* Three parameter distributions */
     {"dburr",           actuar_do_dpq3,         1},
     {"pburr",           actuar_do_dpq3,         2},
@@ -111,8 +148,15 @@ FUNTAB fun_tab[] = {
     {"levweibull",      actuar_do_dpq3,        32},
     {"levbeta",         actuar_do_dpq3,        33},
     {"levchisq",        actuar_do_dpq3,        34},
-    {"levinvGauss",     actuar_do_dpq3,        35},
+    {"levinvGauss",     actuar_do_dpq3,        35}, /* deprecated v2.0-0 */
     {"levunif",         actuar_do_dpq3,        36},
+    {"levinvgauss",     actuar_do_dpq3,        37},
+    {"dzmnbinom",       actuar_do_dpq3,       101},
+    {"pzmnbinom",       actuar_do_dpq3,       102},
+    {"qzmnbinom",       actuar_do_dpq3,       103},
+    {"dzmbinom",        actuar_do_dpq3,       104},
+    {"pzmbinom",        actuar_do_dpq3,       105},
+    {"qzmbinom",        actuar_do_dpq3,       106},
     /* Four parameter distributions */
     {"dtrbeta",         actuar_do_dpq4,        1},
     {"ptrbeta",         actuar_do_dpq4,        2},
@@ -135,30 +179,50 @@ FUNTAB fun_tab[] = {
     {"pphtype",         actuar_do_dpqphtype2,  2},
     {"mphtype",         actuar_do_dpqphtype2,  3},
     {"mgfphtype",       actuar_do_dpqphtype2,  4},
+    /* Special integrals */
+    {"expint",          actuar_do_dpq0,        201},
+    {"gammaint",        actuar_do_dpq1,        201},
+    {"betaint",         actuar_do_dpq2,        201},
+    {0, 0, 0}
+};
 
-    /* RANDOM NUMBERS FUNCTIONS */
+/* RANDOM NUMBERS FUNCTIONS */
+RANDOMTAB random_tab[] = {
     /* One parameter distributions */
-    {"rinvexp",         actuar_do_random1,     1},
+    {"rinvexp",         actuar_do_random1,     1, REALSXP},
+    {"rlogarithmic",    actuar_do_random1,   101, INTSXP},
+    {"rztpois",         actuar_do_random1,   102, INTSXP},
+    {"rztgeom",         actuar_do_random1,   103, INTSXP},
     /* Two parameter distributions */
-    {"rinvgamma",       actuar_do_random2,     1},
-    {"rinvparalogis",   actuar_do_random2,     2},
-    {"rinvpareto",      actuar_do_random2,     3},
-    {"rinvweibull",     actuar_do_random2,     4},
-    {"rlgamma",         actuar_do_random2,     5},
-    {"rllogis",         actuar_do_random2,     6},
-    {"rparalogis",      actuar_do_random2,     7},
-    {"rpareto",         actuar_do_random2,     8},
-    {"rpareto1",        actuar_do_random2,     9},
+    {"rinvgamma",       actuar_do_random2,     1, REALSXP},
+    {"rinvparalogis",   actuar_do_random2,     2, REALSXP},
+    {"rinvpareto",      actuar_do_random2,     3, REALSXP},
+    {"rinvweibull",     actuar_do_random2,     4, REALSXP},
+    {"rlgamma",         actuar_do_random2,     5, REALSXP},
+    {"rllogis",         actuar_do_random2,     6, REALSXP},
+    {"rparalogis",      actuar_do_random2,     7, REALSXP},
+    {"rpareto",         actuar_do_random2,     8, REALSXP},
+    {"rpareto1",        actuar_do_random2,     9, REALSXP},
+    {"rgumbel",         actuar_do_random2,    10, REALSXP},
+    {"rinvgauss",       actuar_do_random2,    11, REALSXP},
+    {"rztnbinom",       actuar_do_random2,   101, INTSXP},
+    {"rztbinom",        actuar_do_random2,   102, INTSXP},
+    {"rzmlogarithmic",  actuar_do_random2,   103, INTSXP},
+    {"rzmpois",         actuar_do_random2,   104, INTSXP},
+    {"rzmgeom",         actuar_do_random2,   105, INTSXP},
+    {"rpoisinvgauss",   actuar_do_random2,   106, INTSXP},
     /* Three parameter distributions */
-    {"rburr",           actuar_do_random3,     1},
-    {"rgenpareto",      actuar_do_random3,     2},
-    {"rinvburr",        actuar_do_random3,     3},
-    {"rinvtrgamma",     actuar_do_random3,     4},
-    {"rtrgamma",        actuar_do_random3,     5},
+    {"rburr",           actuar_do_random3,     1, REALSXP},
+    {"rgenpareto",      actuar_do_random3,     2, REALSXP},
+    {"rinvburr",        actuar_do_random3,     3, REALSXP},
+    {"rinvtrgamma",     actuar_do_random3,     4, REALSXP},
+    {"rtrgamma",        actuar_do_random3,     5, REALSXP},
+    {"rzmnbinom",       actuar_do_random3,   101, INTSXP},
+    {"rzmbinom",        actuar_do_random3,   102, INTSXP},
     /* Four parameter distributions */
-    {"rtrbeta",         actuar_do_random4,     1},
-    {"rgenbeta",        actuar_do_random4,     2},
+    {"rtrbeta",         actuar_do_random4,     1, REALSXP},
+    {"rgenbeta",        actuar_do_random4,     2, REALSXP},
     /* Phase-type distributions */
-    {"rphtype",         actuar_do_randomphtype2, 1},
+    {"rphtype",         actuar_do_randomphtype2, 1, REALSXP},
     {0, 0, 0}
 };
