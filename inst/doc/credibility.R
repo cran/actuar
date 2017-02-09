@@ -2,21 +2,21 @@
 ### Encoding: UTF-8
 
 ###################################################
-### code chunk number 1: credibility.Rnw:65-67
+### code chunk number 1: credibility.Rnw:64-66
 ###################################################
 library(actuar)
 options(width = 60, digits = 4)
 
 
 ###################################################
-### code chunk number 2: credibility.Rnw:102-104
+### code chunk number 2: credibility.Rnw:101-103
 ###################################################
 data(hachemeister)
 hachemeister
 
 
 ###################################################
-### code chunk number 3: credibility.Rnw:258-264
+### code chunk number 3: credibility.Rnw:257-263
 ###################################################
 X <- cbind(cohort = c(1, 2, 1, 2, 2), hachemeister)
 fit <- cm(~cohort + cohort:state, data = X,
@@ -27,39 +27,39 @@ fit
 
 
 ###################################################
-### code chunk number 4: credibility.Rnw:271-272
+### code chunk number 4: credibility.Rnw:270-271
 ###################################################
 predict(fit)
 
 
 ###################################################
-### code chunk number 5: credibility.Rnw:277-278
+### code chunk number 5: credibility.Rnw:276-277
 ###################################################
 summary(fit)
 
 
 ###################################################
-### code chunk number 6: credibility.Rnw:284-286
+### code chunk number 6: credibility.Rnw:283-285
 ###################################################
 summary(fit, levels = "cohort")
 predict(fit, levels = "cohort")
 
 
 ###################################################
-### code chunk number 7: credibility.Rnw:318-319
+### code chunk number 7: credibility.Rnw:317-318
 ###################################################
 cm(~state, hachemeister, ratios = ratio.1:ratio.12)
 
 
 ###################################################
-### code chunk number 8: credibility.Rnw:324-326
+### code chunk number 8: credibility.Rnw:323-325
 ###################################################
 cm(~state, hachemeister, ratios = ratio.1:ratio.12,
    weights = weight.1:weight.12)
 
 
 ###################################################
-### code chunk number 9: credibility.Rnw:355-360
+### code chunk number 9: credibility.Rnw:354-359
 ###################################################
 fit <- cm(~state, hachemeister, regformula = ~ time,
           regdata = data.frame(time = 1:12),
@@ -69,13 +69,13 @@ fit
 
 
 ###################################################
-### code chunk number 10: credibility.Rnw:365-366
+### code chunk number 10: credibility.Rnw:364-365
 ###################################################
 predict(fit, newdata = data.frame(time = 13))
 
 
 ###################################################
-### code chunk number 11: credibility.Rnw:376-389
+### code chunk number 11: credibility.Rnw:375-388
 ###################################################
 plot(NA, xlim = c(1, 13), ylim = c(1000, 2000), xlab = "", ylab = "")
 x <- cbind(1, 1:12)
@@ -93,7 +93,7 @@ legend("bottomright",
 
 
 ###################################################
-### code chunk number 12: credibility.Rnw:406-412
+### code chunk number 12: credibility.Rnw:405-411
 ###################################################
 fit2 <- cm(~state, hachemeister, regformula = ~ time,
            regdata = data.frame(time = 1:12),
@@ -104,7 +104,7 @@ summary(fit2, newdata = data.frame(time = 13))
 
 
 ###################################################
-### code chunk number 13: credibility.Rnw:419-433
+### code chunk number 13: credibility.Rnw:418-432
 ###################################################
 plot(NA, xlim = c(1, 13), ylim = c(1000, 2000), xlab = "", ylab = "")
 x <- cbind(1, 1:12)

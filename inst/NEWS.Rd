@@ -2,6 +2,31 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 2.1-0}{
+  \subsection{BUG FIX}{
+    \itemize{
+      \item{\code{qinvgauss} was not computing quantiles as far in the
+	right tail as \code{statmod:::qinvgauss}. This is now fixed.
+	Thanks to Gordon Smyth \email{smyth@wehi.edu.au} for pointing it
+	out.}
+    }
+  }
+  \subsection{USER VISIBLE CHANGES}{
+    \itemize{
+      \item{Support for the incomplete gamma function and the
+	exponential integral has been moved to package \pkg{expint}.
+	Therefore, \pkg{actuar} now imports these functionalities
+	through the \pkg{expint} API.}
+      \item{Consequence of the above, the non exported functions
+	\code{gammaint} and \code{expint} are deleted from the package.}
+      \item{Section 6 on special integrals of the
+	\code{\dQuote{distributions}} package vignette was revised to
+	better introduce the incomplete gamma function, the incomplete
+	beta function and the related integrals.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 2.0-0}{
   \subsection{NEW FEATURES}{
     \itemize{
@@ -9,7 +34,7 @@
 	the inverse Gaussian distribution. The first three functions are
 	C (read: faster) implementations of functions of the same name
 	in package \pkg{statmod}.}
-      \item{New support functions \code{[dpqrm]gumbel} for the Gumbel
+      \item{New support functions \code{[dpqrm,mgf]gumbel} for the Gumbel
 	extreme value distribution.}
       \item{Extended range of admissible values for many limited
 	expected value functions thanks to new C-level functions
@@ -128,7 +153,7 @@
   \subsection{BUG FIX}{
     \itemize{
       \item{An old and nasty out-of-bounds bug could crash R when using
-	the code{"recursive"} method of \code{aggregateDist} with a
+	the \code{"recursive"} method of \code{aggregateDist} with a
 	frequency distribution from the \eqn{(a, b, 1)} family. The bug
 	went unnoticed before because there was no example for the
 	\eqn{(a, b, 1)} case in the man page.}
