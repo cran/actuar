@@ -2,14 +2,14 @@
 ### Encoding: UTF-8
 
 ###################################################
-### code chunk number 1: modeling.Rnw:78-80
+### code chunk number 1: modeling.Rnw:80-82
 ###################################################
 library(actuar)
 options(width = 60, digits = 4)
 
 
 ###################################################
-### code chunk number 2: modeling.Rnw:172-175
+### code chunk number 2: modeling.Rnw:174-177
 ###################################################
 x <- grouped.data(Group = c(0, 25, 50, 100, 150, 250, 500),
                   Line.1 = c(30, 31, 57, 42, 65, 84),
@@ -17,19 +17,19 @@ x <- grouped.data(Group = c(0, 25, 50, 100, 150, 250, 500),
 
 
 ###################################################
-### code chunk number 3: modeling.Rnw:179-180
+### code chunk number 3: modeling.Rnw:181-182
 ###################################################
 class(x)
 
 
 ###################################################
-### code chunk number 4: modeling.Rnw:185-186
+### code chunk number 4: modeling.Rnw:187-188
 ###################################################
 x
 
 
 ###################################################
-### code chunk number 5: modeling.Rnw:206-211
+### code chunk number 5: modeling.Rnw:208-213
 ###################################################
 y <- c(  27,   82,  115,   126, 155, 161, 243,  294,
         340,  384,  457,   680, 855, 877, 974, 1193,
@@ -39,14 +39,14 @@ grouped.data(y, breaks = 5)             # suggested
 
 
 ###################################################
-### code chunk number 6: modeling.Rnw:218-220
+### code chunk number 6: modeling.Rnw:220-222
 ###################################################
 grouped.data(y, breaks = c(0, 100, 200, 350, 750,
                            1200, 2500, 5000, 16000))
 
 
 ###################################################
-### code chunk number 7: modeling.Rnw:230-233
+### code chunk number 7: modeling.Rnw:232-235
 ###################################################
 x <- grouped.data(Group = c(0, 25, 50, 100, 150, 250, 500),
                   Line.1 = c(30, 31, 57, 42, 65, 84),
@@ -54,70 +54,70 @@ x <- grouped.data(Group = c(0, 25, 50, 100, 150, 250, 500),
 
 
 ###################################################
-### code chunk number 8: modeling.Rnw:237-238
+### code chunk number 8: modeling.Rnw:239-240
 ###################################################
 x[, 1]                             # group boundaries
 
 
 ###################################################
-### code chunk number 9: modeling.Rnw:242-243
+### code chunk number 9: modeling.Rnw:244-245
 ###################################################
 x[, -1]                            # group frequencies
 
 
 ###################################################
-### code chunk number 10: modeling.Rnw:246-247
+### code chunk number 10: modeling.Rnw:248-249
 ###################################################
 x[1:3,]                            # first 3 groups
 
 
 ###################################################
-### code chunk number 11: modeling.Rnw:256-258
+### code chunk number 11: modeling.Rnw:258-260
 ###################################################
 x[1, 2] <- 22; x                   # frequency replacement
 x[1, c(2, 3)] <- c(22, 19); x      # frequency replacement
 
 
 ###################################################
-### code chunk number 12: modeling.Rnw:261-263
+### code chunk number 12: modeling.Rnw:263-265
 ###################################################
 x[1, 1] <- c(0, 20); x             # boundary replacement
 x[c(3, 4), 1] <- c(55, 110, 160); x
 
 
 ###################################################
-### code chunk number 13: modeling.Rnw:275-276
+### code chunk number 13: modeling.Rnw:277-278
 ###################################################
 mean(x)
 
 
 ###################################################
-### code chunk number 14: modeling.Rnw:286-287
+### code chunk number 14: modeling.Rnw:288-289
 ###################################################
 hist(x[, -3])
 
 
 ###################################################
-### code chunk number 15: modeling.Rnw:291-292
+### code chunk number 15: modeling.Rnw:293-294
 ###################################################
 hist(x[, -3])
 
 
 ###################################################
-### code chunk number 16: modeling.Rnw:302-304
+### code chunk number 16: modeling.Rnw:304-306
 ###################################################
 hist(y)               # histogram method for individual data
 hist(grouped.data(y)) # histogram method for grouped data
 
 
 ###################################################
-### code chunk number 17: modeling.Rnw:341-342
+### code chunk number 17: modeling.Rnw:343-344
 ###################################################
 (Fnt <- ogive(x))
 
 
 ###################################################
-### code chunk number 18: modeling.Rnw:347-350
+### code chunk number 18: modeling.Rnw:349-352
 ###################################################
 knots(Fnt)                         # group boundaries
 Fnt(knots(Fnt))                    # ogive at group boundaries
@@ -125,47 +125,47 @@ plot(Fnt)                          # plot of the ogive
 
 
 ###################################################
-### code chunk number 19: modeling.Rnw:354-355
+### code chunk number 19: modeling.Rnw:356-357
 ###################################################
 plot(Fnt)
 
 
 ###################################################
-### code chunk number 20: modeling.Rnw:366-368
+### code chunk number 20: modeling.Rnw:368-370
 ###################################################
 (Fnt <- ogive(y))
 knots(Fnt)
 
 
 ###################################################
-### code chunk number 21: modeling.Rnw:376-377
+### code chunk number 21: modeling.Rnw:378-379
 ###################################################
 Fnt <- ogive(x)
 
 
 ###################################################
-### code chunk number 22: modeling.Rnw:379-381
+### code chunk number 22: modeling.Rnw:381-383
 ###################################################
 quantile(x)
 Fnt(quantile(x))
 
 
 ###################################################
-### code chunk number 23: modeling.Rnw:392-394
+### code chunk number 23: modeling.Rnw:394-396
 ###################################################
 data("dental"); dental
 data("gdental"); gdental
 
 
 ###################################################
-### code chunk number 24: modeling.Rnw:403-405
+### code chunk number 24: modeling.Rnw:405-407
 ###################################################
 emm(dental, order = 1:3)           # first three moments
 emm(gdental, order = 1:3)          # idem
 
 
 ###################################################
-### code chunk number 25: modeling.Rnw:413-420
+### code chunk number 25: modeling.Rnw:415-422
 ###################################################
 lev <- elev(dental)
 lev(knots(lev))                    # ELEV at data points
@@ -177,7 +177,7 @@ plot(lev, type = "o", pch = 19)    # plot of the ELEV function
 
 
 ###################################################
-### code chunk number 26: modeling.Rnw:424-427
+### code chunk number 26: modeling.Rnw:426-429
 ###################################################
 par(mfrow = c(1, 2))
 plot(elev(dental), type = "o", pch = 19)
@@ -185,13 +185,13 @@ plot(elev(gdental), type = "o", pch = 19)
 
 
 ###################################################
-### code chunk number 27: modeling.Rnw:496-497
+### code chunk number 27: modeling.Rnw:498-499
 ###################################################
 op <- options(warn = -1)                # hide warnings from mde()
 
 
 ###################################################
-### code chunk number 28: modeling.Rnw:499-505
+### code chunk number 28: modeling.Rnw:501-507
 ###################################################
 mde(gdental, pexp, start = list(rate = 1/200),
     measure = "CvM")
@@ -202,20 +202,20 @@ mde(gdental, levexp, start = list(rate = 1/200),
 
 
 ###################################################
-### code chunk number 29: modeling.Rnw:507-508
+### code chunk number 29: modeling.Rnw:509-510
 ###################################################
 options(op)                             # restore warnings
 
 
 ###################################################
-### code chunk number 30: modeling.Rnw:517-519 (eval = FALSE)
+### code chunk number 30: modeling.Rnw:519-521 (eval = FALSE)
 ###################################################
 ## mde(gdental, ppareto, start = list(shape = 3, scale = 600),
 ##         measure = "CvM") # no convergence
 
 
 ###################################################
-### code chunk number 31: modeling.Rnw:521-524
+### code chunk number 31: modeling.Rnw:523-526
 ###################################################
 out <- try(mde(gdental, ppareto, start = list(shape = 3, scale = 600),
         measure = "CvM"), silent = TRUE)
@@ -223,7 +223,7 @@ cat(sub(", measure", ",\n             measure", out))
 
 
 ###################################################
-### code chunk number 32: modeling.Rnw:530-535
+### code chunk number 32: modeling.Rnw:532-537
 ###################################################
 pparetolog <- function(x, logshape, logscale)
     ppareto(x, exp(logshape), exp(logscale))
@@ -233,13 +233,13 @@ pparetolog <- function(x, logshape, logscale)
 
 
 ###################################################
-### code chunk number 33: modeling.Rnw:538-539
+### code chunk number 33: modeling.Rnw:540-541
 ###################################################
 exp(p$estimate)
 
 
 ###################################################
-### code chunk number 34: modeling.Rnw:639-646
+### code chunk number 34: modeling.Rnw:641-648
 ###################################################
 f <- coverage(pdf = dgamma, cdf = pgamma,
               deductible = 1, limit = 10)
@@ -251,7 +251,7 @@ f(12, shape = 5, rate = 1)
 
 
 ###################################################
-### code chunk number 35: modeling.Rnw:664-667
+### code chunk number 35: modeling.Rnw:666-669
 ###################################################
 x <- rgamma(100, 2, 0.5)
 y <- pmin(x[x > 1], 9)
@@ -259,14 +259,14 @@ op <- options(warn = -1)                # hide warnings from fitdistr()
 
 
 ###################################################
-### code chunk number 36: modeling.Rnw:669-671
+### code chunk number 36: modeling.Rnw:671-673
 ###################################################
 library(MASS)
 fitdistr(y, f, start = list(shape = 2, rate = 0.5))
 
 
 ###################################################
-### code chunk number 37: modeling.Rnw:673-674
+### code chunk number 37: modeling.Rnw:675-676
 ###################################################
 options(op)                             # restore warnings
 
