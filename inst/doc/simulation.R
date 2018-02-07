@@ -69,9 +69,9 @@ ms <- expression(cohort = rnorm(2, sqrt(0.1)),
                  contract = rnorm(cohort, 1),
                  year = rlnorm(contract, 1))
 wijt <- runif(31, 0.5, 2.5)
-pf <- simul(nodes = nodes,
-            model.freq = mf, model.sev = ms,
-            weights = wijt)
+pf <- rcomphierarc(nodes = nodes,
+                   model.freq = mf, model.sev = ms,
+                   weights = wijt)
 
 
 ###################################################
@@ -137,10 +137,10 @@ wit <- rgamma(15, rep(runif(3, 0, 100), each = 5),
 ###################################################
 ### code chunk number 19: simulation.Rnw:592-597
 ###################################################
-frequency(simul(list(entity = 3, year = 5),
-                expression(entity = rgamma(rgamma(1, 5, 5),
-                                           rgamma(1, 25, 1)),
-                           year = rpois(weights * entity)),
-                weights = wit))
+frequency(rcomphierarc(list(entity = 3, year = 5),
+                       expression(entity = rgamma(rgamma(1, 5, 5),
+                                                  rgamma(1, 25, 1)),
+                                  year = rpois(weights * entity)),
+                       weights = wit))
 
 

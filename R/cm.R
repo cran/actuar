@@ -1,4 +1,4 @@
-### ===== actuar: An R Package for Actuarial Science =====
+### actuar: Actuarial Functions and Heavy Tailed Distributions
 ###
 ### Main interface to credibility model fitting functions.
 ###
@@ -8,10 +8,22 @@
 cm <- function(formula, data, ratios, weights, subset,
                regformula = NULL, regdata, adj.intercept = FALSE,
                method = c("Buhlmann-Gisler", "Ohlsson", "iterative"),
+               likelihood, ...,
                tol = sqrt(.Machine$double.eps), maxit = 100,
                echo = FALSE)
 {
-    Call <- match.call()
+    Call <- match.call(expand.dots = TRUE)
+
+    ## Catch the pure bayesian special case.
+    if (formula == "bayes")
+    {
+        if (missing(data) || length(data) == 0L)
+            data <- NULL
+        res <- bayes(data, likelihood, ...)
+        class(res) <- c("cm", class(res))
+        attr(res, "call") <- Call
+        return(res)
+    }
 
     ## === MODEL ANALYSIS ===
     ##
@@ -196,28 +208,33 @@ print.cm <- function(x, ...)
     level.names <- names(x$nodes)
     b <- if (is.null(x$iterative)) x$unbiased else x$iterative
 
-    cat("Call:\n")
-    print(attr(x, "call"))
-    cat("\n")
+    cat("Call:\n",
+        paste(deparse(attr(x, "call")), sep = "\n", collapse = "\n"),
+        "\n\n", sep = "")
 
     cat("Structure Parameters Estimators\n\n")
     cat("  Collective premium:", x$means[[1]], "\n")
     for (i in seq.int(nlevels))
     {
-        if (i == 1)
+        if (i == 1L)
         {
-            ## Treat the Hachemeister and no regression models
-            ## separately since for the former the variance components
-            ## vector is a list, with the first element a matrix.
-            s <- paste("  Between", level.names[i], "variance: ", sep = " ")
+            ## Treat the Hachemeister model separately since in this
+            ## case the variance components vector is a list, with the
+            ## first element a matrix. (Note that since a matrix with
+            ## empty column names is printed to the screen, there will
+            ## be a blank line in the display. Hence the inserted
+            ## newline in the 'else' case.)
             if (attr(x, "model") == "regression")
             {
                 m <- b[[1]]
-                dimnames(m) <- list(c(s, rep("", nrow(m) - 1)), rep("", ncol(m)))
+                dimnames(m) <- list(c(paste("  Between", level.names[i], "variance: "),
+                                      rep("", nrow(m) - 1)),
+                                    rep("", ncol(m)))
                 print(m)
             }
             else
-                cat("\n", s, b[i], "\n", sep = "")
+                cat("\n  Between", level.names[i], "variance:",
+                    b[i], "\n")
         }
         else
             cat("  Within ", level.names[i - 1],
@@ -231,9 +248,9 @@ print.cm <- function(x, ...)
 
 summary.cm <- function(object, levels = NULL, newdata, ...)
 {
-    level.names <- names(object$nodes)
+    nlevels <- length(object$nodes)
 
-    if (length(level.names) == 1)
+    if (nlevels == 1L)
     {
         ## Single level cases (Buhlmann-Straub and Hachemeister):
         ## return the object with the following modifications: put
@@ -249,9 +266,9 @@ summary.cm <- function(object, levels = NULL, newdata, ...)
         ## appropriate level(s).
         plevs <-
             if (is.null(levels))
-                seq_along(level.names)
+                seq_along(names(object$nodes))
             else
-                pmatch(levels, level.names)
+                pmatch(levels, names(object$nodes))
         if (any(is.na(plevs)))
             stop("invalid level name")
 
@@ -276,32 +293,55 @@ print.summary.cm <- function(x, ...)
     cat("Detailed premiums\n\n")
     for (i in seq.int(nlevels))
     {
-        cat("  Level:", level.names[i], "\n")
-        level.id <- match(level.names[i], colnames(x$classification))
-        levs <- x$classification[, seq.int(level.id), drop = FALSE]
-        m <- duplicated(levs)
+        ## Print a "section title" only if there is more than one
+        ## level. (Provision introduced in v2.3.0; before the title
+        ## was always printed.)
+        if (nlevels > 1L)
+            cat("  Level:", level.names[i], "\n")
 
-        ## Treat the Hachemeister and no regression models
-        ## separately.
+        ## There are no level names in the linear Bayes case, so we
+        ## skip this column in the results.
+        if (is.null(level.names))
+            levs <- NULL
+        else
+        {
+            level.id <- match(level.names[i], colnames(x$classification))
+            levs <- x$classification[, seq.int(level.id), drop = FALSE]
+            m <- duplicated(levs)
+        }
+
         if (attr(x, "model") == "regression")
         {
+            ## Hachemeister model: results contain matrices
             y <- cbind(" ",
-                       as.vector(format(x$means[[i + 1]], ...)),
-                       as.vector(apply(format(x$cred[[i]], ...), c(1, 3),
+                       as.vector(format(x$means[[i + 1L]], ...)),
+                       as.vector(apply(format(x$cred[[i]], ...), c(1L, 3L),
                                        paste, collapse = " ")),
                        as.vector(format(sapply(x$adj.models, coef), ...)),
                        " ")
-            y[seq(1, nrow(y), dim(x$cred[[i]])[1]), c(1, 5)] <-
+            y[seq(1, nrow(y), dim(x$cred[[i]])[1]), c(1L, 5L)] <-
                 c(levs[!m, , drop = FALSE], format(x$premiums[[i]], ...))
             colnames(y) <- c(colnames(levs),
-                             "Indiv. coef.", "Credibility matrix",
+                             "Indiv. coef.", "Cred. matrix",
                              "Adj. coef.", "Cred. premium")
+        }
+        else if (is.null(levs))
+        {
+            ## Linear Bayes model: simplified results with no level
+            ## column
+            y <- cbind(format(x$means[[i + 1L]], ...),
+                       format(x$weights[[i + 1L]], ...),
+                       format(x$cred[[i]], ...),
+                       format(x$premiums[[i]], ...))
+            colnames(y) <- c("Indiv. mean", "Weight",
+                             "Cred. factor", "Bayes premium")
         }
         else
         {
+            ## All other models
             y <- cbind(as.matrix(levs[!m, , drop = FALSE]),
-                       format(x$means[[i + 1]], ...),
-                       format(x$weights[[i + 1]], ...),
+                       format(x$means[[i + 1L]], ...),
+                       format(x$weights[[i + 1L]], ...),
                        format(x$cred[[i]], ...),
                        format(x$premiums[[i]], ...))
             colnames(y) <- c(colnames(levs),
