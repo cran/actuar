@@ -2,6 +2,28 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 2.3-1}{
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{Vignette \dQuote{credibility} now contains an appendix
+	summarizing the formulas in the linear Bayes cases.}
+    }
+  }
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{\code{cm} with \code{formula = "bayes"} stopped in the
+	Gamma/Gamma case even though the parameter \code{shape.lik} was
+	provided. Thanks to Vincent Masse
+	\email{vincent.masse.4@ulaval.ca} for the report.}
+      \item{Component \code{weights} of the return value of \code{cm} in
+	the \code{formula = "bayes"} case was wrong. This had no impact
+	on premium calculation and was visible in the output of
+	\code{summary} only. Also, it caused an error when \code{data}
+	was \code{NULL} or missing.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 2.3-0}{
   \subsection{NEW FEATURES}{
     \itemize{
@@ -23,7 +45,7 @@
 	\dQuote{section title} is no longer printed for one-level
 	models.}
       \item{All instances of function \code{simul} in vignette
-	\code{dQuote{simulation}} replaced by \code{rcomphierarc}.}
+	\code{\dQuote{simulation}} replaced by \code{rcomphierarc}.}
     }
   }
 }

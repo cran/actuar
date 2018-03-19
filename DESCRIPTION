@@ -1,8 +1,8 @@
 Package: actuar
 Type: Package
 Title: Actuarial Functions and Heavy Tailed Distributions
-Version: 2.3-0
-Date: 2018-02-06
+Version: 2.3-1
+Date: 2018-03-19
 Authors@R: c(person("Vincent", "Goulet", role = c("cre", "aut"),
  	            email = "vincent.goulet@act.ulaval.ca"),
 	     person("Sébastien", "Auclair", role = "ctb"),
@@ -33,7 +33,7 @@ Encoding: UTF-8
 LazyLoad: yes
 LazyData: yes
 NeedsCompilation: yes
-Packaged: 2018-02-07 04:07:23 UTC; vincent
+Packaged: 2018-03-19 17:54:24 UTC; vincent
 Author: Vincent Goulet [cre, aut],
   Sébastien Auclair [ctb],
   Christophe Dutang [aut],
@@ -44,4 +44,4 @@ Author: Vincent Goulet [cre, aut],
   Louis-Philippe Pouliot [ctb]
 Maintainer: Vincent Goulet <vincent.goulet@act.ulaval.ca>
 Repository: CRAN
-Date/Publication: 2018-02-07 16:17:48 UTC
+Date/Publication: 2018-03-19 19:21:00 UTC

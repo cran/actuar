@@ -2,21 +2,21 @@
 ### Encoding: UTF-8
 
 ###################################################
-### code chunk number 1: credibility.Rnw:76-78
+### code chunk number 1: credibility.Rnw:78-80
 ###################################################
 library(actuar)
 options(width = 57, digits = 4)
 
 
 ###################################################
-### code chunk number 2: credibility.Rnw:114-116
+### code chunk number 2: credibility.Rnw:116-118
 ###################################################
 data(hachemeister)
 hachemeister
 
 
 ###################################################
-### code chunk number 3: credibility.Rnw:270-276
+### code chunk number 3: credibility.Rnw:272-278
 ###################################################
 X <- cbind(cohort = c(1, 2, 1, 2, 2), hachemeister)
 fit <- cm(~cohort + cohort:state, data = X,
@@ -27,39 +27,39 @@ fit
 
 
 ###################################################
-### code chunk number 4: credibility.Rnw:283-284
+### code chunk number 4: credibility.Rnw:285-286
 ###################################################
 predict(fit)
 
 
 ###################################################
-### code chunk number 5: credibility.Rnw:289-290
+### code chunk number 5: credibility.Rnw:291-292
 ###################################################
 summary(fit)
 
 
 ###################################################
-### code chunk number 6: credibility.Rnw:295-297
+### code chunk number 6: credibility.Rnw:297-299
 ###################################################
 summary(fit, levels = "cohort")
 predict(fit, levels = "cohort")
 
 
 ###################################################
-### code chunk number 7: credibility.Rnw:325-326
+### code chunk number 7: credibility.Rnw:327-328
 ###################################################
 cm(~state, hachemeister, ratios = ratio.1:ratio.12)
 
 
 ###################################################
-### code chunk number 8: credibility.Rnw:333-335
+### code chunk number 8: credibility.Rnw:335-337
 ###################################################
 cm(~state, hachemeister, ratios = ratio.1:ratio.12,
    weights = weight.1:weight.12)
 
 
 ###################################################
-### code chunk number 9: credibility.Rnw:364-369
+### code chunk number 9: credibility.Rnw:366-371
 ###################################################
 fit <- cm(~state, hachemeister, regformula = ~ time,
           regdata = data.frame(time = 1:12),
@@ -69,13 +69,13 @@ fit
 
 
 ###################################################
-### code chunk number 10: credibility.Rnw:374-375
+### code chunk number 10: credibility.Rnw:376-377
 ###################################################
 predict(fit, newdata = data.frame(time = 13))
 
 
 ###################################################
-### code chunk number 11: credibility.Rnw:385-398
+### code chunk number 11: credibility.Rnw:387-400
 ###################################################
 plot(NA, xlim = c(1, 13), ylim = c(1000, 2000), xlab = "", ylab = "")
 x <- cbind(1, 1:12)
@@ -93,7 +93,7 @@ legend("bottomright",
 
 
 ###################################################
-### code chunk number 12: credibility.Rnw:415-421
+### code chunk number 12: credibility.Rnw:417-423
 ###################################################
 fit2 <- cm(~state, hachemeister, regformula = ~ time,
            regdata = data.frame(time = 1:12),
@@ -104,7 +104,7 @@ summary(fit2, newdata = data.frame(time = 13))
 
 
 ###################################################
-### code chunk number 13: credibility.Rnw:428-442
+### code chunk number 13: credibility.Rnw:430-444
 ###################################################
 plot(NA, xlim = c(1, 13), ylim = c(1000, 2000), xlab = "", ylab = "")
 x <- cbind(1, 1:12)
@@ -123,12 +123,13 @@ legend("bottomright",
 
 
 ###################################################
-### code chunk number 14: credibility.Rnw:569-574
+### code chunk number 14: credibility.Rnw:573-579
 ###################################################
 x <- c(5, 3, 0, 1, 1)
 fit <- cm("bayes", x, likelihood = "poisson",
            shape = 3, rate = 3)
 fit
 predict(fit)
+summary(fit)
 
 
