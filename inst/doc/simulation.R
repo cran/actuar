@@ -25,7 +25,7 @@ rcomppois(10, 1.5, rgamma(3, 2))
 ###################################################
 ### code chunk number 4: simulation.Rnw:219-220
 ###################################################
-#rcomppois(10, 1.5, rgamma(3, 2), SIMPLIFY = FALSE)
+rcomppois(10, 1.5, rgamma(3, 2), SIMPLIFY = FALSE)
 
 
 ###################################################
@@ -51,13 +51,13 @@ mean(x)
 
 
 ###################################################
-### code chunk number 8: simulation.Rnw:464-465
+### code chunk number 8: simulation.Rnw:470-471
 ###################################################
 set.seed(3)
 
 
 ###################################################
-### code chunk number 9: simulation.Rnw:467-480
+### code chunk number 9: simulation.Rnw:473-486
 ###################################################
 nodes <- list(cohort = 2,
               contract = c(4, 3),
@@ -75,7 +75,7 @@ pf <- rcomphierarc(nodes = nodes,
 
 
 ###################################################
-### code chunk number 10: simulation.Rnw:487-490
+### code chunk number 10: simulation.Rnw:493-496
 ###################################################
 class(pf)
 pf$data
@@ -83,64 +83,64 @@ pf$classification
 
 
 ###################################################
-### code chunk number 11: simulation.Rnw:502-503
+### code chunk number 11: simulation.Rnw:508-509
 ###################################################
 pf
 
 
 ###################################################
-### code chunk number 12: simulation.Rnw:511-513
+### code chunk number 12: simulation.Rnw:517-519
 ###################################################
 aggregate(pf)
 aggregate(pf, by = c("cohort", "year"), FUN = mean)
 
 
 ###################################################
-### code chunk number 13: simulation.Rnw:520-522
+### code chunk number 13: simulation.Rnw:526-528
 ###################################################
 frequency(pf)
 frequency(pf, by = "cohort")
 
 
 ###################################################
-### code chunk number 14: simulation.Rnw:538-540
+### code chunk number 14: simulation.Rnw:544-546
 ###################################################
 severity(pf)
 severity(pf, splitcol = 1)
 
 
 ###################################################
-### code chunk number 15: simulation.Rnw:545-546
+### code chunk number 15: simulation.Rnw:551-552
 ###################################################
 weights(pf)
 
 
 ###################################################
-### code chunk number 16: simulation.Rnw:551-552
+### code chunk number 16: simulation.Rnw:557-558
 ###################################################
 aggregate(pf, classif = FALSE) / weights(pf, classif = FALSE)
 
 
 ###################################################
-### code chunk number 17: simulation.Rnw:580-581
+### code chunk number 17: simulation.Rnw:586-587
 ###################################################
 set.seed(123)
 
 
 ###################################################
-### code chunk number 18: simulation.Rnw:583-585
+### code chunk number 18: simulation.Rnw:589-591
 ###################################################
 wit <- rgamma(15, rep(runif(3, 0, 100), each = 5),
               rep(runif(3, 0, 100), each = 5))
 
 
 ###################################################
-### code chunk number 19: simulation.Rnw:593-598
+### code chunk number 19: simulation.Rnw:599-604
 ###################################################
 frequency(rcomphierarc(list(entity = 3, year = 5),
-                       expression(entity = rgamma(rgamma(1, 5, 5),
-                                                  rgamma(1, 25, 1)),
-                                  year = rpois(weights * entity)),
-                       weights = wit))
+            expression(entity = rgamma(rgamma(1, 5, 5),
+                                rgamma(1, 25, 1)),
+                       year = rpois(weights * entity)),
+            weights = wit))
 
 

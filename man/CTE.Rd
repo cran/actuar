@@ -68,7 +68,6 @@ TVaR(x, \dots)
   risk. An analysis with the Normal-Power approximation. In \emph{Statistical
   and Soft Computing Approaches in Insurance Problems}, pp. 87-112. Nova
   Science Publishers, 2013. ISBN 978-1-62618-506-7.
-  \url{https://www.novapublishers.com/catalog/product_info.php?products_id=43105}
 }
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca} and

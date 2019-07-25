@@ -66,6 +66,9 @@ levpareto1(limit, shape, min, order = 1)
   Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),
   \emph{Loss Models, From Data to Decisions, Fourth Edition}, Wiley.
 }
+\seealso{
+  \code{\link{dpareto}} for the two-parameter Pareto distribution.
+}
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca} and
   Mathieu Pigeon

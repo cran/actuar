@@ -2,6 +2,37 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 2.3-2}{
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{Fixed generation of random variates for the logarithmic
+	distribution with \code{rlogarithmic} when \eqn{p > 0.95}. Thanks
+	to Sam Thompson \email{samuel.thompson14@imperial.ac.uk} for the
+	report and patch.}
+      \item{Fixed generation of random variates for the zero modified
+	geometric distribution with \code{rzmgeom} when \eqn{p_0^M >
+	p}{p0m > p}. Thanks to Christophe Dutang
+	\email{dutang@ceremade.dauphine.fr} for the report.}	
+      \item{Fixed the formula for the variance of the zero truncated
+	negative binomial distribution in the man page. Thanks to Daan
+	Gerard Uitenbroek \email{Daanuitenbroek@ggd.amsterdam.nl} for
+	the report.}
+      \item{Fixed a typo in vignette \dQuote{distributions} in the
+	formula of the survival function for zero-modified discrete
+	distributions.}
+    }
+  }
+  \subsection{USER VISIBLE CHANGES}{
+    \itemize{
+      \item{Add circular references between Pareto and Single Parameter
+	Pareto man pages. There was no reference to the Single Parameter
+	Pareto distribution in the man page for the Pareto and this
+	generated questions from time to time on how to compute the
+	former. The new note and 'see also' should solve this.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 2.3-1}{
   \subsection{NEW FEATURES}{
     \itemize{

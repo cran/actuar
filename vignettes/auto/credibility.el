@@ -1,10 +1,10 @@
 (TeX-add-style-hook
- "distributions"
+ "credibility"
  (lambda ()
    (TeX-add-to-alist 'LaTeX-provided-class-options
                      '(("article" "x11names" "english")))
    (TeX-add-to-alist 'LaTeX-provided-package-options
-                     '(("fontenc" "T1") ("inputenc" "utf8") ("natbib" "round") ("helvet" "scaled=0.92") ("mathpazo" "sc") ("enumitem" "shortlabels") ("Sweave" "noae" "inconsolata")))
+                     '(("fontenc" "T1") ("inputenc" "utf8") ("natbib" "round") ("helvet" "scaled=0.9") ("mathpazo" "sc") ("Sweave" "noae" "inconsolata") ("enumitem" "shortlabels")))
    (add-to-list 'LaTeX-verbatim-environments-local "Verbatim")
    (add-to-list 'LaTeX-verbatim-environments-local "lstlisting")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
@@ -23,56 +23,41 @@
     "amsmath"
     "natbib"
     "babel"
-    "microtype"
     "helvet"
     "mathpazo"
-    "booktabs"
-    "enumitem"
     "Sweave"
+    "enumitem"
+    "framed"
     "xcolor"
     "hyperref")
    (TeX-add-symbols
-    '("samp" 1)
     '("code" 1)
     '("pkg" 1)
-    '("mat" 1)
-    '("VAR" 1)
     '("E" 1)
-    "LAS")
+    "pt"
+    "FrameCommand")
    (LaTeX-add-labels
     "sec:introduction"
-    "sec:continuous"
-    "tab:continuous"
-    "sec:phase-type"
-    "eq:Markov-transition-matrix"
-    "eq:cdf-phtype"
-    "eq:matrix-exponential"
-    "sec:discrete"
-    "tab:discrete"
-    "eq:mixture"
-    "sec:pig"
-    "eq:pig:px"
-    "eq:bessel_k"
-    "eq:pig:px:recursive"
-    "sec:special-integrals"
-    "eq:pgamma"
-    "eq:pbeta"
-    "eq:gammainc"
-    "eq:gammainc:apos"
-    "eq:expint"
-    "eq:betaint"
-    "eq:betaint:2"
-    "sec:implementation"
-    "sec:app:continuous"
-    "sec:app:continuous:transformed-beta"
-    "sec:app:continuous:transformed-gamma"
-    "sec:app:continuous:other"
-    "sec:app:phase-type"
-    "sec:app:discrete"
-    "sec:app:discrete:a-b-0"
-    "sec:app:discrete:zt"
-    "sec:app:discrete:zm"
-    "sec:app:discrete:pig")
+    "sec:hachemeister"
+    "sec:hierarchical"
+    "eq:hierarchical:premiums"
+    "eq:s2"
+    "eq:Xbzzw"
+    "eq:ac-BG"
+    "eq:bc-BG"
+    "eq:ac-Ohl"
+    "eq:bc-Ohl"
+    "eq:at"
+    "eq:bt"
+    "eq:Xzzw"
+    "sec:buhlmann"
+    "eq:a-hat"
+    "eq:a-tilde"
+    "sec:regression"
+    "fig:state4"
+    "fig:state4:2"
+    "sec:bayes"
+    "sec:formulas")
    (LaTeX-add-bibliographies
     "actuar")
    (LaTeX-add-xcolor-definecolors

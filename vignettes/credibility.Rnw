@@ -15,7 +15,7 @@
   %\SweaveUTF8
 
   \title{Credibility theory features of \pkg{actuar}}
-  \author{Christophe Dutang \\ Université du Mans \\[3ex]
+  \author{Christophe Dutang \\ Université Paris Dauphine \\[3ex]
     Vincent Goulet \\ Université Laval \\[3ex]
     Xavier Milhaud \\ Université Claude Bernard Lyon 1 \\[3ex]
     Mathieu Pigeon \\ Université du Québec à Montréal}

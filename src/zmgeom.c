@@ -122,6 +122,9 @@ double rzmgeom(double prob, double p0m)
     /* limiting case as p approaches one is mass (1-p0m) at one */
     if (prob == 1) return (unif_rand() <= p0m) ? 0.0 : 1.0;
 
+    /* p0m >= prob: generate from mixture */
+    if (p0m >= prob)
+	return (unif_rand() * (1 - prob) < (1 - p0m)) ? rgeom(prob) : 0.0;
 
     return qgeom(runif((prob - p0m)/(1 - p0m), 1), prob, 1, 0);
 }

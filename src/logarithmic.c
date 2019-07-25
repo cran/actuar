@@ -220,7 +220,7 @@ double rlogarithmic(double p)
 	    s *= p * (x - 1.0)/x;
 	}
 
-	return(x);
+	return x;
     }
 
     /* else (p >= 0.95) */
@@ -233,8 +233,8 @@ double rlogarithmic(double p)
 	double u = unif_rand();
 	double q = -expm1(r * u);
 
-	if (v <= (q * q)) return(round(1.0 + log(v)/log(q)));
-	if (v <= q)       return(1.0); /* case q^2 < v <= q */
-	return(2.0);		       /* case v > q */
+	if (v <= (q * q)) return floor(1.0 + log(v)/log(q));
+	if (v <= q)       return 2.0; /* case q^2 < v <= q */
+	return 1.0;		       /* case v > q */
     }
 }

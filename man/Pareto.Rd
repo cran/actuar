@@ -72,6 +72,12 @@ levpareto(limit, shape, scale, order = 1)
   Distribution also known as the Pareto Type II or Lomax distribution.
   See also Kleiber and Kotz (2003) for alternative names and
   parametrizations.
+
+  The version of the Pareto defined for \eqn{x > \theta}{x > s} is named
+  Single Parameter Pareto in \pkg{actuar}.  
+}
+\seealso{
+  \code{\link{dpareto1}} for the Single Parameter Pareto distribution.
 }
 \references{
   Kleiber, C. and Kotz, S. (2003), \emph{Statistical Size Distributions

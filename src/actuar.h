@@ -204,7 +204,6 @@ double dzmgeom(double x, double prob, double p0m, int give_log);
 double pzmgeom(double q, double prob, double p0m, int lower_tail, int log_p);
 double qzmgeom(double p, double prob, double p0m, int lower_tail, int log_p);
 double rzmgeom(double prob, double p0m);
-double rzmgeom2(double prob, double p0m);
 
 double dpoisinvgauss(double x, double mu, double phi, int give_log);
 double ppoisinvgauss(double q, double mu, double phi, int lower_tail, int log_p);
