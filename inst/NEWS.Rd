@@ -2,6 +2,21 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 2.3-3}{
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{Fixed declaration of the interface to a function imported
+	from \pkg{expint} to comply with option \code{-fno-common} that
+	will be the default in gcc starting with version 10.0.x. Thanks
+	to Joshua Ulrich \email{josh.m.ulrich@gmail.com}, maintainer of
+	\pkg{xts} and \pkg{TTR} for proposing the fix.}
+      \item{Correction of the formula for the moment of order \eqn{k}
+	for grouped data in \code{?emm}. Thanks to Walter Garcia-Fontes
+	for the heads up.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 2.3-2}{
   \subsection{BUG FIXES}{
     \itemize{

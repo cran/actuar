@@ -30,3 +30,6 @@ void attribute_visible R_init_actuar(DllInfo *dll)
     /* native interface to routine from package expint */
     actuar_gamma_inc = (double(*)(double,double)) R_GetCCallable("expint", "gamma_inc");
 }
+
+/* Define imports from package expint */
+double(*actuar_gamma_inc)(double,double);
