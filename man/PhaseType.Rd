@@ -72,7 +72,11 @@ mgfphtype(t, prob, rates, log = FALSE)
 
   Invalid arguments will result in return value \code{NaN}, with a warning.
 }
-
+\note{
+  The \code{"distributions"} package vignette provides the
+  interrelations between the continuous size distributions in
+  \pkg{actuar} and the complete formulas underlying the above functions.
+}  
 \references{
   \url{http://en.wikipedia.org/wiki/Phase-type_distribution}
 

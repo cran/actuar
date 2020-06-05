@@ -5,6 +5,12 @@
  *  for the Inverse Gamma distribution. See ../R/InverseGamma.R for
  *  details.
  *
+ *  We work with the density expressed as
+ *
+ *    u^shape * e^(-u) / (x * gamma(shape))
+ *
+ *  with u = scale/x.
+ *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -16,13 +22,6 @@
 
 double dinvgamma(double x, double shape, double scale, int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  u^shape * e^(-u) / (x * gamma(shape))
-     *
-     *  with u = scale/x.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(shape) || ISNAN(scale))
 	return x + shape + scale;
@@ -30,7 +29,7 @@ double dinvgamma(double x, double shape, double scale, int give_log)
     if (!R_FINITE(shape) ||
         !R_FINITE(scale) ||
         shape <= 0.0 ||
-        scale <= 0.0)
+        scale <  0.0)
         return R_NaN;
 
     /* handle also x == 0 here */
@@ -52,7 +51,7 @@ double pinvgamma(double q, double shape, double scale, int lower_tail,
     if (!R_FINITE(shape) ||
         !R_FINITE(scale) ||
         shape <= 0.0 ||
-        scale <= 0.0)
+        scale <  0.0)
         return R_NaN;;
 
     if (q <= 0)

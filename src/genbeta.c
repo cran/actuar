@@ -5,6 +5,15 @@
  *  for the generalized beta distribution. See ../R/GeneralizedBeta.R
  *  for details.
  *
+ *  We work with the density expressed as
+ *
+ *    shape3 * u^shape1 * (1 - u)^(shape2 - 1) / (x * beta(shape1, shape2))
+ *
+ *  with u = (x/scale)^shape3.
+ *
+ *  Code for limiting cases derived from .../src/nmath/dbeta.c from R
+ *  sources.
+ *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -16,35 +25,44 @@
 double dgenbeta(double x, double shape1, double shape2, double shape3,
                 double scale, int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  shape3 * u^shape1 * (1 - u)^(shape2 - 1) / (x * beta(shape1, shape2))
-     *
-     *  with u = (x/scale)^shape3.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(shape3) || ISNAN(scale))
 	return x + shape1 + shape2 + shape3 + scale;
 #endif
-    if (!R_FINITE(shape1) ||
-        !R_FINITE(shape2) ||
-        !R_FINITE(shape3) ||
-        !R_FINITE(scale)  ||
-        shape1 <= 0.0 ||
-        shape2 <= 0.0 ||
-        shape3 <= 0.0 ||
-        scale  <= 0.0)
+    if (shape1 < 0.0 ||
+        shape2 < 0.0 ||
+        shape3 < 0.0 ||
+        scale <= 0.0)
         return R_NaN;
 
     if (x < 0.0 || x > scale)
         return ACT_D__0;
+
+    /* limiting cases for (shape1 * shape3, shape2), leading to point masses */
+    double psh = shape1 * shape3;
+    if (psh == 0.0 || shape2 == 0.0 || !R_FINITE(psh) || !R_FINITE(shape2))
+    {
+	/* shape1 or shape3 = 0, shape2 = 0: point mass 1/2 at endpoints */
+	if (psh == 0.0 && shape2 == 0.0)
+	    return (x == 0 || x == scale) ? R_PosInf : ACT_D__0;
+	/* shape1 or shape3 = 0, shape2 != 0: point mass 1 at 0 */
+	if (psh == 0.0 || psh/shape2 == 0.0)
+	    return (x == 0.0) ? R_PosInf : ACT_D__0;
+	/* shape2 = 0, shape1 and shape3 != 0: point mass 1 at scale */
+	if (shape2 == 0.0 || shape2/psh == 0.0)
+	    return (x == scale) ? R_PosInf : ACT_D__0;
+	/* remaining cases: shape1 or shape3 = Inf, shape2 = Inf      */
+	if (R_FINITE(shape3)) /* shape3 < Inf: point mass 1 at midpoint */
+	    return (x == scale/2.0) ? R_PosInf : ACT_D__0;
+	else                  /* shape3 = Inf: point mass at scale */
+	    return (x == scale) ? R_PosInf : ACT_D__0;
+    }
+
     if (x == 0.0)
     {
-        double tmp = shape1 * shape3;
-        if (tmp > 1) return(ACT_D__0);
-        if (tmp < 1) return(R_PosInf);
-        /* tmp == 1 : */ return(ACT_D_val(shape3/beta(shape1, shape2)));
+        if (psh > 1) return(ACT_D__0);
+        if (psh < 1) return(R_PosInf);
+        /* psh == 1 : */ return(ACT_D_val(shape3/beta(shape1, shape2)));
     }
     if (x == scale)
     {
@@ -59,7 +77,7 @@ double dgenbeta(double x, double shape1, double shape2, double shape3,
     log1mu = log1p(-exp(logu));
 
     return ACT_D_exp(log(shape3) + shape1 * logu + (shape2 - 1.0) * log1mu
-                   - log(x) - lbeta(shape1, shape2));
+		     - log(x) - lbeta(shape1, shape2));
 }
 
 double pgenbeta(double q, double shape1, double shape2, double shape3,
@@ -69,14 +87,10 @@ double pgenbeta(double q, double shape1, double shape2, double shape3,
     if (ISNAN(q) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(shape3) || ISNAN(scale))
 	return q + shape1 + shape2 + shape3 + scale;
 #endif
-    if (!R_FINITE(shape1) ||
-        !R_FINITE(shape2) ||
-        !R_FINITE(shape3) ||
-        !R_FINITE(scale)  ||
-        shape1 <= 0.0 ||
-        shape2 <= 0.0 ||
-        shape3 <= 0.0 ||
-        scale  <= 0.0)
+    if (shape1 < 0.0 ||
+        shape2 < 0.0 ||
+        shape3 < 0.0 ||
+        scale <= 0.0)
         return R_NaN;
 
     if (q <= 0)
@@ -110,7 +124,7 @@ double qgenbeta(double p, double shape1, double shape2, double shape3,
     p = ACT_D_qIv(p);
 
     return scale * R_pow(qbeta(p, shape1, shape2, lower_tail, 0),
-                         1.0 / shape3);
+                         1.0/shape3);
 }
 
 double rgenbeta(double shape1, double shape2, double shape3, double scale)
@@ -125,7 +139,7 @@ double rgenbeta(double shape1, double shape2, double shape3, double scale)
         scale <= 0.0)
         return R_NaN;
 
-    return scale * R_pow(rbeta(shape1, shape2), 1.0 / shape3);
+    return scale * R_pow(rbeta(shape1, shape2), 1.0/shape3);
 }
 
 double mgenbeta(double order, double shape1, double shape2, double shape3,

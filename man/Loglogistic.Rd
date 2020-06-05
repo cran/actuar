@@ -69,6 +69,10 @@ levllogis(limit, shape, rate = 1, scale = 1/rate,
 
   Also known as the Fisk distribution. See also Kleiber and Kotz (2003)
   for alternative names and parametrizations.
+
+  The \code{"distributions"} package vignette provides the
+  interrelations between the continuous size distributions in
+  \pkg{actuar} and the complete formulas underlying the above functions.
 }
 \references{
   Kleiber, C. and Kotz, S. (2003), \emph{Statistical Size Distributions
@@ -76,6 +80,10 @@ levllogis(limit, shape, rate = 1, scale = 1/rate,
 
   Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),
   \emph{Loss Models, From Data to Decisions, Fourth Edition}, Wiley.
+}
+\seealso{
+  \code{\link{dpareto3}} for an equivalent distribution with a location
+  parameter.
 }
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca} and

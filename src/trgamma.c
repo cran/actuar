@@ -5,6 +5,12 @@
  *  for the transformed gamma distribution. See ../R/TransformedGamma.R
  *  for details.
  *
+ *  We work with the density expressed as
+ *
+ *    shape2 * u^shape1 * e^(-u) / (x * gamma(shape1))
+ *
+ *  with u = (x/scale)^shape2.
+ *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -16,20 +22,12 @@
 double dtrgamma(double x, double shape1, double shape2, double scale,
                 int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  shape2 * u^shape1 * e^(-u) / (x * gamma(shape1))
-     *
-     *  with u = (x/scale)^shape2.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(scale))
 	return x + shape1 + shape2 + scale;
 #endif
     if (!R_FINITE(shape1) ||
         !R_FINITE(shape2) ||
-        !R_FINITE(scale)  ||
         shape1 <= 0.0 ||
         shape2 <= 0.0 ||
         scale  <= 0.0)
@@ -64,7 +62,6 @@ double ptrgamma(double q, double shape1, double shape2, double scale,
 #endif
     if (!R_FINITE(shape1) ||
         !R_FINITE(shape2) ||
-        !R_FINITE(scale)  ||
         shape1 <= 0.0 ||
         shape2 <= 0.0 ||
         scale  <= 0.0)
@@ -97,7 +94,7 @@ double qtrgamma(double p, double shape1, double shape2, double scale,
     p = ACT_D_qIv(p);
 
     return scale * R_pow(qgamma(p, shape1, 1.0, lower_tail, 0),
-                         1.0 / shape2);
+                         1.0/shape2);
 }
 
 double rtrgamma(double shape1, double shape2, double scale)
@@ -110,7 +107,7 @@ double rtrgamma(double shape1, double shape2, double scale)
         scale  <= 0.0)
         return R_NaN;
 
-    return scale * R_pow(rgamma(shape1, 1.0), 1.0 / shape2);
+    return scale * R_pow(rgamma(shape1, 1.0), 1.0/shape2);
 }
 
 double mtrgamma(double order, double shape1, double shape2, double scale,

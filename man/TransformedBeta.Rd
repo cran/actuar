@@ -114,6 +114,10 @@ levtrbeta(limit, shape1, shape2, shape3, rate = 1, scale = 1/rate,
   Distribution also known as the Generalized Beta of the Second
   Kind and Pearson Type VI. See also Kleiber and Kotz (2003) for
   alternative names and parametrizations.
+
+  The \code{"distributions"} package vignette provides the
+  interrelations between the continuous size distributions in
+  \pkg{actuar} and the complete formulas underlying the above functions.
 }
 \references{
   Kleiber, C. and Kotz, S. (2003), \emph{Statistical Size Distributions
@@ -121,6 +125,10 @@ levtrbeta(limit, shape1, shape2, shape3, rate = 1, scale = 1/rate,
 
   Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),
   \emph{Loss Models, From Data to Decisions, Fourth Edition}, Wiley.
+}
+\seealso{
+  \code{\link{dfpareto}} for an equivalent distribution with a location
+  parameter.
 }
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca} and

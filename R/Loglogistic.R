@@ -4,7 +4,7 @@
 ### characteristics of the loglogistic distribution. The version used
 ### in these functions has cumulative distribution function
 ###
-###   Pr[X <= x] = u/(1 + u), u = (x/scale)^shape, x > 0.
+###   Pr[X <= x] = v/(1 + v), v = (x/scale)^shape, x > 0.
 ###
 ### See Appendix A of Klugman, Panjer & Willmot, Loss Models, Wiley.
 ###

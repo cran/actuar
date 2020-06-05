@@ -5,6 +5,12 @@
  *  for the inverse Weibull distribution. See ../R/InverseWeibull.R for
  *  details.
  *
+ *  We work with the density expressed as
+ *
+ *    shape * u * e^(-u) / x
+ *
+ *  with u = (scale/x)^shape.
+ *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -16,21 +22,14 @@
 
 double dinvweibull(double x, double shape, double scale, int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  shape * u * e^(-u) / x
-     *
-     *  with u = (scale/x)^shape.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(shape) || ISNAN(scale))
 	return x + shape + scale;
 #endif
-    if (!R_FINITE(scale) ||
-        !R_FINITE(shape) ||
-        scale <= 0.0 ||
-        shape <= 0.0)
+    if (!R_FINITE(shape) ||
+        !R_FINITE(scale) ||
+        shape <= 0.0 ||
+        scale <  0.0)
         return R_NaN;;
 
     /* handle also x == 0 here */
@@ -49,10 +48,10 @@ double pinvweibull(double q, double shape, double scale, int lower_tail,
     if (ISNAN(q) || ISNAN(shape) || ISNAN(scale))
 	return q + shape + scale;
 #endif
-    if (!R_FINITE(scale) ||
-        !R_FINITE(shape) ||
-        scale <= 0.0 ||
-        shape <= 0.0)
+    if (!R_FINITE(shape) ||
+        !R_FINITE(scale) ||
+        shape <= 0.0 ||
+        scale <  0.0)
         return R_NaN;;
 
     if (q <= 0)
@@ -60,7 +59,7 @@ double pinvweibull(double q, double shape, double scale, int lower_tail,
 
     double u = exp(shape * (log(scale) - log(q)));
 
-    return ACT_DT_val(exp(-u));
+    return ACT_DT_Eval(-u);
 }
 
 double qinvweibull(double p, double shape, double scale, int lower_tail,
@@ -79,7 +78,7 @@ double qinvweibull(double p, double shape, double scale, int lower_tail,
     ACT_Q_P01_boundaries(p, 0, R_PosInf);
     p = ACT_D_qIv(p);
 
-    return scale * R_pow(-log(ACT_D_Lval(p)), -1.0 / shape);
+    return scale * R_pow(-log(ACT_D_Lval(p)), -1.0/shape);
 }
 
 double rinvweibull(double shape, double scale)
@@ -90,7 +89,7 @@ double rinvweibull(double shape, double scale)
         shape <= 0.0)
         return R_NaN;;
 
-    return scale * R_pow(rexp(1.0), -1.0 / shape);
+    return scale * R_pow(rexp(1.0), -1.0/shape);
 }
 
 double minvweibull(double order, double shape, double scale, int give_log)

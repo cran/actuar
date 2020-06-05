@@ -7,18 +7,20 @@
   \usepackage{microtype}
   \usepackage[scaled=0.92]{helvet}
   \usepackage[sc]{mathpazo}
+  \usepackage[noae,inconsolata]{Sweave}
   \usepackage{booktabs}
   \usepackage[shortlabels]{enumitem}
-  \usepackage[noae,inconsolata]{Sweave}
+  \usepackage{framed}
 
   %\VignetteIndexEntry{Additional continuous and discrete distributions}
   %\VignettePackage{actuar}
   %\SweaveUTF8
 
-  \title{Inventory of continuous and discrete distributions provided
+  \title{Inventory of continuous and discrete distributions
     in \pkg{actuar}}
   \author{Christophe Dutang \\ Université Paris Dauphine \\[3ex]
     Vincent Goulet \\ Université Laval \\[3ex]
+    Nicholas Langevin \\ Université Laval \\[3ex]
     Mathieu Pigeon \\ Université du Québec à Montréal}
   \date{}
 
@@ -45,19 +47,45 @@
     bookmarksdepth = {subsubsection}}
 
   %% Compact, sans label itemize environment for the appendices.
-  \setlist[itemize]{label={},leftmargin=0pt,align=left,nosep}
+  \setlist[itemize]{label={},leftmargin=0pt,align=left,nosep,midpenalty=10000}
 
   %% Flush left enumerate environment.
   \setlist[enumerate]{leftmargin=*,align=left}
 
-  %% Some new commands
+  %% Sweave Sinput and Soutput environments reinitialized to remove
+  %% default configuration. Space between input and output blocks also
+  %% reduced.
+  \DefineVerbatimEnvironment{Sinput}{Verbatim}{}
+  \DefineVerbatimEnvironment{Soutput}{Verbatim}{}
+  \fvset{listparameters={\setlength{\topsep}{0pt}}}
+
+  %% Environment Schunk redefined as an hybrid of environments
+  %% snugshade* and leftbar of framed.sty.
+  \makeatletter
+  \renewenvironment{Schunk}{%
+    \setlength{\topsep}{1pt}
+    \def\FrameCommand##1{\hskip\@totalleftmargin
+       \vrule width 2pt\colorbox{codebg}{\hspace{3pt}##1}%
+      % There is no \@totalrightmargin, so:
+      \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+    \MakeFramed {\advance\hsize-\width
+      \@totalleftmargin\z@ \linewidth\hsize
+      \advance\labelsep\fboxsep
+      \@setminipage}%
+  }{\par\unskip\@minipagefalse\endMakeFramed}
+  \makeatother
+
+  %% Additional commands similar to those of RJournal.sty.
+  \newcommand{\pkg}[1]{\textbf{#1}}
+  \newcommand{\code}[1]{\texttt{#1}}
+  \newcommand{\samp}[1]{{`\normalfont\texttt{#1}'}}
+  \newcommand{\file}[1]{{`\normalfont\textsf{#1}'}}
+
+  %% Additional math commands.
   \newcommand{\E}[1]{E[ #1 ]}
   \newcommand{\VAR}[1]{\mathrm{Var} [ #1 ]}
   \newcommand{\LAS}{\mathrm{LAS}}
   \newcommand{\mat}[1]{\mathbold{#1}} % with mathpazo
-  \newcommand{\pkg}[1]{\textbf{#1}}
-  \newcommand{\code}[1]{\texttt{#1}}
-  \newcommand{\samp}[1]{{`\normalfont\texttt{#1}'}}
 
   \bibliographystyle{plainnat}
 
@@ -77,7 +105,7 @@ functions are named \code{dfoo}, \code{pfoo}, \code{qfoo} and
 \code{rfoo}, respectively.
 
 Package \pkg{actuar} provides \code{d}, \code{p}, \code{q} and
-\code{r} functions for a large number of continuous distributions
+\code{r} functions for a large number of continuous size distributions
 useful for loss severity modeling; for phase-type distributions used
 in computation of ruin probabilities; for zero-truncated and
 zero-modified extensions of the discrete distributions commonly used
@@ -87,24 +115,25 @@ functions to compute raw moments, limited moments and the moment
 generating function (when it exists) of continuous distributions.
 
 
-\section{Additional continuous distributions}
+\section{Additional continuous size distributions}
 \label{sec:continuous}
 
 The package provides support functions for all the probability
-distributions found in Appendix~A of \cite{LossModels4e} and not
-already present in base R, excluding the log-$t$, but
-including the loggamma distribution \citep{HoggKlugman}. These
-distributions mostly fall under the umbrella of extreme value or
-heavy tailed distributions.
+distributions found in Appendix~A of \citet{LossModels4e} and not
+already present in base R, excluding the log-$t$, but including the
+loggamma distribution \citep{HoggKlugman}, as well as for the
+Feller--Pareto distribution and related Pareto distributions with a
+location parameter \citep{Arnold:pareto:2ed}. These distributions
+mostly fall under the umbrella of extreme value or heavy tailed
+distributions.
 
 \autoref{tab:continuous} lists the distributions supported by
-\pkg{actuar} --- using the nomenclature of \cite{LossModels4e} ---
-along with the root names of the R functions.
+\pkg{actuar} along with the root names of the R functions.
 \autoref{sec:app:continuous} details the formulas implemented and the
 name of the argument corresponding to each parameter. By default, all
 functions (except those for the Pareto distribution) use a rate
 parameter equal to the inverse of the scale parameter. This differs
-from \cite{LossModels4e} but is better in line with the functions for
+from \citet{LossModels4e} but is better in line with the functions for
 the gamma, exponential and Weibull distributions in base R.
 
 \begin{table}
@@ -113,12 +142,17 @@ the gamma, exponential and Weibull distributions in base R.
     \toprule
     Family & Distribution & Root \\
     \midrule
-    Transformed beta  & Transformed beta & \code{trbeta} \\
+    Feller--Pareto    & Feller--Pareto & \code{fpareto} \\
+                      & Pareto IV & \code{pareto4} \\
+                      & Pareto III & \code{pareto3} \\
+                      & Pareto II & \code{pareto2} \\
+                      & Transformed beta & \code{trbeta} \\
                       & Burr & \code{burr} \\
                       & Loglogistic & \code{llogis} \\
                       & Paralogistic & \code{paralogis} \\
                       & Generalized Pareto & \code{genpareto} \\
                       & Pareto & \code{pareto} \\
+                      & Single-parameter Pareto & \code{pareto1} \\
                       & Inverse Burr & \code{invburr} \\
                       & Inverse Pareto & \code{invpareto} \\
                       & Inverse paralogistic & \code{invparalogis} \\
@@ -132,7 +166,6 @@ the gamma, exponential and Weibull distributions in base R.
     Other             & Loggamma & \code{lgamma} \\
                       & Gumbel & \code{gumbel} \\
                       & Inverse Gaussian & \code{invgauss} \\
-                      & Single parameter Pareto & \code{pareto1} \\
                       & Generalized beta & \code{genbeta} \\
     \bottomrule
   \end{tabular}
@@ -141,6 +174,205 @@ the gamma, exponential and Weibull distributions in base R.
     functions.}
   \label{tab:continuous}
 \end{table}
+
+We mostly use the nomenclature of \citet{LossModels4e} to classify the
+continuous distributions supported by \pkg{actuar}. However, following
+\citet{Arnold:pareto:2ed}, we regroup distributions of the transformed
+beta family and variants of the Pareto distribution inside the larger
+Feller--Pareto family of distributions.
+\autoref{fig:diagram:fp-family} shows the relationships between the
+distributions of the Feller--Pareto and transformed beta families.
+\autoref{fig:diagram:trgamma-family} does the same for the
+distributions of the transformed gamma and inverse transformed gamma
+families.
+
+\begin{figure}
+  \centering
+  \setlength{\unitlength}{0.7cm}
+  \begin{picture}(16.9,10.75)(-0.7,-0.4)
+    \small
+
+    % Flèches
+    \put(8,6){\vector(2,-1){3.7}} % trbeta -> invburr
+    \put(13,4.2){\vector(0,1){0.95}} % invburr -> invparalogis
+    \put(11.7,3.1){\line(-1,-1){1}} \put(10.7,2.1){\line(-1,0){7.7}} \put(3,2.1){\vector(-1,-1){1.1}} % invburr -> llogis
+    \put(13,3){\vector(0,-1){2}} % invburr -> invpareto
+    \put(2.05,3.1){\vector(2,-1){4.2}}  % burr -> pareto
+    \put(1,3){\vector(0,-1){2}}       % burr -> llogis
+    \put(6,6){\vector(-2,-1){3.85}}   % trbeta -> burr
+    \put(1,4.2){\vector(0,1){0.95}}   % burr -> paralogis
+    \put(7,6){\vector(0,-1){1.8}}     % trbeta -> genpareto
+    \put(7,9){\vector(0,-1){1.8}}     % fpareto -> trbeta
+    \put(7,3){\vector(0,-1){2}}       % genpareto -> pareto
+    \put(8,3){\vector(2,-1){4}}       % genpareto -> invpareto
+    % \put(6,9){\vector(-2,-1){3.3}} % fpareto -> pareto3
+    % \put(8,9){\vector(2,-1){3.3}} % fpareto -> pareto1
+    \put(1,9){\vector(0,-1){1.1}}     % pareto4 -> pareto3
+    \put(13,9){\vector(0,-1){1.1}}     % pareto2 -> pareto1
+    \put(4.5,9.6){\vector(-1,0){1.75}}     % fpareto -> pareto4
+    \put(9.5,9.6){\vector(1,0){1.75}}     % fpareto -> pareto2
+
+    \put(14.7,9.6){\line(1,0){1.5}}   % pareto2 -> pareto
+    \put(16.2,9.6){\line(0,-1){10}}
+    \put(16.2,-0.4){\line(-1,0){7.5}}
+    \put(8.7,-0.4){\vector(-2,1){0.72}}
+    \put(14.8,9.62){\makebox(0,0.5)[l]{$\mu = 0$}}
+
+
+    \put(7,9.65){\makebox(0,0.5)[c]{Feller-Pareto}}
+    \put(7,9.1){\makebox(0,0.5)[c]{$\mu, \alpha, \gamma, \tau, \theta$}}
+    \put(7,9.6){\oval(5,1.2)}
+
+    \put(3.2,9.65){\makebox(0,0.5)[l]{$\tau = 1$}}
+    \put(1,9.65){\makebox(0,0.5)[c]{Pareto IV}}
+    \put(1,9.1){\makebox(0,0.5)[c]{$\mu, \alpha, \gamma, \theta$}}
+    \put(1,9.6){\oval(3.4,1.2)}
+
+    \put(9.8,9.05){\makebox(0,0.5)[l]{$\gamma = 1$}}
+    \put(9.8,9.65){\makebox(0,0.5)[l]{$\tau = 1$}}
+    \put(13,9.65){\makebox(0,0.5)[c]{Pareto II}}
+    \put(13,9.1){\makebox(0,0.5)[c]{$\mu,\alpha, \theta$}}
+    \put(13,9.6){\oval(3.4,1.2)}
+
+    \put(0.8,8.3){\makebox(0,0.5)[r]{$\alpha = 1$}}
+    \put(1,7.35){\makebox(0,0.5)[c]{Pareto III}}
+    \put(1,6.8){\makebox(0,0.5)[c]{$\mu, \gamma, \theta$}}
+    \put(1,7.3){\oval(3.4,1.2)}
+
+    \put(13.2,8.3){\makebox(0,0.5)[l]{$\mu = \theta$}}
+    \put(13,7.35){\makebox(0,0.5)[c]{Pareto I}}
+    \put(13,6.8){\makebox(0,0.5)[c]{$\alpha, \theta$}}
+    \put(13,7.3){\oval(3.4,1.2)}
+
+    \put(7.2,7.9){\makebox(0,0.5)[l]{$\mu = 0$}}
+    \put(7,6.65){\makebox(0,0.5)[c]{Transformed Beta}}
+    \put(7,6.1){\makebox(0,0.5)[c]{$\alpha, \gamma, \tau, \theta$}}
+    \put(7,6.6){\oval(5,1.2)}
+
+    \put(9.2,5.4){\rotatebox{-26.6}{\makebox(0,0.5)[l]{$\alpha = 1$}}}
+    \put(13.20,3.65){\makebox(0,0.5)[c]{Inverse Burr}}
+    \put(13.20,3.1){\makebox(0,0.5)[c]{$\gamma, \tau, \theta$}}
+    \put(13.20,3.6){\oval(3.4,1.2)}
+
+    \put(13.2,4.3){\makebox(0,0.5)[l]{$\gamma = \tau$}}
+    \put(13.20,5.80){\makebox(0,0.5)[c]{Inverse Paralogistic}}
+    \put(13.20,5.25){\makebox(0,0.5)[c]{$\tau, \theta$}}
+    \put(13.20,5.75){\oval(5.4,1.2)}
+
+    \put(13.2,1.9){\makebox(0,0.5)[l]{$\gamma = 1$}}
+    \put(13.20,0.45){\makebox(0,0.5)[c]{Inverse Pareto}}
+    \put(13.20,-0.1){\makebox(0,0.5)[c]{$\tau, \theta$}}
+    \put(13.20,0.4){\oval(3.9,1.2)}
+
+    \put(7.2,4.9){\makebox(0,0.5)[l]{$\gamma = 1$}}
+    \put(7,3.65){\makebox(0,0.5)[c]{Generalized Pareto}}
+    \put(7,3.1){\makebox(0,0.5)[c]{$\alpha, \tau, \theta$}}
+    \put(7,3.6){\oval(4.9,1.2)}
+
+    \put(7.2,1.25){\makebox(0,0.5)[l]{$\tau = 1$}}
+    \put(7,0.45){\makebox(0,0.5)[c]{Pareto}}
+    \put(7,-0.1){\makebox(0,0.5)[c]{$\alpha, \theta$}}
+    \put(7,0.4){\oval(2.2,1.2)}
+
+    \put(4.5,5.4){\rotatebox{26.6}{\makebox(0,0.5)[r]{$\tau = 1$}}}
+    \put(1,3.65){\makebox(0,0.5)[c]{Burr}}
+    \put(1,3.1){\makebox(0,0.5)[c]{$\alpha, \gamma, \theta$}}
+    \put(1,3.6){\oval(2.5,1.2)}
+
+    \put(0.8,4.3){\makebox(0,0.5)[r]{$\gamma = \alpha$}}
+    \put(1,5.80){\makebox(0,0.5)[c]{Paralogistic}}
+    \put(1,5.25){\makebox(0,0.5)[c]{$\alpha, \theta$}}
+    \put(1,5.75){\oval(3.4,1.2)}
+
+    \put(0.8,1.9){\makebox(0,0.5)[r]{$\alpha = 1$}}
+    \put(1,0.45){\makebox(0,0.5)[c]{Loglogistic}}
+    \put(1,-0.1){\makebox(0,0.5)[c]{$\gamma, \theta$}}
+    \put(1,0.4){\oval(3.4,1.2)}
+
+    \put(9.8,2.1){\rotatebox{-26.6}{\makebox(0,0.5)[r]{$\alpha = 1$}}}
+    \put(4.0,2.1){\rotatebox{-26.6}{\makebox(0,0.5)[r]{$\gamma = 1$}}}
+    \put(11.25,3.0){\rotatebox{45}{\makebox(0,0.5)[r]{$\tau = 1$}}}
+  \end{picture}
+  \caption{Interrelations between distributions of the Feller--Pareto
+    family. This diagram is an extension of Figure~5.2 of
+    \citet{LossModels4e}.}
+  \label{fig:diagram:fp-family}
+\end{figure}
+
+\begin{figure}
+  \setlength{\unitlength}{0.7cm}
+  \begin{picture}(7.5,5.2)(-0.25,0)
+    \small
+
+    % Flèches
+    \put(4,4){\vector(2,-1){1.55}} % trgamma -> weibull
+    \put(5.55,2){\vector(-2,-1){1.55}}  % weibull -> exp
+    \put(1.55,2){\vector(2,-1){1.55}}    % gamma -> exp
+    \put(3,4){\vector(-2,-1){1.55}} % trgamma -> gamma
+
+    \put(3.5,4.65){\makebox(0,0.5)[c]{Transformed gamma}}
+    \put(3.5,4.1){\makebox(0,0.5)[c]{$\alpha, \tau, \lambda$}}
+    \put(3.5,4.6){\oval(5,1.2)}
+
+    \put(5.4,3.45){\makebox(0,0.5)[l]{$\alpha = 1$}}
+
+    \put(6,2.65){\makebox(0,0.5)[c]{Weibull}}
+    \put(6,2.1){\makebox(0,0.5)[c]{$\tau, \lambda$}}
+    \put(6,2.6){\oval(2.5,1.2)}
+
+    \put(5.4,1.35){\makebox(0,0.5)[l]{$\tau = 1$}}
+
+    \put(3.5,0.65){\makebox(0,0.5)[c]{Exponential}}
+    \put(3.5,0.1){\makebox(0,0.5)[c]{$\lambda$}}
+    \put(3.5,0.6){\oval(3,1.2)}
+
+    \put(1.6,1.35){\makebox(0,0.5)[r]{$\alpha = 1$}}
+
+    \put(1,2.65){\makebox(0,0.5)[c]{Gamma}}
+    \put(1,2.1){\makebox(0,0.5)[c]{$\alpha, \lambda$}}
+    \put(1,2.6){\oval(2.5,1.2)}
+
+    \put(1.6,3.45){\makebox(0,0.5)[r]{$\tau = 1$}}
+  \end{picture}
+  \hfill
+  \begin{picture}(8.75,5.2)(-0.875,0)
+    \small
+
+    % Flèches
+    \put(4,4){\vector(2,-1){1.55}} % trgamma -> weibull
+    \put(5.55,2){\vector(-2,-1){1.55}}  % weibull -> exp
+    \put(1.55,2){\vector(2,-1){1.55}}    % gamma -> exp
+    \put(3,4){\vector(-2,-1){1.55}} % trgamma -> gamma
+
+    \put(3.5,4.65){\makebox(0,0.5)[c]{Inverse transformed gamma}}
+    \put(3.5,4.1){\makebox(0,0.5)[c]{$\alpha, \tau, \lambda$}}
+    \put(3.5,4.6){\oval(6.5,1.2)}
+
+    \put(5.4,3.45){\makebox(0,0.5)[l]{$\alpha = 1$}}
+
+    \put(6,2.65){\makebox(0,0.5)[c]{Inverse Weibull}}
+    \put(6,2.1){\makebox(0,0.5)[c]{$\tau, \lambda$}}
+    \put(6,2.6){\oval(3.75,1.2)}
+
+    \put(5.4,1.35){\makebox(0,0.5)[l]{$\tau = 1$}}
+
+    \put(3.5,0.65){\makebox(0,0.5)[c]{Inverse exponential}}
+    \put(3.5,0.1){\makebox(0,0.5)[c]{$\lambda$}}
+    \put(3.5,0.6){\oval(4.75,1.2)}
+
+    \put(1.6,1.35){\makebox(0,0.5)[r]{$\alpha = 1$}}
+
+    \put(1,2.65){\makebox(0,0.5)[c]{Inverse gamma}}
+    \put(1,2.1){\makebox(0,0.5)[c]{$\alpha, \lambda$}}
+    \put(1,2.6){\oval(3.75,1.2)}
+
+    \put(1.6,3.45){\makebox(0,0.5)[r]{$\tau = 1$}}
+  \end{picture}
+  \caption{Interrelations between distributions of the transformed
+    gamma and inverse transformed gamma families. Diagrams derived
+    from Figure~5.3 of \citet{LossModels4e}.}
+  \label{fig:diagram:trgamma-family}
+\end{figure}
 
 In addition to the \code{d}, \code{p}, \code{q} and \code{r}
 functions, \pkg{actuar} introduces \code{m}, \code{lev} and \code{mgf}
@@ -168,8 +400,7 @@ The \code{mgf} functions come in handy to compute the adjustment
 coefficient in ruin theory; see the \samp{risk} vignette.
 
 
-
-\section{Support for phase-type distributions}
+\section{Phase-type distributions}
 \label{sec:phase-type}
 
 In addition to the 19 distributions of \autoref{tab:continuous},
@@ -223,8 +454,6 @@ of the ruin probabilities; see \samp{?ruin} and the \samp{risk}
 vignette.
 
 
-
-
 \section{Extensions to standard discrete distributions}
 \label{sec:discrete}
 
@@ -258,7 +487,7 @@ if there exists constants $a$ and $b$ such that
 \begin{equation*}
   \frac{p_k}{p_{k - 1}} = a + \frac{b}{k}, \quad k = 2, 3, \dots.
 \end{equation*}
-One will note that recursions start at $k = 2$ for the $(a, b, 1)$
+One will note that recursion starts at $k = 2$ for the $(a, b, 1)$
 class. Therefore, the probability at zero can be any arbitrary number
 $0 \leq p_0 \leq 1$.
 
@@ -367,17 +596,26 @@ Alternatively, we have
   \end{cases}
 \end{equation*}
 and
-\begin{equation*}
+\begin{align*}
   P^M(k)
-  = p_0^M + (1 - p_0^M) \frac{P(k) - P(0)}{1 - P(0)}
-  = p_0^M + \frac{1 - p_0^M}{1 - p_0}\, (P(k) - p_0)
-\end{equation*}
+  &= p_0^M + (1 - p_0^M) \frac{P(k) - P(0)}{1 - P(0)} \\
+  &= p_0^M + \frac{1 - p_0^M}{1 - p_0}\, (P(k) - p_0) \\
+  &= p_0^M + (1 - p_0^M)\, P^T(k)
+\end{align*}
 for all $k = 0, 1, 2, \dots$. The survival function is
 \begin{equation*}
   \bar{P}^M(k)
   = (1 - p_0^M)\, \frac{\bar{P}(k)}{\bar{P}(0)}
-  = \frac{1 - p_0^M}{1 - p_0}\, \bar{P}(k).
+  = \frac{1 - p_0^M}{1 - p_0}\, \bar{P}(k)
+  = (1 - p_0^M)\, \bar{P}^T(k).
 \end{equation*}
+Therefore, we can also write the pmf of a zero-modified distribution
+as a mixture of a degenerate distribution at zero and the
+corresponding zero-truncated distribution:
+\begin{equation}
+  \label{eq:mixture:alt}
+  p_k^M = p_0^M \mathbb{1}_{\{k = 0\}} + (1 - p_0^M)\, p_k^T.
+\end{equation}
 
 The members of the subclass are the zero-modified Poisson,
 zero-modified binomial, zero-modified negative binomial and
@@ -391,7 +629,7 @@ distributions with $p_0^M = 0$. However, using the dedicated functions
 in R will be more efficient.
 
 
-\section{Support for the Poisson-inverse Gaussian distribution}
+\section{Poisson-inverse Gaussian distribution}
 \label{sec:pig}
 
 The Poisson-inverse Gaussian (PIG) distribution results from the
@@ -527,7 +765,7 @@ following relation for the integral on the right hand side of
 \eqref{eq:pbeta}:
 \begin{equation*}
   \int\limits_0^x t^{a - 1} (1 - t)^{b - 1}\, dt
-  = \frac{x^a}{a} F(a, 1 - b; a + 1; x),
+  = \frac{x^a}{a}\, F(a, 1 - b; a + 1; x),
 \end{equation*}
 where
 \begin{equation*}
@@ -575,15 +813,102 @@ Package \pkg{actuar} includes a C implementation of
 \eqref{eq:betaint:2} and imports functionalities of package
 \pkg{expint} \citep{expint} to compute the incomplete gamma function
 \eqref{eq:gammainc} at the C level. The routines are used to evaluate
-the limited expected value for distributions of the transformed beta
+the limited expected value for distributions of the Feller--Pareto
 and transformed gamma families.
+
+
+\section{Package API: accessing the C routines}
+\label{sec:api}
+
+The actual workhorses behind the R functions presented in this
+document are C routines that the package exposes to other packages
+through an API. The header file \file{include/actuarAPI.h} in the
+package installation directory contains declarations for %
+the continuous distributions of \autoref{sec:app:continuous}, %
+the phase-type distributions of \autoref{sec:app:phase-type}, %
+the discrete distributions of \autoref{sec:app:discrete}, %
+and the beta integral of \autoref{sec:special-integrals}.
+
+The prototypes of the C routines for probability distributions all
+follow the same pattern modeled after those of base R
+\citep[Chapter~6]{R-exts}. As an example, here are the prototypes for
+the Pareto distribution:
+\begin{Schunk}
+\begin{Sinput}
+double dpareto(double x, double shape, double scale,
+               int give_log);
+double ppareto(double q, double shape, double scale,
+               int lower_tail, int log_p);
+double qpareto(double p, double shape, double scale,
+               int lower_tail, int log_p);
+double rpareto(double shape, double scale);
+double mpareto(double order, double shape, double scale,
+               int give_log);
+double levpareto(double limit, double shape, double scale,
+                 double order, int give_log);
+\end{Sinput}
+\end{Schunk}
+
+For the beta integral \eqref{eq:betaint:2}, the frontend is a routine
+\code{betaint} that returns \code{NA} or \code{NaN} for out-of-range
+arguments, but actual computation is done by routine
+\code{betaint\_raw}. Both are exposed as follows in the API:
+\begin{Schunk}
+\begin{Sinput}
+double betaint(double x, double a, double b);
+double betaint_raw(double x, double a, double b, double x1m);
+\end{Sinput}
+\end{Schunk}
+
+The developer of some package \pkg{pkg} who wants to use a routine ---
+say \code{dpareto} --- in her code should proceed as follows.
+\begin{enumerate}
+\item Add \pkg{actuar} to the \code{Imports} and \code{LinkingTo}
+  directives of the \file{DESCRIPTION}  file of \pkg{pkg};
+\item Add an entry \samp{import(actuar)} in the \file{NAMESPACE} file
+  of \pkg{pkg};
+\item Define the routine with a call to \code{R\_GetCCallable} in the
+  initialization routine \code{R\_init\_pkg} of \pkg{pkg}
+  \citep[Section~5.4]{R-exts}. For the current example, the file
+  \file{src/init.c} of \pkg{pkg} would contain the following code:
+\begin{Schunk}
+\begin{Sinput}
+void R_init_pkg(DllInfo *dll)
+{
+    R_registerRoutines( /* native routine registration */ );
+
+    pkg_dpareto = (double(*)(double,int,int))
+                  R_GetCCallable("actuar", "dpareto");
+}
+\end{Sinput}
+\end{Schunk}
+\item Define a native routine interface that will call
+  \code{dpareto}, say \code{pkg\_dpareto} to avoid any name
+  clash, in \file{src/init.c} as follows:
+\begin{Schunk}
+\begin{Sinput}
+double(*pkg_dpareto)(double,double,double,int);
+\end{Sinput}
+\end{Schunk}
+\item Declare the routine in a header file of \pkg{pkg} with the
+  keyword \code{extern} to expose the interface to all routines of the
+  package. In our example, file \file{src/pkg.h} would contain:
+\begin{Schunk}
+\begin{Sinput}
+extern double(*pkg_dpareto)(double,double,double,int);
+\end{Sinput}
+\end{Schunk}
+\item Include the package header file \file{pkg.h} in any C file
+  making use of routine \code{pkg\_dpareto}.
+\end{enumerate}
+
+The companion package \pkg{expint} \citep{expint} ships with a
+complete test package implementing the above. See the vignette of the
+latter package for more information.
 
 
 \section{Implementation details}
 \label{sec:implementation}
-
-The core of all the functions presented in this document is written in
-C for speed.
 
 The cdf of the continuous distributions of \autoref{tab:continuous}
 use \code{pbeta} and \code{pgamma} to compute the incomplete beta and
@@ -614,11 +939,13 @@ of the distribution with cdf $P(k)$.
 For zero-modified distributions, we generate variates from the
 discrete mixture \eqref{eq:mixture} when $p_0^M \geq p_0$. When
 $p_0^M < p_0$, we can use either of two methods:
-\begin{enumerate}[i)]
+\begin{enumerate}
 \item the classical rejection method with an envelope that differs
   from the target distribution only at zero (meaning that only zeros
   are rejected);
-\item the inversion method on a restricted range explained above.
+\item generation from the discrete mixture \eqref{eq:mixture:alt} with
+  the corresponding zero-truncated distribution (hence using the
+  inversion method on a restricted range explained above).
 \end{enumerate}
 Which approach is faster depends on the relative speeds of the
 standard random generation function and the standard quantile
@@ -628,11 +955,15 @@ determined (empirically) distribution-specific cutoff points between
 the two methods.
 
 Finally, computation of the Poisson-inverse Gaussian pmf uses the
-direct expression \eqref{eq:pig:px} --- and the C level
-function \code{bessel\_k} part of the R API --- rather than
-the recursive equations \eqref{eq:pig:px:recursive}. We thereby take
-advantage of the various optimizations in \code{bessel\_k}, with
-no negative impact on performance.
+recursive equations \eqref{eq:pig:px:recursive}. Versions of
+\pkg{actuar} prior to 3.0-0 used the direct expression
+\eqref{eq:pig:px} and the C level function \code{bessel\_k} part of
+the R API. However, the latter overflows for large values of $\nu$ and
+this caused \code{NaN} results for the value of
+\begin{equation*}
+  \frac{B^{-(x - \frac{1}{2})} K_{x - \frac{1}{2}}(B/\phi)}{x!}
+\end{equation*}
+and, therefore, for the  Poisson-inverse Gaussian pmf.
 
 \appendix
 
@@ -643,8 +974,8 @@ This appendix gives the root name and the parameters of the
 R support functions for the distributions of
 \autoref{tab:continuous}, as well as the formulas for the pdf, the
 cdf, the raw moment of order $k$ and the limited moment of order
-$k$ using the parametrization of \cite{LossModels4e} and
-\cite{HoggKlugman}.
+$k$ using the parametrization of \citet{LossModels4e} and
+\citet{HoggKlugman}.
 
 In the following, $\Gamma(\alpha; x)$ is the incomplete gamma function
 \eqref{eq:pgamma}, $\beta(a, b; x)$ is the incomplete beta function
@@ -656,8 +987,134 @@ the third kind \eqref{eq:bessel_k}.
 Unless otherwise stated, all parameters are finite and strictly
 positive, and the functions are defined for $x > 0$.
 
-\subsection{Transformed beta family}
-\label{sec:app:continuous:transformed-beta}
+\subsection{Feller--Pareto family}
+\label{sec:app:continuous:feller-pareto}
+
+\subsubsection{Feller--Pareto}
+
+\begin{itemize}
+\item Root: \code{fpareto}
+\item Parameters: \code{min} ($-\infty < \mu < \infty$),
+      \code{shape1} ($\alpha$),
+      \code{shape2} ($\gamma$),
+      \code{shape3} ($\tau$),
+      \code{rate}   ($\lambda = 1/\theta$),
+      \code{scale}  ($\theta$)
+\end{itemize}
+\begin{align*}
+  f(x)
+  &= \frac{\gamma u^\tau (1 - u)^\alpha}{%
+    (x - \mu) \beta (\alpha, \tau )},
+    \quad u = \frac{v}{1 + v},
+    \quad v = \left(\frac{x - \mu}{\theta} \right)^\gamma,
+    \quad x > \mu \\
+  F(x)
+  &= \beta(\tau, \alpha; u) \\ \displaybreak[0]
+  \E{X^k}
+  &= \sum_{j = 0}^k \binom{k}{j} \mu^{k - j} \theta^j\,
+    \frac{\Gamma(\tau+j/\gamma) \Gamma(\alpha-j/\gamma)}{%
+    \Gamma(\alpha) \Gamma(\tau)},
+    \quad \text{integer } 0 \leq k < \alpha\gamma \\
+  \E{(X \wedge x)^k}
+  &= \sum_{j = 0}^k \binom{k}{j} \mu^{k - j} \theta^j\,
+    \frac{B(\tau+j/\gamma, \alpha-j/\gamma; u)}{%
+    \Gamma(\alpha) \Gamma(\tau)} \\
+  &\phantom{=} + x^k [1 - \beta(\tau, \alpha; u)],
+    \quad \text{integer } k \geq 0,
+    \quad \alpha - j/\gamma \neq -1, -2, \dots
+\end{align*}
+
+\subsubsection{Pareto IV}
+
+\begin{itemize}
+\item Root: \code{pareto4}
+\item Parameters: \code{min} ($-\infty < \mu < \infty$),
+      \code{shape1} ($\alpha$),
+      \code{shape2} ($\gamma$),
+      \code{rate}   ($\lambda = 1/\theta$),
+      \code{scale}  ($\theta$)
+\end{itemize}
+\begin{align*}
+  f(x)
+  &= \frac{\alpha \gamma u^\alpha (1 - u)}{(x - \mu)},
+    \quad u = \frac{1}{1 + v},
+    \quad v = \left(\frac{x - \mu}{\theta} \right)^\gamma,
+    \quad x > \mu \\
+  F(x)
+  &= 1 - u^\alpha \\ \displaybreak[0]
+  \E{X^k}
+  &= \sum_{j = 0}^k \binom{k}{j} \mu^{k - j} \theta^j\,
+    \frac{\Gamma(1+j/\gamma) \Gamma(\alpha-j/\gamma)}{%
+    \Gamma(\alpha)},
+    \quad \text{integer } 0 \leq k < \alpha\gamma \\
+  \E{(X \wedge x)^k}
+  &= \sum_{j = 0}^k \binom{k}{j} \mu^{k - j} \theta^j\,
+    \frac{B(1+j/\gamma, \alpha-j/\gamma; 1-u)}{%
+    \Gamma(\alpha)} \\
+  &\phantom{=} + x^k u^\alpha,
+    \quad \text{integer } k \geq 0
+    \quad \alpha - j/\gamma \neq -1, -2, \dots
+\end{align*}
+
+\subsubsection{Pareto III}
+
+\begin{itemize}
+\item Root: \code{pareto3}
+\item Parameters: \code{min} ($-\infty < \mu < \infty$),
+      \code{shape} ($\gamma$),
+      \code{rate}  ($\lambda = 1/\theta$),
+      \code{scale} ($\theta$)
+\end{itemize}
+\begin{align*}
+  f(x)
+  &= \frac{\gamma u (1 - u)}{(x - \mu)},
+    \quad u = \frac{v}{1 + v},
+    \quad v = \left(\frac{x - \mu}{\theta} \right)^\gamma,
+    \quad x > \mu \\
+  F(x)
+  &= u \\ \displaybreak[0]
+  \E{X^k}
+  &= \sum_{j = 0}^k \binom{k}{j} \mu^{k - j} \theta^j\,
+    \Gamma(1+j/\gamma) \Gamma(1-j/\gamma),
+    \quad \text{integer } 0 \leq k < \gamma \\
+  \E{(X \wedge x)^k}
+  &= \sum_{j = 0}^k \binom{k}{j} \mu^{k - j} \theta^j\,
+    B(1+j/\gamma, 1-j/\gamma; u) \\
+  &\phantom{=} + x^k (1 - u),
+    \quad \text{integer } k \geq 0
+    \quad 1 - j/\gamma \neq -1, -2, \dots
+\end{align*}
+
+\subsubsection{Pareto II}
+
+\begin{itemize}
+\item Root: \code{pareto4}
+\item Parameters: \code{min} ($-\infty < \mu < \infty$),
+      \code{shape} ($\alpha$),
+      \code{rate}  ($\lambda = 1/\theta$),
+      \code{scale} ($\theta$)
+\end{itemize}
+\begin{align*}
+  f(x)
+  &= \frac{\alpha u^\alpha (1 - u)}{(x - \mu)},
+    \quad u = \frac{1}{1 + v},
+    \quad v = \frac{x - \mu}{\theta},
+    \quad x > \mu \\
+  F(x)
+  &= 1 - u^\alpha \\ \displaybreak[0]
+  \E{X^k}
+  &= \sum_{j = 0}^k \binom{k}{j} \mu^{k - j} \theta^j\,
+    \frac{\Gamma(1+j) \Gamma(\alpha-j)}{%
+    \Gamma(\alpha)},
+    \quad \text{integer } 0 \leq k < \alpha \\
+  \E{(X \wedge x)^k}
+  &= \sum_{j = 0}^k \binom{k}{j} \mu^{k - j} \theta^j\,
+    \frac{B(1+j, \alpha-j; 1-u)}{%
+    \Gamma(\alpha)} \\
+  &\phantom{=} + x^k u^\alpha,
+    \quad \text{integer } k \geq 0
+    \quad \alpha - j \neq -1, -2, \dots
+\end{align*}
 
 \subsubsection{Transformed beta}
 
@@ -671,8 +1128,8 @@ positive, and the functions are defined for $x > 0$.
 \end{itemize}
 \begin{align*}
   f(x)
-  &= \frac{\gamma u^\tau (1 - u)^\alpha}{x \beta
-    (\alpha, \tau )},
+  &= \frac{\gamma u^\tau (1 - u)^\alpha}{%
+    x \beta (\alpha, \tau )},
     \qquad u = \frac{v}{1 + v},
     \qquad v = \left(\frac{x}{\theta} \right)^\gamma \\
   F(x)
@@ -681,13 +1138,13 @@ positive, and the functions are defined for $x > 0$.
   &= \frac{%
     \theta^k \Gamma(\tau+k/\gamma) \Gamma(\alpha-k/\gamma)}{%
     \Gamma(\alpha) \Gamma(\tau)},
-    \qquad -\tau\gamma < k < \alpha\gamma \\
+    \quad -\tau\gamma < k < \alpha\gamma \\
   \E{(X \wedge x)^k}
   &= \frac{%
     \theta^k B(\tau+k/\gamma, \alpha-k/\gamma; u)}{%
     \Gamma(\alpha) \Gamma(\tau)} \\
   &\phantom{=} + x^k [1 - \beta(\tau, \alpha; u)],
-    \qquad k > -\tau\gamma
+    \quad k > -\tau\gamma
 \end{align*}
 
 \subsubsection{Burr}
@@ -710,13 +1167,13 @@ positive, and the functions are defined for $x > 0$.
   &= \frac{%
     \theta^k \Gamma(1+k/\gamma) \Gamma(\alpha-k/\gamma)}{%
     \Gamma(\alpha)},
-    \qquad -\gamma < k < \alpha\gamma \\
+    \quad -\gamma < k < \alpha\gamma \\
   \E{(X \wedge x)^k}
   &= \frac{%
     \theta^k B(1+k/\gamma, \alpha-k/\gamma; 1-u)}{%
     \Gamma(\alpha)} \\
   &\phantom{=} + x^k u^\alpha,
-    \qquad k > -\gamma
+    \quad k > -\gamma
 \end{align*}
 
 \subsubsection{Loglogistic}
@@ -736,11 +1193,11 @@ positive, and the functions are defined for $x > 0$.
   &= u \\ \displaybreak[0]
   \E{X^k}
   &= \theta^k \Gamma(1+k/\gamma) \Gamma(1-k/\gamma),
-    \qquad -\gamma < k < \gamma \\
+    \quad -\gamma < k < \gamma \\
   \E{(X \wedge x)^k}
   &= \theta^k B(1+k/\gamma, 1-k/\gamma; u) \\
   &\phantom{=} + x^k (1 - u),
-    \qquad k > -\gamma
+    \quad k > -\gamma
 \end{align*}
 
 \subsubsection{Paralogistic}
@@ -762,13 +1219,13 @@ positive, and the functions are defined for $x > 0$.
   &= \frac{%
     \theta^k \Gamma(1+k/\alpha) \Gamma(\alpha-k/\alpha)}{%
     \Gamma(\alpha)},
-    \qquad -\alpha < k < \alpha^2 \\
+    \quad -\alpha < k < \alpha^2 \\
   \E{(X \wedge x)^k}
   &= \frac{%
     \theta^k B(1+k/\alpha, \alpha-k/\alpha; 1-u)}{%
     \Gamma(\alpha)} \\
   &\phantom{=} + x^k u^\alpha,
-    \qquad k > -\alpha
+    \quad k > -\alpha
 \end{align*}
 
 \subsubsection{Generalized Pareto}
@@ -791,13 +1248,13 @@ positive, and the functions are defined for $x > 0$.
   &= \frac{%
     \theta^k \Gamma(\tau+k) \Gamma(\alpha-k)}{%
     \Gamma(\alpha) \Gamma(\tau)},
-    \qquad -\tau < k < \alpha \\
+    \quad -\tau < k < \alpha \\
   \E{(X \wedge x)^k}
   &= \frac{%
     \theta^k B(\tau+k, \alpha-k; u)}{%
     \Gamma(\alpha) \Gamma(\tau)} \\
   &\phantom{=} + x^k [1 - \beta(\tau, \alpha; u)],
-    \qquad k > -\tau
+    \quad k > -\tau
 \end{align*}
 
 \subsubsection{Pareto}
@@ -818,14 +1275,41 @@ positive, and the functions are defined for $x > 0$.
   &= \frac{%
     \theta^k \Gamma(1+k) \Gamma(\alpha-k)}{%
     \Gamma(\alpha)},
-    \qquad -1 < k < \alpha \\
+    \quad -1 < k < \alpha \\
   \E{(X \wedge x)^k}
   &= \frac{%
     \theta^k B(1+k, \alpha-k; 1-u)}{%
     \Gamma(\alpha)} \\
   &\phantom{=} + x^k u^\alpha,
-    \qquad k > -1
+    \quad k > -1
 \end{align*}
+
+\subsubsection{Single-parameter Pareto (Pareto I)}
+
+\begin{itemize}
+\item Root: \code{pareto1}
+\item Parameters: \code{shape} ($\alpha$),
+      \code{min}   ($\theta$)
+\end{itemize}
+\begin{align*}
+  f(x)
+  &= \frac{\alpha
+    \theta^\alpha}{x^{\alpha+1}},
+    \quad x > \theta \\
+  F(x)
+  &= 1 - \left( \frac{\theta}{x} \right)^\alpha,
+    \quad x > \theta \\ \displaybreak[0]
+  \E{X^k}
+  &= \frac{\alpha \theta^k}{\alpha - k},
+    \quad k < \alpha \\
+  \E{(X \wedge x)^k}
+  &= \frac{\alpha \theta^k}{\alpha - k} -
+    \frac{k \theta^\alpha}{(\alpha - k) x^{\alpha-k}},
+    \quad x \geq \theta
+\end{align*}
+Although there appears to be two parameters, only $\alpha$ is a true
+parameter. The value of $\theta$ is the minimum of the distribution
+and is usually set in advance.
 
 \subsubsection{Inverse Burr}
 
@@ -847,13 +1331,13 @@ positive, and the functions are defined for $x > 0$.
   &= \frac{%
     \theta^k \Gamma(\tau+k/\gamma) \Gamma(1-k/\gamma)}{%
     \Gamma(\tau)},
-    \qquad -\gamma < k < \alpha\gamma \\
+    \quad -\gamma < k < \alpha\gamma \\
   \E{(X \wedge x)^k}
   &= \frac{%
     \theta^k B(\tau+k/\gamma, 1-k/\gamma; u)}{%
     \Gamma(\tau)} \\
   &\phantom{=} + x^k (1-u^\tau),
-    \qquad k > -\tau\gamma
+    \quad k > -\tau\gamma
 \end{align*}
 
 \subsubsection{Inverse Pareto}
@@ -874,11 +1358,11 @@ positive, and the functions are defined for $x > 0$.
   &= \frac{%
     \theta^k \Gamma(\tau+k) \Gamma(1-k)}{%
     \Gamma(\tau)},
-    \qquad -\tau < k < 1 \\
+    \quad -\tau < k < 1 \\
   \E{(X \wedge x)^k}
   &= \theta^k \tau \int_0^u y^{\tau+k-1} (1 - y)^{-k}\, dy \\
   &\phantom{=} + x^k (1-u^\tau),
-    \qquad k > -\tau
+    \quad k > -\tau
 \end{align*}
 
 \subsubsection{Inverse paralogistic}
@@ -900,13 +1384,13 @@ positive, and the functions are defined for $x > 0$.
   &= \frac{%
     \theta^k \Gamma(\tau+k/\tau) \Gamma(1-k/\tau)}{%
     \Gamma(\tau)},
-    \qquad -\tau^2 < k < \tau \\
+    \quad -\tau^2 < k < \tau \\
   \E{(X \wedge x)^k}
   &= \frac{%
     \theta^k B(\tau+k/\tau, 1-k/\tau; u)}{%
     \Gamma(\tau)} \\
   &\phantom{=} + x^k (1-u^\tau),
-    \qquad k > -\tau^2
+    \quad k > -\tau^2
 \end{align*}
 
 \subsection{Transformed gamma family}
@@ -929,12 +1413,12 @@ positive, and the functions are defined for $x > 0$.
   &= \Gamma (\alpha ; u) \\ \displaybreak[0]
   \E{X^k}
   &= \frac{\theta^k \Gamma(\alpha+k/\tau)}{\Gamma(\alpha)}
-    \qquad k > -\alpha\tau \\
+    \quad k > -\alpha\tau \\
   \E{(X \wedge x)^k}
   &= \frac{\theta^k \Gamma(\alpha+k/\tau)}{\Gamma(\alpha)}
     \Gamma(\alpha+k/\tau; u) \\
   &\phantom{=} + x^k [1 - \Gamma(\alpha; u)],
-    \qquad k > -\alpha\tau
+    \quad k > -\alpha\tau
 \end{align*}
 
 \subsubsection{Inverse transformed gamma}
@@ -954,11 +1438,11 @@ positive, and the functions are defined for $x > 0$.
   &= 1 - \Gamma (\alpha ; u) \\ \displaybreak[0]
   \E{X^k}
   &= \frac{\theta^k \Gamma(\alpha-k/\tau)}{\Gamma(\alpha)}
-    \qquad k < \alpha\tau \\
+    \quad k < \alpha\tau \\
   \E{(X \wedge x)^k}
   &= \frac{\theta^k G(\alpha-k/\tau; u)}{\Gamma(\alpha)}
     + x^k \Gamma(\alpha; u),
-    \qquad \text{all }k
+    \quad \text{all }k
 \end{align*}
 
 \subsubsection{Inverse gamma}
@@ -977,11 +1461,11 @@ positive, and the functions are defined for $x > 0$.
   &= 1 - \Gamma (\alpha ; u) \\ \displaybreak[0]
   \E{X^k}
   &= \frac{\theta^k \Gamma(\alpha-k)}{\Gamma(\alpha)}
-    \qquad k < \alpha \\
+    \quad k < \alpha \\
   \E{(X \wedge x)^k}
   &= \frac{\theta^k G(\alpha-k; u)}{\Gamma(\alpha)}
     + x^k \Gamma(\alpha; u),
-    \qquad \text{all }k \\
+    \quad \text{all }k \\
   M(t)
   &= \frac{2}{\Gamma(\alpha)} (-\theta t)^{\alpha/2}
     K_\alpha(\sqrt{-4\theta t})
@@ -1004,11 +1488,11 @@ positive, and the functions are defined for $x > 0$.
   &= e^{-u} \\ \displaybreak[0]
   \E{X^k}
   &= \theta^k \Gamma(1-k/\tau)
-    \qquad k < \tau \\
+    \quad k < \tau \\
   \E{(X \wedge x)^k}
   &= \theta^k G(1-k/\tau; u)
     + x^k (1 - e^{-u}),
-    \qquad \text{all }k
+    \quad \text{all }k
 \end{align*}
 
 \subsubsection{Inverse exponential}
@@ -1026,11 +1510,11 @@ positive, and the functions are defined for $x > 0$.
   &= e^{-u} \\ \displaybreak[0]
   \E{X^k}
   &= \theta^k \Gamma(1-k)
-    \qquad k < 1 \\
+    \quad k < 1 \\
   \E{(X \wedge x)^k}
   &= \theta^k G(1-k; u)
     + x^k (1 - e^{-u}),
-    \qquad \text{all }k
+    \quad \text{all }k
 \end{align*}
 
 \subsection{Other distributions}
@@ -1047,17 +1531,17 @@ positive, and the functions are defined for $x > 0$.
   f(x)
   &= \frac{\lambda^\alpha (\ln x)^{\alpha - 1}}{%
     x^{\lambda + 1} \Gamma(\alpha)},
-  \qquad x > 1 \\
+  \quad x > 1 \\
   F(x)
-  &= \Gamma( \alpha ; \lambda \ln x), \qquad x > 1 \\ \displaybreak[0]
+  &= \Gamma( \alpha ; \lambda \ln x), \quad x > 1 \\ \displaybreak[0]
   \E{X^k}
-  &= \left( \frac{\lambda}{\lambda - x} \right)^\alpha,
-    \qquad k < \lambda \\
+  &= \left( \frac{\lambda}{\lambda - k} \right)^\alpha,
+    \quad k < \lambda \\
   \E{(X \wedge x)^k}
-  &= \left( \frac{\lambda}{\lambda - x} \right)^\alpha
+  &= \left( \frac{\lambda}{\lambda - k} \right)^\alpha
     \Gamma(\alpha; (\lambda - k) \ln x) \\
-  &\phantom{=} + x^k \Gamma(\alpha; \lambda \ln x),
-    \qquad k < \lambda
+  &\phantom{=} + x^k (1 - \Gamma(\alpha; \lambda \ln x)),
+    \quad k < \lambda
 \end{align*}
 
 \subsubsection{Gumbel}
@@ -1075,7 +1559,7 @@ positive, and the functions are defined for $x > 0$.
   F(x)
   &= \exp[-\exp(-u)] \\ \displaybreak[0]
   \E{X}
-  &= \alpha + \gamma \theta, \qquad \gamma \approx 0.57721566490153 \\
+  &= \alpha + \gamma \theta, \quad \gamma \approx 0.57721566490153 \\
   \VAR{X}
   &= \frac{\pi^2 \theta^2}{6} \\
   M(t)
@@ -1093,14 +1577,14 @@ positive, and the functions are defined for $x > 0$.
 \begin{align*}
   f(x)
   &= \left( \frac{1}{2 \pi \phi x^3} \right)^{1/2}
-    \exp\left\{ -\frac{(x/\mu - 1)^2}{2 \phi \mu^2 x} \right\} \\
+    \exp\left\{ -\frac{(x/\mu - 1)^2}{2 \phi x} \right\} \\
   F(x)
   &= \Phi\left( \frac{x/\mu - 1}{\sqrt{\phi x}} \right)
     + e^{2/(\phi\mu)}
     \Phi\left( -\frac{x/\mu + 1}{\sqrt{\phi x}} \right) \\ \displaybreak[0]
   \E{X^k}
   &= \mu^k \sum_{i = 0}^{k - 1} \frac{(k + i - 1)!}{i! (k - i - 1)!}
-    \left( \frac{\phi \mu}{2} \right)^{i} \\
+    \left( \frac{\phi \mu}{2} \right)^{i}, \quad k = 1, 2, \dots \\
   \E{X \wedge x}
   &= \mu
     \left[
@@ -1113,39 +1597,12 @@ positive, and the functions are defined for $x > 0$.
     \left\{
       \frac{1}{\phi \mu} \left(1 - \sqrt{1 - 2 \phi \mu^2 t}\right)
     \right\},
-    \qquad t \leq \frac{1}{2 \phi \mu^2}
+    \quad t \leq \frac{1}{2 \phi \mu^2}
 \end{align*}
 
 \noindent%
 The limiting case $\mu = \infty$ is an inverse gamma distribution
 with $\alpha = 1/2$ and $\lambda = 2\phi$ (or inverse chi-squared).
-
-\subsubsection{Single parameter Pareto}
-
-\begin{itemize}
-\item Root: \code{pareto1}
-\item Parameters: \code{shape} ($\alpha$),
-      \code{min}   ($\theta$)
-\end{itemize}
-\begin{align*}
-  f(x)
-  &= \frac{\alpha
-    \theta^\alpha}{x^{\alpha+1}},
-    \qquad x > \theta \\
-  F(x)
-  &= 1 - \left( \frac{\theta}{x} \right)^\alpha,
-    \qquad x > \theta \\ \displaybreak[0]
-  \E{X^k}
-  &= \frac{\alpha \theta^k}{\alpha - k},
-    \qquad k < \alpha \\
-  \E{(X \wedge x)^k}
-  &= \frac{\alpha \theta^k}{\alpha - k} -
-    \frac{k \theta^\alpha}{(\alpha - k) x^{\alpha-k}},
-    \qquad x \geq \theta
-\end{align*}
-Although there appears to be two parameters, only $\alpha$ is a true
-parameter. The value of $\theta$ is the minimum of the distribution
-and is usually set in advance.
 
 \subsubsection{Generalized beta}
 
@@ -1167,13 +1624,13 @@ and is usually set in advance.
   \E{X^k}
   &= \frac{%
     \theta^k \beta(a+k/\tau, b)}{\beta(a, b)},
-    \qquad k > -a\tau \\
+    \quad k > -a\tau \\
   \E{(X \wedge x)^k}
   &= \frac{%
     \theta^k \beta(a+k/\tau, b)}{\beta(a, b)}
     \beta(a+k/\tau, b; u) \\
   &\phantom{=} + x^k [1 - \beta(a, b; u)],
-    \qquad k > -\tau\gamma
+    \quad k > -\tau\gamma
 \end{align*}
 
 
@@ -1182,14 +1639,13 @@ and is usually set in advance.
 
 Consider a continuous-time Markov process with $m$ transient
 states and one absorbing state. Let
-\begin{equation}
-  \label{eq:Markov-transition-matrix}
+\begin{equation*}
   \mat{Q} =
   \begin{bmatrix}
     \mat{T} & \mat{t} \\
     \mat{0} & 0
   \end{bmatrix}
-\end{equation}
+\end{equation*}
 be the transition rates matrix (or intensity matrix) of such a process
 and let $(\mat{\pi}, \pi_{m + 1})$ be the initial probability vector.
 Here, $\mat{T}$ is an $m \times m$ non-singular matrix with
@@ -1231,7 +1687,7 @@ $\mat{e} = [1]_{m \times 1}$ is a column vector of ones. %
 
 This appendix gives the root name and the parameters of the
 R support functions for the members of the $(a, b, 0)$ and
-$(a, b, 1)$ discrete distributions as defined in \cite{LossModels4e};
+$(a, b, 1)$ discrete distributions as defined in \citet{LossModels4e};
 the values of $a$, $b$ and $p_0$ in the representation; the pmf; the
 relationship with other distributions, when there is one. The appendix
 also provides the main characteristics of the Poisson-inverse Gaussian
@@ -1367,7 +1823,7 @@ infinite is a point mass in $k = 1$.
 \end{itemize}
 \begin{align*}
   a &= -\frac{p}{1 - p}, \qquad b = \frac{(n + 1)p}{1 - p}, \qquad
-      p_1 = \frac{m p (1 - p)^{n - 1}}{1 - (1 - p)^n} \\
+      p_1 = \frac{n p (1 - p)^{n - 1}}{1 - (1 - p)^n} \\
   p_k &= \binom{n}{k} \frac{p^k (1 - p)^{n - k}}{1 - (1 - p)^n}, \quad
         k = 1, 2, \dots, n
 \end{align*}
@@ -1454,7 +1910,7 @@ $1 - p_0^M$).
 \end{itemize}
 \begin{align*}
   a &= -\frac{p}{1 - p}, \qquad b = \frac{(n + 1)p}{1 - p}, \qquad
-      p_1^M = \frac{m (1 - p_0^M) p (1 - p)^{n - 1}}{1 - (1 - p)^n} \\
+      p_1^M = \frac{n (1 - p_0^M) p (1 - p)^{n - 1}}{1 - (1 - p)^n} \\
   p_k &= \binom{n}{k} \frac{(1 - p_0^M) p^k (1 - p)^{n - k}}{1 - (1 - p)^n}, \quad
         k = 1, 2, \dots, n
 \end{align*}
@@ -1462,7 +1918,7 @@ $1 - p_0^M$).
 \subsubsection{Zero-modified logarithmic}
 
 \begin{itemize}
-\item Root: \code{logarithmic}
+\item Root: \code{zmlogarithmic}
 \item Parameters: \code{prob} ($0 \leq p < 1$),
   \code{p0} ($0 \leq p_0^M \leq 1$)
 \end{itemize}

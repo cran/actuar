@@ -5,6 +5,12 @@
  *  for the transformed beta distribution. See ../R/TransformedBeta.R for
  *  details.
  *
+ *  We work with the density expressed as
+ *
+ *    shape2 * u^shape3 * (1 - u)^shape1 / (x * beta(shape1, shape3))
+ *
+ *  with u = v/(1 + v) = 1/(1 + 1/v), v = (x/scale)^shape2.
+ *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -17,13 +23,6 @@
 double dtrbeta(double x, double shape1, double shape2, double shape3,
                double scale, int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  shape2 * u^shape3 * (1 - u)^shape1 / (x * beta(shape1, shape3))
-     *
-     *  with u = v/(1 + v) = 1/(1 + 1/v), v = (x/scale)^shape2.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(shape3) || ISNAN(scale))
 	return x + shape1 + shape2 + shape3 + scale;
@@ -31,7 +30,6 @@ double dtrbeta(double x, double shape1, double shape2, double shape3,
     if (!R_FINITE(shape1) ||
         !R_FINITE(shape2) ||
         !R_FINITE(shape3) ||
-        !R_FINITE(scale) ||
         shape1 <= 0.0 ||
         shape2 <= 0.0 ||
         shape3 <= 0.0 ||
@@ -52,14 +50,14 @@ double dtrbeta(double x, double shape1, double shape2, double shape3,
 	    shape2 / (scale * beta(shape3, shape1));
     }
 
-    double tmp, logu, log1mu;
+    double logv, logu, log1mu;
 
-    tmp = shape2 * (log(x) - log(scale));
-    logu = - log1pexp(-tmp);
-    log1mu = - log1pexp(tmp);
+    logv = shape2 * (log(x) - log(scale));
+    logu = - log1pexp(-logv);
+    log1mu = - log1pexp(logv);
 
     return ACT_D_exp(log(shape2) + shape3 * logu + shape1 * log1mu
-                   - log(x) - lbeta(shape3, shape1));
+		     - log(x) - lbeta(shape3, shape1));
 }
 
 double ptrbeta(double q, double shape1, double shape2, double shape3,
@@ -72,7 +70,6 @@ double ptrbeta(double q, double shape1, double shape2, double shape3,
     if (!R_FINITE(shape1) ||
         !R_FINITE(shape2) ||
         !R_FINITE(shape3) ||
-        !R_FINITE(scale)  ||
         shape1 <= 0.0 ||
         shape2 <= 0.0 ||
         shape3 <= 0.0 ||
@@ -82,8 +79,19 @@ double ptrbeta(double q, double shape1, double shape2, double shape3,
     if (q <= 0)
         return ACT_DT_0;
 
-    double u = exp(-log1pexp(-shape2 * (log(q) - log(scale))));
+    double logvm, u;
 
+    logvm = shape2 * (log(scale) - log(q)); /* -log v */
+    u = exp(-log1pexp(logvm));
+
+    if (u > 0.5)
+    {
+        /* Compute (1 - x) accurately */
+        double u1m = exp(-log1pexp(-logvm));
+        return pbeta(u1m, shape1, shape3, 1 - lower_tail, log_p);
+    }
+
+    /* else u <= 0.5 */
     return pbeta(u, shape3, shape1, lower_tail, log_p);
 }
 
@@ -107,8 +115,8 @@ double qtrbeta(double p, double shape1, double shape2, double shape3,
     ACT_Q_P01_boundaries(p, 0, R_PosInf);
     p = ACT_D_qIv(p);
 
-    return scale * R_pow(1.0 / qbeta(p, shape3, shape1, lower_tail, 0) - 1.0,
-                         -1.0 / shape2);
+    return scale * R_pow(1.0/qbeta(p, shape3, shape1, lower_tail, 0) - 1.0,
+                         -1.0/shape2);
 }
 
 double rtrbeta(double shape1, double shape2, double shape3, double scale)
@@ -123,7 +131,7 @@ double rtrbeta(double shape1, double shape2, double shape3, double scale)
         scale <= 0.0)
         return R_NaN;
 
-    return scale * R_pow(1.0 / rbeta(shape3, shape1) - 1.0, -1.0 / shape2);
+    return scale * R_pow(1.0/rbeta(shape3, shape1) - 1.0, -1.0/shape2);
 }
 
 double mtrbeta(double order, double shape1, double shape2, double shape3,
@@ -158,7 +166,8 @@ double levtrbeta(double limit, double shape1, double shape2, double shape3,
                  double scale, double order, int give_log)
 {
 #ifdef IEEE_754
-    if (ISNAN(limit) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(shape3) || ISNAN(scale) || ISNAN(order))
+    if (ISNAN(limit) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(shape3) ||
+        ISNAN(scale) || ISNAN(order))
 	return limit + shape1 + shape2 + shape3 + scale + order;
 #endif
     if (!R_FINITE(shape1) ||
@@ -178,11 +187,19 @@ double levtrbeta(double limit, double shape1, double shape2, double shape3,
     if (limit <= 0.0)
         return 0.0;
 
-    double u = exp(-log1pexp(-shape2 * (log(limit) - log(scale))));
+    double logv, u, u1m, Ix;
     double tmp = order / shape2;
 
+    logv = shape2 * (log(limit) - log(scale));
+    u = exp(-log1pexp(-logv));
+    u1m = exp(-log1pexp(logv));
+
+    Ix = (u > 0.5) ?
+	pbeta(u1m, shape1, shape3, /*l._t.*/1, /*give_log*/0) :
+        pbeta(u,   shape3, shape1, /*l._t.*/0, /*give_log*/0);
+
     return R_pow(scale, order)
-	* betaint_raw(u, shape3 + tmp, shape1 - tmp)
+	* betaint_raw(u, shape3 + tmp, shape1 - tmp, u1m)
 	/ (gammafn(shape1) * gammafn(shape3))
-	+ ACT_DLIM__0(limit, order) * pbeta(u, shape3, shape1, 0, 0);
+	+ ACT_DLIM__0(limit, order) * Ix;
 }

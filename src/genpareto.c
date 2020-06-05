@@ -5,6 +5,12 @@
  *  for the Generalized Pareto distribution.. See ../R/GeneralizedPareto.R
  *  for details.
  *
+ *  We work with the density expressed as
+ *
+ *    u^shape2 * (1 - u)^shape1 / (x * beta(shape1, shape2))
+ *
+ *  with u = v/(1 + v) = 1/(1 + 1/v), v = x/scale.
+ *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -17,20 +23,12 @@
 double dgenpareto(double x, double shape1, double shape2, double scale,
                   int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  u^shape2 * (1 - u)^shape1 / (x * beta(shape1, shape2))
-     *
-     *  with u = v/(1 + v) = 1/(1 + 1/v), v = x/scale.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(scale))
 	return x + shape1 + shape2 + scale;
 #endif
     if (!R_FINITE(shape1) ||
         !R_FINITE(shape2) ||
-        !R_FINITE(scale)  ||
         shape1 <= 0.0 ||
         shape2 <= 0.0 ||
         scale  <= 0.0)
@@ -47,14 +45,14 @@ double dgenpareto(double x, double shape1, double shape2, double scale,
 	/* else */
 	return give_log ?
 	    - log(scale) - lbeta(shape2, shape1) :
-	    1 / (scale * beta(shape2, shape1));
+	    1.0/(scale * beta(shape2, shape1));
     }
 
-    double tmp, logu, log1mu;
+    double logv, logu, log1mu;
 
-    tmp = log(x) - log(scale);
-    logu = - log1pexp(-tmp);
-    log1mu = - log1pexp(tmp);
+    logv = log(x) - log(scale);
+    logu = - log1pexp(-logv);
+    log1mu = - log1pexp(logv);
 
     return ACT_D_exp(shape2 * logu + shape1 * log1mu - log(x)
                    - lbeta(shape2, shape1));
@@ -68,18 +66,28 @@ double pgenpareto(double q, double shape1, double shape2, double scale,
 	return q + shape1 + shape2 + scale;
 #endif
     if (!R_FINITE(shape1) ||
-        !R_FINITE(scale)  ||
         !R_FINITE(shape2) ||
         shape1 <= 0.0 ||
-        scale <= 0.0 ||
-        shape2 <= 0.0)
+        shape2 <= 0.0 ||
+        scale <= 0.0)
         return R_NaN;
 
     if (q <= 0)
         return ACT_DT_0;
 
-    double u = exp(-log1pexp(log(scale) - log(q)));
+    double logvm, u;
 
+    logvm = log(scale) - log(q); /* -log v */
+    u = exp(-log1pexp(logvm));
+
+    if (u > 0.5)
+    {
+        /* Compute (1 - u) accurately */
+        double u1m = exp(-log1pexp(-logvm));
+        return pbeta(u1m, shape1, shape2, 1 - lower_tail, log_p);
+    }
+
+    /* else u <= 0.5 */
     return pbeta(u, shape2, shape1, lower_tail, log_p);
 }
 
@@ -163,10 +171,18 @@ double levgenpareto(double limit, double shape1, double shape2, double scale,
     if (limit <= 0.0)
         return 0.0;
 
-    double u = exp(-log1pexp(log(scale) - log(limit)));
+    double logv, u, u1m, Ix;
+
+    logv = log(limit) - log(scale);
+    u = exp(-log1pexp(-logv));
+    u1m = exp(-log1pexp(logv));
+
+    Ix = (u > 0.5) ?
+	pbeta(u1m, shape1, shape2, /*l._t.*/1, /*give_log*/0) :
+        pbeta(u,   shape2, shape1, /*l._t.*/0, /*give_log*/0);
 
     return R_pow(scale, order)
-	* betaint_raw(u, shape2 + order, shape1 - order)
+	* betaint_raw(u, shape2 + order, shape1 - order, u1m)
 	/ (gammafn(shape1) * gammafn(shape2))
-        + ACT_DLIM__0(limit, order) * pbeta(u, shape2, shape1, 0, 0);
+        + ACT_DLIM__0(limit, order) * Ix;
 }

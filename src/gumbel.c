@@ -5,6 +5,12 @@
  *  for the Gumbel distribution. See ../R/Gumbel.R for
  *  details.
  *
+ *  We work with the density expressed as
+ *
+ *    e^(-u) * e^(-e^(-u)) / scale
+ *
+ *  with u = (x - alpha)/scale.
+ *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -15,25 +21,26 @@
 
 double dgumbel(double x, double alpha, double scale, int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  e^(-u) * e^(-e^(-u)) / scale
-     *
-     *  with u = (x - alpha)/scale.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(alpha) || ISNAN(scale))
 	return x + alpha + scale;
 #endif
-    if (!R_FINITE(alpha) ||
-        !R_FINITE(scale) ||
-        scale <= 0.0)
-        return R_NaN;;
+    if (!R_FINITE(scale))
+	return ACT_D__0;
+    if (!R_FINITE(x) && alpha == x)
+	return R_NaN;		/* x - alpha is NaN */
+    if (scale <= 0)
+    {
+	if (scale < 0) return R_NaN;
+	/* scale == 0 */
+	return (x == alpha) ? R_PosInf : ACT_D__0;
+    }
+    x = (x - alpha) / scale;
 
-    double u = (x - alpha)/scale;
+    if (!R_FINITE(x))
+        return ACT_D__0;
 
-    return ACT_D_exp(-(u + exp(-u) + log(scale)));
+    return ACT_D_exp(-(x + exp(-x) + log(scale)));
 }
 
 double pgumbel(double q, double alpha, double scale, int lower_tail,
@@ -43,14 +50,20 @@ double pgumbel(double q, double alpha, double scale, int lower_tail,
     if (ISNAN(q) || ISNAN(alpha) || ISNAN(scale))
 	return q + alpha + scale;
 #endif
-    if (!R_FINITE(alpha) ||
-        !R_FINITE(scale) ||
-        scale <= 0.0)
-        return R_NaN;;
+    if (!R_FINITE(q) && alpha == q)
+	return R_NaN;		/* q - alpha is NaN */
+    if (scale <= 0)
+    {
+	if (scale < 0) return R_NaN;
+	/* scale == 0 : */
+	return (q < alpha) ? ACT_DT_0 : ACT_DT_1;
+    }
+    double p = (q - alpha) / scale;
+    if (!R_FINITE(p))
+	return (q < alpha) ? ACT_DT_0 : ACT_DT_1;
+    q = p;
 
-    double u = (q - alpha)/scale;
-
-    return ACT_DT_val(exp(-exp(-u)));
+    return ACT_DT_val(exp(-exp(-q)));
 }
 
 double qgumbel(double p, double alpha, double scale, int lower_tail,

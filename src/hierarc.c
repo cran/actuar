@@ -123,7 +123,7 @@ SEXP actuar_do_hierarc(SEXP args)
              * weights and (numerators of) weighted averages. */
             for (j = 0; j < size[i + 1]; j++)
             {
-                cred[i][j] = 1 / (1 + bw / (REAL(b)[i] * tweights[i + 1][j]));
+                cred[i][j] = 1.0/(1.0 + bw / (REAL(b)[i] * tweights[i + 1][j]));
                 k = fnodes[i][j] - 1; /* C version of tapply(). */
                 tweights[i][k] += weights(i, j);
                 wmeans[i][k] += weights(i, j) * wmeans[i + 1][j];
@@ -168,7 +168,7 @@ SEXP actuar_do_hierarc(SEXP args)
             }
             for (j = 0; j < size[i + 1]; j++)
             {
-                cred[i][j] = 1 / (1 + bw / (REAL(b)[i] * tweights[i + 1][j]));
+                cred[i][j] = 1.0/(1.0 + bw / (REAL(b)[i] * tweights[i + 1][j]));
                 k = fnodes[i][j] - 1;
                 tweights[i][k] += weights(i, j);
                 wmeans[i][k] += weights(i, j) * wmeans[i + 1][j];

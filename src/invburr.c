@@ -4,6 +4,12 @@
  *  functions, raw and limited moments and to simulate random variates
  *  for the inverse Burr distribution. See ../R/InverseBurr.R for details.
  *
+ *  We work with the density expressed as
+ *
+ *    shape1 * shape2 * u^shape1 * (1 - u) / x
+ *
+ *  with u = v/(1 + v) = 1/(1 + 1/v), v = (x/scale)^shape2.
+ *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -16,20 +22,12 @@
 double dinvburr(double x, double shape1, double shape2, double scale,
                 int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  shape1 * shape2 * u^shape1 * (1 - u) / x
-     *
-     *  with u = v/(1 + v) = 1/(1 + 1/v), v = (x/scale)^shape2.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(scale))
 	return x + shape1 + shape2 + scale;
 #endif
     if (!R_FINITE(shape1) ||
         !R_FINITE(shape2) ||
-        !R_FINITE(scale)  ||
         shape1 <= 0.0 ||
         shape2 <= 0.0 ||
         scale  <= 0.0)
@@ -44,14 +42,14 @@ double dinvburr(double x, double shape1, double shape2, double scale,
 	if (shape1 * shape2 < 1) return R_PosInf;
 	if (shape1 * shape2 > 1) return ACT_D__0;
 	/* else */
-	return ACT_D_val(1.0 / scale);
+	return ACT_D_val(1.0/scale);
     }
 
-    double tmp, logu, log1mu;
+    double logv, logu, log1mu;
 
-    tmp = shape2 * (log(x) - log(scale));
-    logu = - log1pexp(-tmp);
-    log1mu = - log1pexp(tmp);
+    logv = shape2 * (log(x) - log(scale));
+    logu = - log1pexp(-logv);
+    log1mu = - log1pexp(logv);
 
     return ACT_D_exp(log(shape1) + log(shape2) + shape1 * logu
                    + log1mu - log(x));
@@ -66,7 +64,6 @@ double pinvburr(double q, double shape1, double shape2, double scale,
 #endif
     if (!R_FINITE(shape1) ||
         !R_FINITE(shape2) ||
-        !R_FINITE(scale)  ||
         shape1 <= 0.0 ||
         shape2 <= 0.0 ||
         scale  <= 0.0)
@@ -162,11 +159,15 @@ double levinvburr(double limit, double shape1, double shape2, double scale,
     if (limit <= 0.0)
         return 0.0;
 
-    double u = exp(-log1pexp(shape2 * (log(scale) - log(limit))));
+    double logv, u, u1m;
     double tmp = order / shape2;
 
+    logv = shape2 * (log(limit) - log(scale));
+    u = exp(-log1pexp(-logv));
+    u1m = exp(-log1pexp(logv));
+
     return R_pow(scale, order)
-	* betaint_raw(u, shape1 + tmp, 1.0 - tmp)
+	* betaint_raw(u, shape1 + tmp, 1.0 - tmp, u1m)
 	/ gammafn(shape1)
 	+ ACT_DLIM__0(limit, order) * (0.5 - R_pow(u, shape1) + 0.5);
 }

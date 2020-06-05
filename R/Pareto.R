@@ -8,7 +8,7 @@
 ###
 ### See Appendix A of Klugman, Panjer & Willmot, Loss Models, Wiley.
 ###
-### AUTHORS:  Mathieu Pigeon, Vincent Goulet <vincent.goulet@act.ulaval.ca>
+### AUTHORS: Mathieu Pigeon, Vincent Goulet <vincent.goulet@act.ulaval.ca>
 
 dpareto <- function (x, shape, scale, log = FALSE)
     .External(C_actuar_do_dpq, "dpareto", x, shape, scale, log)
@@ -27,11 +27,3 @@ mpareto <- function(order, shape, scale)
 
 levpareto <- function(limit, shape, scale, order = 1)
      .External(C_actuar_do_dpq, "levpareto", limit, shape, scale, order, FALSE)
-
-## Aliases
-dpareto2 <- dpareto
-ppareto2 <- ppareto
-qpareto2 <- qpareto
-rpareto2 <- rpareto
-mpareto2 <- mpareto
-levpareto2 <- levpareto

@@ -43,7 +43,7 @@ const static double padec88 [] =
 
 
 /* Matrix exponential exp(x), where x is an (n x n) matrix. Result z
- * is an (n x n) matrix. Mostly lifted from the core of fonction
+ * is an (n x n) matrix. Mostly lifted from the core of function
  * expm() of package Matrix, which is itself based on the function of
  * the same name in Octave.
  */

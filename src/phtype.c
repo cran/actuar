@@ -4,6 +4,14 @@
  *  generating functions, raw moments and to simulate random variates
  *  for Phase-type distributions. See ../R/PhaseType.R for details.
  *
+ *  The density function is
+ *
+ *    pi      * exp(x * T) * t
+ *    (1 x m)   (m x m)      (m x 1)
+ *
+ *  for x > 0, with t = -T * e and e a 1-vector, and 1 - pi * e
+ *  for x = 0.
+ *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -17,15 +25,6 @@
 
 double dphtype(double x, double *pi, double *T, int m, int give_log)
 {
-    /*  Density function is
-     *
-     *  pi      * exp(x * T) * t
-     *  (1 x m)   (m x m)      (m x 1)
-     *
-     *  for x > 0, with t = -T * e and e a 1-vector, and 1 - pi * e
-     *  for x = 0.
-     */
-
     if (!R_FINITE(x) || x < 0.0)
         return ACT_D__0;
 

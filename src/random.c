@@ -35,6 +35,9 @@
 #include "actuar.h"
 #include "locale.h"
 
+/* Additional access macros */
+#define CAD5R(e) CAR(CDR(CDR(CDR(CDR(CDR(e))))))
+
 /* Utility function used in actuar_do_random{1,2,3,4}. */
 static void fill_with_NAs(SEXP x, int n, SEXPTYPE type) {
     int i;
@@ -355,6 +358,8 @@ SEXP actuar_do_random3(int code, SEXP args, SEXPTYPE type)
             RAND3(  3, rinvburr);
             RAND3(  4, rinvtrgamma);
             RAND3(  5, rtrgamma);
+            RAND3(  6, rpareto2);
+            RAND3(  7, rpareto3);
             RAND3(101, rzmnbinom);
             RAND3(102, rzmbinom);
         default:
@@ -463,6 +468,7 @@ SEXP actuar_do_random4(int code, SEXP args, SEXPTYPE type)
         {
             RAND4(1, rtrbeta);
             RAND4(2, rgenbeta);
+            RAND4(3, rpareto4);
         default:
             error(_("internal error in actuar_do_random4"));
         }
@@ -475,6 +481,114 @@ SEXP actuar_do_random4(int code, SEXP args, SEXPTYPE type)
     return x;
 }
 
+
+/* Functions for Five parameter distributions */
+static Rboolean random5(double (*f) (), double *a, int na,
+                        double *b, int nb, double *c, int nc,
+                        double *d, int nd, double *e, int ne,
+                        SEXP x, int n, SEXPTYPE type)
+{
+    int i;
+    Rboolean naflag = FALSE;
+    if (type == INTSXP)
+    {
+	double rx;
+	int *ix = INTEGER(x);
+
+	for (i = 0; i < n; i++)
+	{
+	    rx = f(a[i % na], b[i % nb], c[i % nc], d[i % nd], e[i % ne]);
+	    if (ISNAN(rx) || rx > INT_MAX || rx <= INT_MIN)
+	    {
+		naflag = TRUE;
+		ix[i] = NA_INTEGER;
+	    }
+	    else
+		ix[i] = (int) rx;
+	}
+    }
+    else /* REALSXP */
+    {
+	double *rx = REAL(x);
+	for (i = 0; i < n; i++)
+	{
+	    rx[i] = f(a[i % na], b[i % nb], c[i % nc], d[i % nd], e[i % nd]);
+	    if (ISNAN(rx[i])) naflag = TRUE;
+	}
+    }
+
+    return(naflag);
+}
+
+#define RAND5(num, fun)							\
+    case num:								\
+    naflag = random5(fun, REAL(a), na, REAL(b), nb, REAL(c), nc, REAL(d), nd, REAL(e), ne, x, n, type); \
+    break
+
+SEXP actuar_do_random5(int code, SEXP args, SEXPTYPE type)
+{
+    SEXP x, a, b, c, d, e;
+    int n, na, nb, nc, nd, ne;
+
+    /* Check validity of arguments */
+    if (!isVector(CAR(args)) ||
+        !isNumeric(CADR(args)) ||
+        !isNumeric(CADDR(args)) ||
+        !isNumeric(CADDDR(args)) ||
+        !isNumeric(CAD4R(args))  ||
+        !isNumeric(CAD5R(args)))
+        error(_("invalid arguments"));
+
+    /* Number of variates to generate */
+    if (LENGTH(CAR(args)) == 1)
+    {
+        n = asInteger(CAR(args));
+        if (n == NA_INTEGER || n < 0)
+            error(_("invalid arguments"));
+    }
+    else
+        n = LENGTH(CAR(args));
+
+    /* If n == 0, return numeric(0) */
+    PROTECT(x = allocVector(type, n));
+    if (n == 0)
+    {
+        UNPROTECT(1);
+        return(x);
+    }
+
+    /* If length of parameters < 1, return NaN */
+    na = LENGTH(CADR(args));
+    nb = LENGTH(CADDR(args));
+    nc = LENGTH(CADDDR(args));
+    nd = LENGTH(CAD4R(args));
+    ne = LENGTH(CAD5R(args));
+    if (na < 1 || nb < 1 || nc < 1 || nd < 1 || ne < 1)
+	fill_with_NAs(x, n, type);
+    /* Otherwise, dispatch to appropriate r* function */
+    else
+    {
+	Rboolean naflag = FALSE;
+        PROTECT(a = coerceVector(CADR(args), REALSXP));
+        PROTECT(b = coerceVector(CADDR(args), REALSXP));
+        PROTECT(c = coerceVector(CADDDR(args), REALSXP));
+        PROTECT(d = coerceVector(CAD4R(args), REALSXP));
+        PROTECT(e = coerceVector(CAD5R(args), REALSXP));
+        GetRNGstate();
+        switch (code)
+        {
+            RAND5(1, rfpareto);
+        default:
+            error(_("internal error in actuar_do_random5"));
+        }
+        if (naflag)
+            warning(R_MSG_NA);
+        PutRNGstate();
+        UNPROTECT(5);
+    }
+    UNPROTECT(1);
+    return x;
+}
 
 
 /* Main function, the only one used by .External(). */

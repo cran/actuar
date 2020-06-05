@@ -5,6 +5,12 @@
  *  for the inverse transformed gamma distribution. See
  *  ../R/InverseTransformedGamma.R for details.
  *
+ *  We work with the density expressed as
+ *
+ *    shape2 * u^shape1 * e^(-u) / (x * gamma(shape1))
+ *
+ *  with u = (scale/x)^shape2.
+ *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -17,13 +23,6 @@
 double dinvtrgamma(double x, double shape1, double shape2, double scale,
                    int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  shape2 * u^shape1 * e^(-u) / (x * gamma(shape1))
-     *
-     *  with u = (scale/x)^shape2.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(scale))
 	return x + shape1 + shape2 + scale;
@@ -33,7 +32,7 @@ double dinvtrgamma(double x, double shape1, double shape2, double scale,
         !R_FINITE(scale)  ||
         shape1 <= 0.0 ||
         shape2 <= 0.0 ||
-        scale  <= 0.0)
+        scale  <  0.0)
         return R_NaN;
 
     /* handle also x == 0 here */
@@ -58,7 +57,7 @@ double pinvtrgamma(double q, double shape1, double shape2, double scale,
         !R_FINITE(scale)  ||
         shape1 <= 0.0 ||
         shape2 <= 0.0 ||
-        scale  <= 0.0)
+        scale  <  0.0)
         return R_NaN;;
 
     if (q <= 0)
@@ -88,7 +87,7 @@ double qinvtrgamma(double p, double shape1, double shape2, double scale,
     p = ACT_D_qIv(p);
 
     return scale * R_pow(qgamma(p, shape1, 1.0, !lower_tail, 0),
-                         -1.0 / shape2);
+                         -1.0/shape2);
 }
 
 double rinvtrgamma(double shape1, double shape2, double scale)
@@ -101,7 +100,7 @@ double rinvtrgamma(double shape1, double shape2, double scale)
         scale  <= 0.0)
         return R_NaN;;
 
-    return scale * R_pow(rgamma(shape1, 1.0), -1.0 / shape2);
+    return scale * R_pow(rgamma(shape1, 1.0), -1.0/shape2);
 }
 
 double minvtrgamma(double order, double shape1, double shape2, double scale,

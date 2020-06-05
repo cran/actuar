@@ -6,13 +6,6 @@
 \alias{rpareto}
 \alias{mpareto}
 \alias{levpareto}
-\alias{pareto2}
-\alias{dpareto2}
-\alias{ppareto2}
-\alias{qpareto2}
-\alias{rpareto2}
-\alias{mpareto2}
-\alias{levpareto2}
 \title{The Pareto Distribution}
 \description{
   Density function, distribution function, quantile function, random generation,
@@ -47,6 +40,12 @@ levpareto(limit, shape, scale, order = 1)
     f(x) = a s^a / (x + s)^(a + 1)}
   for \eqn{x > 0}, \eqn{\alpha > 0}{a > 0} and \eqn{\theta}{s > 0}.
 
+  There are many different definitions of the Pareto distribution in the
+  literature; see Arnold (2015) or Kleiber and Kotz (2003). In the
+  nomenclature of \pkg{actuar}, The \dQuote{Pareto distribution} does
+  not have a location parameter. The version with a location parameter
+  is the \link[=dpareto2]{Pareto II}.
+  
   The \eqn{k}th raw moment of the random variable \eqn{X} is
   \eqn{E[X^k]}, \eqn{-1 < k < \alpha}{-1 < k < shape}.
 
@@ -69,15 +68,18 @@ levpareto(limit, shape, scale, order = 1)
   \code{levpareto} computes the limited expected value using
   \code{\link{betaint}}.
 
-  Distribution also known as the Pareto Type II or Lomax distribution.
-  See also Kleiber and Kotz (2003) for alternative names and
-  parametrizations.
-
   The version of the Pareto defined for \eqn{x > \theta}{x > s} is named
-  Single Parameter Pareto in \pkg{actuar}.  
+  Single Parameter Pareto, or Pareto I, in \pkg{actuar}.  
 }
 \seealso{
+  \code{\link{dpareto2}} for an equivalent distribution with location
+  parameter.
+
   \code{\link{dpareto1}} for the Single Parameter Pareto distribution.
+
+  \code{"distributions"} package vignette for details on the
+  interrelations between the continuous size distributions in
+  \pkg{actuar} and complete formulas underlying the above functions.
 }
 \references{
   Kleiber, C. and Kotz, S. (2003), \emph{Statistical Size Distributions

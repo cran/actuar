@@ -111,9 +111,19 @@ double qzmgeom(double x, double prob, double p0m, int lower_tail, int log_p)
 
 /* ALGORITHM FOR GENERATION OF RANDOM VARIATES
  *
- * Inversion method is just uniformly faster.
+ * 1. p0m >= p0: just simulate variates from the discrete mixture.
  *
+ * 2. p0m < p0: fastest method depends p0m.
+ *
+ *    2.1 p0m < ACT_INVERSION: inversion method on a restricted range.
+ *
+ *    2.2 p0m >= ACT_INVERSION: simulate variates from discrete mixture
+ *        with the corresponding zero truncated distribution.
+ *
+ * The threshold ACT_INVERSION is distribution specific.
  */
+
+#define ACT_INVERSION 0.4
 
 double rzmgeom(double prob, double p0m)
 {
@@ -126,5 +136,10 @@ double rzmgeom(double prob, double p0m)
     if (p0m >= prob)
 	return (unif_rand() * (1 - prob) < (1 - p0m)) ? rgeom(prob) : 0.0;
 
+    /* inversion method */
+    if (p0m < ACT_INVERSION) 
     return qgeom(runif((prob - p0m)/(1 - p0m), 1), prob, 1, 0);
+
+    /* generate from zero truncated mixture */
+    return (unif_rand() <= p0m) ? 0.0 : 1 + rpois(exp_rand() * ((1 - prob) / prob));
 }

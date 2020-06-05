@@ -147,9 +147,9 @@ double qzmnbinom(double x, double size, double prob, double p0m, int lower_tail,
  *    2.1 p0 - p0m < ACT_DIFFMAX_REJECTION: rejection method with an
  *        envelope that differs from the target distribution at zero
  *        only. In other words: rejection only at zero.
- *    2.2 p0 - p0m >= ACT_DIFFMAX_REJECTION: inverse method on a
- *        restricted range --- same method as the corresponding zero
- *        truncated distribution.
+ *    2.2 p0 - p0m >= ACT_DIFFMAX_REJECTION: simulate variates from
+ *        discrete mixture with the corresponding zero truncated
+ *        distribution.
  *
  * The threshold ACT_DIFFMAX_REJECTION is distribution specific.
  */
@@ -185,7 +185,7 @@ double rzmnbinom(double size, double prob, double p0m)
     }
     else
     {
-    	/* inversion method */
-    	return qnbinom(runif((p0 - p0m)/(1 - p0m), 1), size, prob, 1, 0);
+        /* generate from zero truncated mixture */
+        return (unif_rand() <= p0m) ? 0.0 : qnbinom(runif(p0, 1), size, prob, /*l._t.*/1, /*log_p*/0);
     }
 }

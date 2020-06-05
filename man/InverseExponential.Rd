@@ -58,6 +58,10 @@ levinvexp(limit, rate = 1, scale = 1/rate, order)
 \note{
   \code{levinvexp} computes the limited expected value using
   \code{gammainc} from package \pkg{expint}.
+
+  The \code{"distributions"} package vignette provides the
+  interrelations between the continuous size distributions in
+  \pkg{actuar} and the complete formulas underlying the above functions.
 }
 \references{
   Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),

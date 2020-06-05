@@ -5,6 +5,12 @@
  *  for the inverse Pareto distribution. See ../R/InversePareto.R for
  *  details.
  *
+ *  We work with the density expressed as
+ *
+ *    shape * u^shape * (1 - u) / x
+ *
+ *  with u = v/(1 + v) = 1/(1 + 1/v), v = x/scale.
+ *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -17,19 +23,11 @@
 
 double dinvpareto(double x, double shape, double scale, int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  shape * u^shape * (1 - u) / x
-     *
-     *  with u = v/(1 + v) = 1/(1 + 1/v), v = x/scale.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(shape) || ISNAN(scale))
 	return x + shape + scale;
 #endif
     if (!R_FINITE(shape) ||
-        !R_FINITE(scale) ||
         shape <= 0.0 ||
         scale <= 0.0)
         return R_NaN;
@@ -43,7 +41,7 @@ double dinvpareto(double x, double shape, double scale, int give_log)
 	if (shape < 1) return R_PosInf;
 	if (shape > 1) return ACT_D__0;
 	/* else */
-	return ACT_D_val(1.0 / scale);
+	return ACT_D_val(1.0/scale);
     }
 
     double tmp, logu, log1mu;
@@ -63,7 +61,6 @@ double pinvpareto(double q, double shape, double scale, int lower_tail,
 	return q + shape + scale;
 #endif
     if (!R_FINITE(shape) ||
-        !R_FINITE(scale) ||
         shape <= 0.0 ||
         scale <= 0.0)
         return R_NaN;;
@@ -92,7 +89,7 @@ double qinvpareto(double p, double shape, double scale, int lower_tail,
     ACT_Q_P01_boundaries(p, 0, R_PosInf);
     p = ACT_D_qIv(p);
 
-    return scale / (R_pow(ACT_D_Lval(p), -1.0 / shape) - 1.0);
+    return scale / (R_pow(ACT_D_Lval(p), -1.0/shape) - 1.0);
 }
 
 double rinvpareto(double shape, double scale)
@@ -103,7 +100,7 @@ double rinvpareto(double shape, double scale)
         scale <= 0.0)
         return R_NaN;;
 
-    return scale / (R_pow(unif_rand(), -1.0 / shape) - 1.0);
+    return scale / (R_pow(unif_rand(), -1.0/shape) - 1.0);
 }
 
 double minvpareto(double order, double shape, double scale, int give_log)

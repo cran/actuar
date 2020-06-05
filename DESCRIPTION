@@ -1,8 +1,8 @@
 Package: actuar
 Type: Package
 Title: Actuarial Functions and Heavy Tailed Distributions
-Version: 2.3-3
-Date: 2019-12-03
+Version: 3.0-0
+Date: 2020-06-04
 Authors@R: c(person("Vincent", "Goulet", role = c("cre", "aut"),
  	            email = "vincent.goulet@act.ulaval.ca"),
 	     person("Sébastien", "Auclair", role = "ctb"),
@@ -14,13 +14,24 @@ Authors@R: c(person("Vincent", "Goulet", role = c("cre", "aut"),
 	     person("Alexandre", "Parent", role = "ctb"),
 	     person("Mathieu", "Pigeon", role = "aut",
 	            email = "pigeon.mathieu.2@uqam.ca"),
-	     person("Louis-Philippe", "Pouliot", role = "ctb"))
+	     person("Louis-Philippe", "Pouliot", role = "ctb"),
+     	     person("Jeffrey A.", "Ryan", role = "aut",
+	            email = "jeff.a.ryan@gmail.com",
+		    comment = "Package API"),
+	     person("Robert", "Gentleman", role = "aut",
+	            comment = "Parts of the R to C interface"),
+	     person("Ross", "Ihaka", role = "aut",
+	            comment = "Parts of the R to C interface"),
+	     person(family = "R Core Team", role = "aut",
+	            comment = "Parts of the R to C interface"),
+	     person(family = "R Foundation", role = "aut",
+	            comment = "Parts of the R to C interface"))
 Description: Functions and data sets for actuarial science:
   modeling of loss distributions; risk theory and ruin theory;
   simulation of compound models, discrete mixtures and compound
   hierarchical models; credibility theory. Support for many additional
-  probability distributions to model insurance loss amounts and loss
-  frequency: 19 continuous heavy tailed distributions; the
+  probability distributions to model insurance loss size and
+  frequency: 23 continuous heavy tailed distributions; the
   Poisson-inverse Gaussian discrete distribution; zero-truncated and
   zero-modified extensions of the standard discrete distributions.
   Support for phase-type distributions commonly used to compute ruin
@@ -33,10 +44,10 @@ License: GPL (>= 2)
 URL: https://gitlab.com/vigou3/actuar
 BugReports: https://gitlab.com/vigou3/actuar/issues
 Encoding: UTF-8
-LazyLoad: yes
 LazyData: yes
+Classification/MSC-2010: 62P05, 91B30, 62G32
 NeedsCompilation: yes
-Packaged: 2019-12-03 21:37:55 UTC; vincent
+Packaged: 2020-06-05 03:29:47 UTC; vincent
 Author: Vincent Goulet [cre, aut],
   Sébastien Auclair [ctb],
   Christophe Dutang [aut],
@@ -45,7 +56,12 @@ Author: Vincent Goulet [cre, aut],
   Tommy Ouellet [ctb],
   Alexandre Parent [ctb],
   Mathieu Pigeon [aut],
-  Louis-Philippe Pouliot [ctb]
+  Louis-Philippe Pouliot [ctb],
+  Jeffrey A. Ryan [aut] (Package API),
+  Robert Gentleman [aut] (Parts of the R to C interface),
+  Ross Ihaka [aut] (Parts of the R to C interface),
+  R Core Team [aut] (Parts of the R to C interface),
+  R Foundation [aut] (Parts of the R to C interface)
 Maintainer: Vincent Goulet <vincent.goulet@act.ulaval.ca>
 Repository: CRAN
-Date/Publication: 2019-12-04 09:40:06 UTC
+Date/Publication: 2020-06-05 05:20:06 UTC

@@ -29,9 +29,11 @@
 #define ACT_DT_1mqIv(p)	  (log_p ? (lower_tail ? - expm1(p) : exp(p)) \
 			       : ACT_D_Cval(p))   	  /*  1 - p  in qF(p,..) */
 #define ACT_D_exp(x)      (log_p  ?  (x)   : exp(x))      /* exp(x) */
+#define ACT_D_Cexp(x)     (log_p  ? log(-expm1(x)) : (-expm1(x)))    /* [log](1-exp(x)) */
 #define ACT_D_Clog(p)     (log_p  ? log1p(-(p)) : (0.5 - (p) + 0.5)) /* [log](1-p) */
 
 #define ACT_DT_val(x)     (lower_tail ? ACT_D_val(x)  : ACT_D_Clog(x))
+#define ACT_DT_Eval(x)    (lower_tail ? ACT_D_exp(x)  : ACT_D_Cexp(x))
 #define ACT_DT_Cval(x)    (lower_tail ? ACT_D_Clog(x) : ACT_D_val(x))
 
 // log(1 - exp(x))  in more stable form than log1p(- R_D_qIv(x)) :

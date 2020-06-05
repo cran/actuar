@@ -43,8 +43,8 @@ levburr(limit, shape1, shape2, rate = 1, scale = 1/rate,
     \alpha}{= a}, \code{shape2} \eqn{= \gamma}{= b} and \code{scale}
   \eqn{= \theta}{= s} has density:
   \deqn{f(x) = \frac{\alpha \gamma (x/\theta)^\gamma}{%
-      x[1 + (x/\theta)^\gamma]^{\alpha + 1}}}{%
-    f(x) = (a b (x/s)^b)/(x [1 + (x/s)^b]^(a + 1))}
+      \theta [1 + (x/\theta)^\gamma]^{\alpha + 1}}}{%
+    f(x) = (a b (x/s)^b)/(s [1 + (x/s)^b]^(a + 1))}
   for \eqn{x > 0}, \eqn{\alpha > 0}{a > 0}, \eqn{\gamma > 0}{b > 0}
   and \eqn{\theta > 0}{s > 0}.
 
@@ -90,6 +90,10 @@ levburr(limit, shape1, shape2, rate = 1, scale = 1/rate,
   Distribution also known as the Burr Type XII or Singh-Maddala
   distribution. See also Kleiber and Kotz (2003) for alternative names
   and parametrizations.
+
+  The \code{"distributions"} package vignette provides the
+  interrelations between the continuous size distributions in
+  \pkg{actuar} and the complete formulas underlying the above functions.
 }
 \references{
   Kleiber, C. and Kotz, S. (2003), \emph{Statistical Size Distributions
@@ -97,6 +101,10 @@ levburr(limit, shape1, shape2, rate = 1, scale = 1/rate,
 
   Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),
   \emph{Loss Models, From Data to Decisions, Fourth Edition}, Wiley.
+}
+\seealso{
+  \code{\link{dpareto4}} for an equivalent distribution with a location
+  parameter.
 }
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca} and

@@ -79,6 +79,10 @@ levgenbeta(limit, shape1, shape2, shape3, rate = 1, scale = 1/rate,
 \note{
   This is \emph{not} the generalized three-parameter beta distribution
   defined on page 251 of Johnson et al, 1995.
+
+  The \code{"distributions"} package vignette provides the
+  interrelations between the continuous size distributions in
+  \pkg{actuar} and the complete formulas underlying the above functions.
 }
 \references{
   Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)

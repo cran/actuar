@@ -36,8 +36,10 @@
  *
  *  To add a new distribution: write a {d,p,q,m,lev,mgf}dist()
  *  function, add an entry in names.c and in the definition of the
- *  corresponding actuar_do_dpq{1,2,3,4} function, declare the function in
- *  actuar.h.
+ *  corresponding actuar_do_dpq{1,2,3,4,6} function, declare the
+ *  function in actuar.h.
+ *
+ *  Adapted from src/main/arithmetic.c in R sources.
  *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  *          with much indirect help from the R Core Team
@@ -397,8 +399,8 @@ SEXP actuar_do_dpq2(int code, SEXP args)
     case  47: return DPQ2_1(args, mnorm);
     case  48: return DPQ2_1(args, mchisq);
     case  49: return DPQ2_1(args, mgfchisq);
-    case  50: return DPQ2_1(args, minvGauss); /* deprecated v2.0-0 */
-    case  51: return DPQ2_1(args, mgfinvGauss); /* deprecated v2.0-0 */
+    /* case  50: return DPQ2_1(args, minvGauss);   [defunct v3.0-0] */
+    /* case  51: return DPQ2_1(args, mgfinvGauss); [defunct v3.0-0] */
     case  52: return DPQ2_1(args, munif);
     case  53: return DPQ2_1(args, dgumbel);
     case  54: return DPQ2_2(args, pgumbel);
@@ -428,7 +430,6 @@ SEXP actuar_do_dpq2(int code, SEXP args)
     case 116: return DPQ2_1(args, dpoisinvgauss);
     case 117: return DPQ2_2(args, ppoisinvgauss);
     case 118: return DPQ2_2(args, qpoisinvgauss);
-    case 201: return DPQ2_1(args, betaint); /* special integral */
     default:
         error(_("internal error in actuar_do_dpq2"));
     }
@@ -606,9 +607,17 @@ SEXP actuar_do_dpq3(int code, SEXP args)
     case  32:  return DPQ3_1(args, levweibull);
     case  33:  return DPQ3_1(args, levbeta);
     case  34:  return DPQ3_1(args, levchisq);
-    case  35:  return DPQ3_1(args, levinvGauss);  /* deprecated v2.0-0 */
+    /* case  35:  return DPQ3_1(args, levinvGauss);  [defunct v3.0-0] */
     case  36:  return DPQ3_1(args, levunif);
     case  37:  return DPQ3_1(args, levinvgauss);
+    case  38:  return DPQ3_1(args, dpareto2);
+    case  39:  return DPQ3_2(args, ppareto2);
+    case  40:  return DPQ3_2(args, qpareto2);
+    case  41:  return DPQ3_1(args, mpareto2);
+    case  42:  return DPQ3_1(args, dpareto3);
+    case  43:  return DPQ3_2(args, ppareto3);
+    case  44:  return DPQ3_2(args, qpareto3);
+    case  45:  return DPQ3_1(args, mpareto3);
     case 101:  return DPQ3_1(args, dzmnbinom);
     case 102:  return DPQ3_2(args, pzmnbinom);
     case 103:  return DPQ3_2(args, qzmnbinom);
@@ -786,6 +795,12 @@ SEXP actuar_do_dpq4(int code, SEXP args)
     case 11:  return DPQ4_2(args, pgenbeta);
     case 12:  return DPQ4_2(args, qgenbeta);
     case 13:  return DPQ4_1(args, mgenbeta);
+    case 14:  return DPQ4_1(args, levpareto2);
+    case 15:  return DPQ4_1(args, levpareto3);
+    case 16:  return DPQ4_1(args, dpareto4);
+    case 17:  return DPQ4_2(args, ppareto4);
+    case 18:  return DPQ4_2(args, qpareto4);
+    case 19:  return DPQ4_1(args, mpareto4);
     default:
         error(_("internal error in actuar_do_dpq4"));
     }
@@ -910,7 +925,44 @@ static SEXP dpq5_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sI
     return sy;
 }
 
+static SEXP dpq5_2(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sI, SEXP sJ, double (*f)())
+{
+    SEXP sy;
+    int i, ix, ia, ib, ic, id, ie, n, nx, na, nb, nc, nd, ne,
+        sxo = OBJECT(sx), sao = OBJECT(sa), sbo = OBJECT(sb),
+        sco = OBJECT(sc), sdo = OBJECT(sd), seo = OBJECT(sd);
+    double xi, ai, bi, ci, di, ei, *x, *a, *b, *c, *d, *e, *y;
+    int i_1, i_2;
+    Rboolean naflag = FALSE;
+
+    SETUP_DPQ5;
+
+    i_1 = asInteger(sI);
+    i_2 = asInteger(sJ);
+
+    mod_iterate5(nx, na, nb, nc, nd, ne, ix, ia, ib, ic, id, ie)
+    {
+        xi = x[ix];
+        ai = a[ia];
+        bi = b[ib];
+        ci = c[ic];
+        di = d[id];
+        ei = e[ie];
+        if_NA_dpq5_set(y[i], xi, ai, bi, ci, di, ei)
+        else
+        {
+            y[i] = f(xi, ai, bi, ci, di, ei, i_1, i_2);
+            if (ISNAN(y[i])) naflag = TRUE;
+        }
+    }
+
+    FINISH_DPQ5;
+
+    return sy;
+}
+
 #define DPQ5_1(A, FUN) dpq5_1(CAR(A), CADR(A), CADDR(A), CADDDR(A), CAD4R(A), CAD5R(A), CAD6R(A), FUN);
+#define DPQ5_2(A, FUN) dpq5_2(CAR(A), CADR(A), CADDR(A), CADDDR(A), CAD4R(A), CAD5R(A), CAD6R(A), CAD7R(A), FUN)
 
 SEXP actuar_do_dpq5(int code, SEXP args)
 {
@@ -918,6 +970,11 @@ SEXP actuar_do_dpq5(int code, SEXP args)
     {
     case  1:  return DPQ5_1(args, levtrbeta);
     case  2:  return DPQ5_1(args, levgenbeta);
+    case  3:  return DPQ5_1(args, dfpareto);
+    case  4:  return DPQ5_2(args, pfpareto);
+    case  5:  return DPQ5_2(args, qfpareto);
+    case  6:  return DPQ5_1(args, mfpareto);
+    case  7:  return DPQ5_2(args, levpareto4);
     default:
         error(_("internal error in actuar_do_dpq5"));
     }
@@ -925,6 +982,150 @@ SEXP actuar_do_dpq5(int code, SEXP args)
     return args;                /* never used; to keep -Wall happy */
 }
 
+/* Functions for six parameter distributions */
+#define if_NA_dpq6_set(y, x, a, b, c, d, e, g)                                \
+        if      (ISNA (x) || ISNA (a) || ISNA (b) || ISNA (c) || ISNA (d) || ISNA (e) || ISNA (g)) \
+            y = NA_REAL;                                                   \
+        else if (ISNAN(x) || ISNAN(a) || ISNAN(b) || ISNAN(c) || ISNAN(d) || ISNAN(e) || ISNAN(g)) \
+            y = R_NaN;
+
+#define mod_iterate6(n1, n2, n3, n4, n5, n6, n7, i1, i2, i3, i4, i5, i6, i7)  \
+        for (i = i1 = i2 = i3 = i4 = i5 = i6 = i7 = 0; i < n;                 \
+             i1 = (++i1 == n1) ? 0 : i1,                        \
+             i2 = (++i2 == n2) ? 0 : i2,                        \
+             i3 = (++i3 == n3) ? 0 : i3,                        \
+             i4 = (++i4 == n4) ? 0 : i4,                        \
+             i5 = (++i5 == n5) ? 0 : i5,                        \
+             i6 = (++i6 == n6) ? 0 : i6,                        \
+             i7 = (++i7 == n7) ? 0 : i7,                        \
+             ++i)
+
+static SEXP dpq6_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sg, SEXP sI, double (*f)())
+{
+    SEXP sy;
+    /* skip argument "sf" because "if" is a C keyword. */
+    int i, ix, ia, ib, ic, id, ie, ig, n, nx, na, nb, nc, nd, ne, ng,
+        sxo = OBJECT(sx), sao = OBJECT(sa), sbo = OBJECT(sb),
+        sco = OBJECT(sc), sdo = OBJECT(sd), seo = OBJECT(se),
+        sgo = OBJECT(sg);
+    double xi, ai, bi, ci, di, ei, gi, *x, *a, *b, *c, *d, *e, *g, *y;
+    int i_1;
+    Rboolean naflag = FALSE;
+
+#define SETUP_DPQ6                                              \
+    if (!isNumeric(sx) || !isNumeric(sa) || !isNumeric(sb) ||   \
+        !isNumeric(sc) || !isNumeric(sd) || !isNumeric(se) ||   \
+        !isNumeric(sg))                                         \
+        error(_("invalid arguments"));                          \
+                                                                \
+    nx = LENGTH(sx);                                            \
+    na = LENGTH(sa);                                            \
+    nb = LENGTH(sb);                                            \
+    nc = LENGTH(sc);                                            \
+    nd = LENGTH(sd);                                            \
+    ne = LENGTH(se);                                            \
+    ng = LENGTH(sg);                                            \
+    if ((nx == 0) || (na == 0) || (nb == 0) ||                  \
+        (nc == 0) || (nd == 0) || (ne == 0) ||                  \
+        (ng == 0))                                              \
+        return(allocVector(REALSXP, 0));                        \
+    n = nx;                                                     \
+    if (n < na) n = na;                                         \
+    if (n < nb) n = nb;                                         \
+    if (n < nc) n = nc;                                         \
+    if (n < nd) n = nd;                                         \
+    if (n < ne) n = ne;                                         \
+    if (n < ng) n = ng;                                         \
+    PROTECT(sx = coerceVector(sx, REALSXP));                    \
+    PROTECT(sa = coerceVector(sa, REALSXP));                    \
+    PROTECT(sb = coerceVector(sb, REALSXP));                    \
+    PROTECT(sc = coerceVector(sc, REALSXP));                    \
+    PROTECT(sd = coerceVector(sd, REALSXP));                    \
+    PROTECT(se = coerceVector(se, REALSXP));                    \
+    PROTECT(sg = coerceVector(sg, REALSXP));                    \
+    PROTECT(sy = allocVector(REALSXP, n));                      \
+    x = REAL(sx);                                               \
+    a = REAL(sa);                                               \
+    b = REAL(sb);                                               \
+    c = REAL(sc);                                               \
+    d = REAL(sd);                                               \
+    e = REAL(se);                                               \
+    g = REAL(sg);                                               \
+    y = REAL(sy)
+
+    SETUP_DPQ6;
+
+    i_1 = asInteger(sI);
+
+    mod_iterate6(nx, na, nb, nc, nd, ne, ng, ix, ia, ib, ic, id, ie, ig)
+    {
+        xi = x[ix];
+        ai = a[ia];
+        bi = b[ib];
+        ci = c[ic];
+        di = d[id];
+        ei = e[ie];
+        gi = g[ig];
+        if_NA_dpq6_set(y[i], xi, ai, bi, ci, di, ei, gi)
+        else
+        {
+            y[i] = f(xi, ai, bi, ci, di, ei, gi, i_1);
+            if (ISNAN(y[i])) naflag = TRUE;
+        }
+    }
+
+#define FINISH_DPQ6                             \
+    if (naflag)                                 \
+        warning(R_MSG_NA);                      \
+                                                \
+    if (n == nx) {                              \
+        SET_ATTRIB(sy, duplicate(ATTRIB(sx)));  \
+        SET_OBJECT(sy, sxo);                    \
+    }                                           \
+    else if (n == na) {                         \
+        SET_ATTRIB(sy, duplicate(ATTRIB(sa)));  \
+        SET_OBJECT(sy, sao);                    \
+    }                                           \
+    else if (n == nb) {                         \
+        SET_ATTRIB(sy, duplicate(ATTRIB(sb)));  \
+        SET_OBJECT(sy, sbo);                    \
+    }                                           \
+    else if (n == nc) {                         \
+        SET_ATTRIB(sy, duplicate(ATTRIB(sc)));  \
+        SET_OBJECT(sy, sco);                    \
+    }                                           \
+    else if (n == nd) {                         \
+        SET_ATTRIB(sy, duplicate(ATTRIB(sd)));  \
+        SET_OBJECT(sy, sdo);                    \
+    }                                           \
+    else if (n == ne) {                         \
+        SET_ATTRIB(sy, duplicate(ATTRIB(se)));  \
+        SET_OBJECT(sy, seo);                    \
+    }                                           \
+    else if (n == ng) {                         \
+        SET_ATTRIB(sy, duplicate(ATTRIB(sg)));  \
+        SET_OBJECT(sy, sgo);                    \
+    }                                           \
+    UNPROTECT(8)
+
+    FINISH_DPQ6;
+
+    return sy;
+}
+
+#define DPQ6_1(A, FUN) dpq6_1(CAR(A), CADR(A), CADDR(A), CADDDR(A), CAD4R(A), CAD5R(A), CAD6R(A), CAD7R(A), FUN);
+
+SEXP actuar_do_dpq6(int code, SEXP args)
+{
+    switch (code)
+    {
+    case  1:  return DPQ6_1(args, levfpareto);
+    default:
+        error(_("internal error in actuar_do_dpq6"));
+    }
+
+    return args;                /* never used; to keep -Wall happy */
+}
 
 /* Main function, the only one used by .External(). */
 SEXP actuar_do_dpq(SEXP args)
@@ -936,7 +1137,7 @@ SEXP actuar_do_dpq(SEXP args)
     args = CDR(args);
     name = CHAR(STRING_ELT(CAR(args), 0));
 
-    /* Dispatch to actuar_do_dpq{1,2,3,4,5} */
+    /* Dispatch to actuar_do_dpq{1,2,3,4,5,6} */
     for (i = 0; dpq_tab[i].name; i++)
     {
         if (!strcmp(dpq_tab[i].name, name))

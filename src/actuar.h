@@ -14,18 +14,22 @@ SEXP actuar_do_dpq2(int code, SEXP args);
 SEXP actuar_do_dpq3(int code, SEXP args);
 SEXP actuar_do_dpq4(int code, SEXP args);
 SEXP actuar_do_dpq5(int code, SEXP args);
+SEXP actuar_do_dpq6(int code, SEXP args);
 
 SEXP actuar_do_random(SEXP args);
 SEXP actuar_do_random1(int code, SEXP args, SEXPTYPE type);
 SEXP actuar_do_random2(int code, SEXP args, SEXPTYPE type);
 SEXP actuar_do_random3(int code, SEXP args, SEXPTYPE type);
 SEXP actuar_do_random4(int code, SEXP args, SEXPTYPE type);
+SEXP actuar_do_random5(int code, SEXP args, SEXPTYPE type);
 
 SEXP actuar_do_dpqphtype(SEXP args);
 SEXP actuar_do_dpqphtype2(int code, SEXP args);
 
 SEXP actuar_do_randomphtype(SEXP args);
 SEXP actuar_do_randomphtype2(int code, SEXP args, SEXPTYPE type);
+
+SEXP actuar_do_betaint(SEXP args);
 
 SEXP actuar_do_hierarc(SEXP args);
 SEXP actuar_do_panjer(SEXP args);
@@ -38,8 +42,8 @@ void actuar_matpow(double *x, int n, int k, double *z);
 void actuar_solve(double *A, double *B, int n, int p, double *z);
 
 /*   Special integrals */
-double betaint(double x, double a, double b, int foo);
-double betaint_raw(double x, double a, double b);
+double betaint(double x, double a, double b);
+double betaint_raw(double x, double a, double b, double x1m);
 
 /*   Sampling */
 int SampleSingleValue(int n, double *p);
@@ -160,9 +164,9 @@ double levpareto1(double limit, double shape, double scale, double order, int gi
 double mweibull(double order, double scale, double shape, int give_log);
 double levweibull(double limit, double scale, double shape, double order, int give_log);
 
-double minvGauss(double order, double nu, double lambda, int give_log); /* deprecated v2.0-0 */
-double levinvGauss(double limit, double nu, double lambda, double order, int give_log); /* idem */
-double mgfinvGauss(double t, double nu, double lambda, int give_log); /* idem */
+/* double minvGauss(double order, double nu, double lambda, int give_log); [defunct v3.0-0] */
+/* double levinvGauss(double limit, double nu, double lambda, double order, int give_log); [idem] */
+/* double mgfinvGauss(double t, double nu, double lambda, int give_log); [idem] */
 
 double dgumbel(double x, double alpha, double beta, int give_log);
 double pgumbel(double q, double alpha, double beta, int lower_tail, int log_p);
@@ -246,6 +250,20 @@ double rtrgamma(double shape1, double shape2, double scale);
 double mtrgamma(double order, double shape1, double shape2, double scale, int give_log);
 double levtrgamma(double limit, double shape1, double shape2, double scale, double order, int give_log);
 
+double dpareto2(double x, double min, double shape, double scale, int give_log);
+double ppareto2(double q, double min, double shape, double scale, int lower_tail, int log_p);
+double qpareto2(double p, double min, double shape, double scale, int lower_tail, int log_p);
+double rpareto2(double min, double shape, double scale);
+double mpareto2(double order, double min, double shape, double scale, int give_log);
+double levpareto2(double limit, double min, double shape, double scale, double order, int give_log);
+
+double dpareto3(double x, double min, double shape, double scale, int give_log);
+double ppareto3(double q, double min, double shape, double scale, int lower_tail, int log_p);
+double qpareto3(double p, double min, double shape, double scale, int lower_tail, int log_p);
+double rpareto3(double min, double shape, double scale);
+double mpareto3(double order, double min, double shape, double scale, int give_log);
+double levpareto3(double limit, double min, double shape, double scale, double order, int give_log);
+
 double dzmnbinom(double x, double size, double prob, double p0m, int give_log);
 double pzmnbinom(double q, double size, double prob, double p0m, int lower_tail, int log_p);
 double qzmnbinom(double p, double size, double prob, double p0m, int lower_tail, int log_p);
@@ -271,13 +289,27 @@ double rtrbeta(double shape1, double shape2, double shape3, double scale);
 double mtrbeta(double order, double shape1, double shape2, double shape3, double scale, int give_log);
 double levtrbeta(double limit, double shape1, double shape2, double shape3, double scale, double order, int give_log);
 
+double dpareto4(double x, double min, double shape1, double shape2, double scale, int give_log);
+double ppareto4(double q, double min, double shape1, double shape2, double scale, int lower_tail, int log_p);
+double qpareto4(double p, double min, double shape1, double shape2, double scale, int lower_tail, int log_p);
+double rpareto4(double min, double shape1, double shape2, double scale);
+double mpareto4(double order, double min, double shape1, double shape2, double scale, int give_log);
+double levpareto4(double limit, double min, double shape1, double shape2, double scale, double order, int give_log);
+
+/*   Five parameter distributions */
+double dfpareto(double x, double min, double shape1, double shape2, double shape3, double scale, int give_log);
+double pfpareto(double q, double min, double shape1, double shape2, double shape3, double scale, int lower_tail, int log_p);
+double qfpareto(double p, double min, double shape1, double shape2, double shape3, double scale, int lower_tail, int log_p);
+double rfpareto(double min, double shape1, double shape2, double shape3, double scale);
+double mfpareto(double order, double min,  double shape1, double shape2, double shape3, double scale, int give_log);
+double levfpareto(double limit, double mu, double shape1, double shape2, double shape3, double scale, double order, int give_log);
+
 /*   Phase-type distributions */
 double dphtype(double x, double *pi, double *T, int m, int give_log);
 double pphtype(double x, double *pi, double *T, int m, int lower_tail, int log_p);
 double rphtype(double *pi, double **Q, double *rates, int m);
 double mphtype(double order, double *pi, double *T, int m, int give_log);
 double mgfphtype(double x, double *pi, double *T, int m, int give_log);
-
 
 /* Definitions for the tables linking the first group of functions to
  * the second one. Tables found in names.c. One table for

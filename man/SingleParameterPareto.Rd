@@ -35,8 +35,8 @@ levpareto1(limit, shape, min, order = 1)
   \item{limit}{limit of the loss variable.}
 }
 \details{
-  The single-parameter Pareto distribution with parameter \code{shape}
-  \eqn{= \alpha}{= a} has density:
+  The single-parameter Pareto, or Pareto I, distribution with parameter
+  \code{shape} \eqn{= \alpha}{= a} has density:
   \deqn{f(x) = \frac{\alpha \theta^\alpha}{x^{\alpha + 1}}}{%
     f(x) = a b^a/x^(a + 1)}
   for \eqn{x > \theta}{x > b}, \eqn{\alpha > 0}{a > 0} and \eqn{\theta >
@@ -62,7 +62,18 @@ levpareto1(limit, shape, min, order = 1)
 
   Invalid arguments will result in return value \code{NaN}, with a warning.
 }
+\note{
+  For Pareto distributions, we use the classification of Arnold (2015)
+  with the parametrization of Klugman et al. (2012).
+
+  The \code{"distributions"} package vignette provides the
+  interrelations between the continuous size distributions in
+  \pkg{actuar} and the complete formulas underlying the above functions.
+}
 \references{
+  Arnold, B.C. (2015), \emph{Pareto Distributions}, Second Edition, CRC
+  Press.
+
   Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),
   \emph{Loss Models, From Data to Decisions, Fourth Edition}, Wiley.
 }

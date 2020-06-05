@@ -3,8 +3,8 @@
 \encoding{UTF-8}
 
 \section{LATER NEWS}{
-  This file covers NEWS for the 1.x series. News for actuar 2.0-0 and
-  later can be found in file \file{NEWS.Rd}.
+  This file covers NEWS for the 1.x series. News for \pkg{actuar} 2.0-0
+  and later can be found in file \file{NEWS.Rd}.
 }
 
 \section{CHANGES IN VERSION 1.2-2}{
@@ -327,5 +327,6 @@
 }
 
 \section{OLDER NEWS}{
-  News for actuar 0.9.7 and earlier can be found in file \file{NEWS.0.Rd}.
+  News for \pkg{actuar} 0.9.7 and earlier can be found in file
+  \file{NEWS.0.Rd}.
 }

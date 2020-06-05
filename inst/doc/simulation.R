@@ -1,5 +1,4 @@
 ### R code from vignette source 'simulation.Rnw'
-### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: simulation.Rnw:85-87

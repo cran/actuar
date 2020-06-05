@@ -1,5 +1,4 @@
 ### R code from vignette source 'credibility.Rnw'
-### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: credibility.Rnw:78-80

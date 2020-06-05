@@ -37,10 +37,9 @@ export(
     mlnorm, levlnorm,
     dparalogis, pparalogis, qparalogis, rparalogis, mparalogis, levparalogis,
     dpareto, ppareto, qpareto, rpareto, mpareto, levpareto,
-    dpareto2, ppareto2, qpareto2, rpareto2, mpareto2, levpareto2, # aliases
     dpareto1, ppareto1, qpareto1, rpareto1, mpareto1, levpareto1,
     mweibull, levweibull,
-    minvGauss, levinvGauss, mgfinvGauss, # deprecated v2.0-0
+    ## minvGauss, levinvGauss, mgfinvGauss, [defunct v3.0-0]
     dgumbel, pgumbel, qgumbel, rgumbel, mgumbel, mgfgumbel,
     dinvgauss, pinvgauss, qinvgauss, rinvgauss, minvgauss, levinvgauss, mgfinvgauss,
     dztnbinom, pztnbinom, qztnbinom, rztnbinom,
@@ -56,12 +55,17 @@ export(
     dinvburr, pinvburr, qinvburr, rinvburr, minvburr, levinvburr,
     dinvtrgamma, pinvtrgamma, qinvtrgamma, rinvtrgamma, minvtrgamma, levinvtrgamma,
     dtrgamma, ptrgamma, qtrgamma, rtrgamma, mtrgamma, levtrgamma,
+    dpareto2, ppareto2, qpareto2, rpareto2, mpareto2, levpareto2,
+    dpareto3, ppareto3, qpareto3, rpareto3, mpareto3, levpareto3,
     dzmnbinom, pzmnbinom, qzmnbinom, rzmnbinom,
     dzmbinom, pzmbinom, qzmbinom, rzmbinom,
     ## Four parameter distributions
     dgenbeta, pgenbeta, qgenbeta, rgenbeta, mgenbeta, levgenbeta,
     dtrbeta, ptrbeta, qtrbeta, rtrbeta, mtrbeta, levtrbeta,
     dpearson6, ppearson6, qpearson6, rpearson6, mpearson6, levpearson6, #aliases
+    dpareto4, ppareto4, qpareto4, rpareto4, mpareto4, levpareto4,
+    ## Five parameter distributions
+    dfpareto, pfpareto, qfpareto, rfpareto, mfpareto, levfpareto,
     ## Phase-type distributions
     dphtype, pphtype, rphtype, mphtype, mgfphtype,
     ## Loss distributions

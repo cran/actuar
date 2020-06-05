@@ -1,5 +1,4 @@
 ### R code from vignette source 'coverage.Rnw'
-### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: coverage.Rnw:52-53

@@ -65,6 +65,11 @@ levlgamma(limit, shapelog, ratelog, order = 1)
 
   Invalid arguments will result in return value \code{NaN}, with a warning.
 }
+\note{
+  The \code{"distributions"} package vignette provides the
+  interrelations between the continuous size distributions in
+  \pkg{actuar} and the complete formulas underlying the above functions.
+}
 \references{
   Hogg, R. V. and Klugman, S. A. (1984), \emph{Loss Distributions},
   Wiley.

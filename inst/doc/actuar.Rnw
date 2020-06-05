@@ -75,37 +75,34 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Package \pkg{actuar} \citep{actuar} provides additional
-actuarial science functionality to the R statistical
-system. Although various packages on the Comprehensive R
-Archive Network (CRAN) provide functions useful to actuaries,
-\pkg{actuar} aims to serve as a central location for more specifically
-actuarial functions and data sets. The project was officially launched
-in 2005 and is under active development.
+\pkg{actuar} \citep{actuar} provides additional actuarial science
+functionality and support for heavy tailed distributions to the R
+statistical system. The project was officially launched in 2005 and is
+under active development.
 
 The current feature set of the package can be split into five main
 categories: additional probability distributions; loss distributions
 modeling; risk and ruin theory; simulation of compound hierarchical
 models; credibility theory.
 
+Furthermore, starting with version 3.0-0, \pkg{actuar} gives easy
+access to many of its underlying C workhorses through an API.
+
 As much as possible, the developers have tried to keep the ``user
 interface'' of the various functions of the package consistent.
-Moreover, the package follows the general R philosophy of
-working with model objects. This means that instead of merely
-returning, say, a vector of probabilities, many functions will return
-an object containing, among other things, the said probabilities. The
-object can then be manipulated at one's will using various extraction,
-summary or plotting functions.
+Moreover, the package follows the general R philosophy of working with
+model objects. This means that instead of merely returning, say, a
+vector of probabilities, many functions will return an object
+containing, among other things, the said probabilities. The object can
+then be manipulated at one's will using various extraction, summary or
+plotting functions.
 
 
 \section{Documentation}
 
-It is a requirement of the R packaging system that every
-function and data set in a package has a help page. The \pkg{actuar}
-package follows this requirement strictly. In addition to the help
-pages, the package includes vignettes and demonstration scripts; run
-the following commands at the R prompt to obtain the list
-of each.
+In addition to the help pages, \pkg{actuar} ships with extensive
+vignettes and demonstration scripts; run the following commands at the
+R prompt to obtain the list of each.
 <<echo=TRUE, eval=FALSE>>=
 vignette(package = "actuar")
 demo(package = "actuar")
@@ -114,15 +111,9 @@ demo(package = "actuar")
 
 \section{Collaboration and citation}
 
-Obviously, the package leaves many other fields of Actuarial Science
-untouched. For this situation to change, we hope that experts in their
-field will join their efforts to ours and contribute code to the
-\pkg{actuar} project. The project will continue to grow and to improve
-by and for the community of developers and users.
-
-If you use R or \pkg{actuar} for actuarial analysis, please
-cite the software in publications. For information on how to cite the
-software, use:
+If you use R or \pkg{actuar} for actuarial analysis, please cite the
+software in publications. For information on how to cite the software,
+use:
 <<eval=FALSE>>=
 citation()
 citation("actuar")
@@ -132,8 +123,9 @@ citation("actuar")
 \section*{Acknowledgments}
 
 The package would not be at this stage of development without the
-stimulating contribution of Sébastien Auclair, Xavier Milhaud,
-Tommy Ouellet and Louis-Philippe Pouliot.
+stimulating contribution of Sébastien Auclair, Christophe Dutang,
+Nicholas Langevin, Xavier Milhaud, Tommy Ouellet and Louis-Philippe
+Pouliot.
 
 This research benefited from financial support from the Natural
 Sciences and Engineering Research Council of Canada and from the

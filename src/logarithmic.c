@@ -4,6 +4,12 @@
  *  functions, and to simulate random variates for the logarithmic
  *  discrete distribution. See ../R/Logarithmic.R for details.
  *
+ *  We work with the probability mass function expressed as
+ *
+ *    a * p^x / x,  x = 1, 2, ...
+ *
+ *  with a = -1/log(1 - p).
+ *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -14,13 +20,6 @@
 
 double dlogarithmic(double x, double p, int give_log)
 {
-    /*  We work with the probability mass function expressed as
-     *
-     *  a * p^x / x,  x = 1, 2, ...
-     *
-     *  with a = -1/log(1 - p).
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(p))
 	return x + p;

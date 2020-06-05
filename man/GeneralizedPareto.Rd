@@ -99,6 +99,10 @@ levgenpareto(limit, shape1, shape2, rate = 1, scale = 1/rate,
   compute quantities for the latter using functions for the
   \link[=dpareto]{Pareto} distribution with the appropriate change of
   parametrization.
+
+  The \code{"distributions"} package vignette provides the
+  interrelations between the continuous size distributions in
+  \pkg{actuar} and the complete formulas underlying the above functions.
 }
 \references{
   Embrechts, P., Klüppelberg, C. and Mikisch, T. (1997), \emph{Modelling

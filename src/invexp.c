@@ -5,6 +5,12 @@
  *  for the inverse exponential distribution. See ../R/InverseExponential.R
  *  for details.
  *
+ *  We work with the density expressed as
+ *
+ *    u * e^(-u) / x
+ *
+ *  with u = scale/x.
+ *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -16,18 +22,11 @@
 
 double dinvexp(double x, double scale, int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  u * e^(-u) / x
-     *
-     *  with u = scale/x.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(scale))
 	return x + scale;
 #endif
-    if (!R_FINITE(scale) || scale <= 0.0)
+    if (!R_FINITE(scale) || scale < 0.0)
         return R_NaN;
 
     /* handle also x == 0 here */
@@ -45,7 +44,7 @@ double pinvexp(double q, double scale, int lower_tail, int log_p)
     if (ISNAN(q) || ISNAN(scale))
 	return q + scale;
 #endif
-    if (!R_FINITE(scale) || scale <= 0.0)
+    if (!R_FINITE(scale) || scale < 0.0)
         return R_NaN;
 
     if (q <= 0)
@@ -53,7 +52,7 @@ double pinvexp(double q, double scale, int lower_tail, int log_p)
 
     double u = exp(log(scale) - log(q));
 
-    return ACT_DT_val(exp(-u));
+    return ACT_DT_Eval(-u);
 }
 
 double qinvexp(double p, double scale, int lower_tail, int log_p)
@@ -103,12 +102,9 @@ double levinvexp(double limit, double scale, double order, int give_log)
 	return limit + scale + order;
 #endif
     if (!R_FINITE(scale) ||
-        R_FINITE(order) ||
+        !R_FINITE(order) ||
         scale <= 0.0)
         return R_NaN;
-
-    if (order >= 1.0)
-	return R_PosInf;
 
     if (limit <= 0.0)
         return 0.0;

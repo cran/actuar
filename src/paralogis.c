@@ -5,6 +5,12 @@
  *  for the paralogistic distribution. See ../R/Paralogistic.R for
  *  details.
  *
+ *  We work with the density expressed as
+ *
+ *    shape^2 * u^shape * (1 - u) / x
+ *
+ *  with u = 1/(1 + v), v = (x/scale)^shape.
+ *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -16,19 +22,11 @@
 
 double dparalogis(double x, double shape, double scale, int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  shape^2 * u^shape * (1 - u) / x
-     *
-     *  with u = 1/(1 + v), v = (x/scale)^shape.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(shape) || ISNAN(scale))
 	return x + shape + scale;
 #endif
     if (!R_FINITE(shape) ||
-        !R_FINITE(scale) ||
         shape <= 0.0 ||
         scale <= 0.0)
         return R_NaN;
@@ -42,14 +40,14 @@ double dparalogis(double x, double shape, double scale, int give_log)
 	if (shape < 1) return R_PosInf;
 	if (shape > 1) return ACT_D__0;
 	/* else */
-	return ACT_D_val(1.0 / scale);
+	return ACT_D_val(1.0/scale);
     }
 
-    double tmp, logu, log1mu;
+    double logv, logu, log1mu;
 
-    tmp = shape * (log(x) - log(scale));
-    logu = - log1pexp(tmp);
-    log1mu = - log1pexp(-tmp);
+    logv = shape * (log(x) - log(scale));
+    logu = - log1pexp(logv);
+    log1mu = - log1pexp(-logv);
 
     return ACT_D_exp(2.0 * log(shape) + shape * logu + log1mu - log(x));
 }
@@ -62,7 +60,6 @@ double pparalogis(double q, double shape, double scale, int lower_tail,
 	return q + shape + scale;
 #endif
     if (!R_FINITE(shape) ||
-        !R_FINITE(scale) ||
         shape <= 0.0 ||
         scale <= 0.0)
         return R_NaN;
@@ -91,7 +88,7 @@ double qparalogis(double p, double shape, double scale, int lower_tail,
     ACT_Q_P01_boundaries(p, 0, R_PosInf);
     p = ACT_D_qIv(p);
 
-    double tmp = 1.0 / shape;
+    double tmp = 1.0/shape;
 
     return scale * R_pow(R_pow(ACT_D_Cval(p), -tmp) - 1.0, tmp);
 }
@@ -106,7 +103,7 @@ double rparalogis(double shape, double scale)
         scale <= 0.0)
         return R_NaN;
 
-    tmp = 1.0 / shape;
+    tmp = 1.0/shape;
 
     return scale * R_pow(R_pow(unif_rand(), -tmp) - 1.0, tmp);
 }
@@ -154,11 +151,15 @@ double levparalogis(double limit, double shape, double scale, double order,
     if (limit <= 0.0)
         return 0.0;
 
+    double logv, u, u1m;
     double tmp = order / shape;
-    double u = exp(-log1pexp(shape * (log(limit) - log(scale))));
+
+    logv = shape * (log(limit) - log(scale));
+    u = exp(-log1pexp(logv));
+    u1m = exp(-log1pexp(-logv));
 
     return R_pow(scale, order)
-	* betaint_raw(0.5 - u + 0.5, 1.0 + tmp, shape - tmp)
+	* betaint_raw(u1m, 1.0 + tmp, shape - tmp, u)
 	/ gammafn(shape)
         + ACT_DLIM__0(limit, order) * R_pow(u, shape);
 }

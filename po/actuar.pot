@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the actuar package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: actuar 2.3-0\n"
+"Project-Id-Version: actuar 3.0-0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-06 21:46-0500\n"
+"POT-Creation-Date: 2020-06-03 12:26-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,45 +17,56 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: dpq.c:78 dpq.c:212 dpq.c:466 dpq.c:656 dpq.c:826 dpqphtype.c:49
-#: random.c:102 random.c:109 random.c:201 random.c:208 random.c:317
-#: random.c:324 random.c:426 random.c:433 randomphtype.c:70 randomphtype.c:77
+#: betaint.c:143 dpq.c:80 dpq.c:214 dpq.c:467 dpq.c:665 dpq.c:841 dpq.c:1019
+#: dpqphtype.c:49 random.c:105 random.c:112 random.c:204 random.c:211
+#: random.c:320 random.c:327 random.c:431 random.c:438 random.c:540
+#: random.c:547 randomphtype.c:70 randomphtype.c:77
 msgid "invalid arguments"
 msgstr ""
 
-#: dpq.c:180
+#: dpq.c:182
 msgid "internal error in actuar_do_dpq1"
 msgstr ""
 
-#: dpq.c:433
+#: dpq.c:434
 msgid "internal error in actuar_do_dpq2"
 msgstr ""
 
-#: dpq.c:619
+#: dpq.c:628
 msgid "internal error in actuar_do_dpq3"
 msgstr ""
 
-#: dpq.c:790
+#: dpq.c:805
 msgid "internal error in actuar_do_dpq4"
 msgstr ""
 
-#: dpq.c:922
+#: dpq.c:979
 msgid "internal error in actuar_do_dpq5"
+msgstr ""
+
+#: dpq.c:1124
+msgid "internal error in actuar_do_dpq6"
 msgstr ""
 
 #: dpqphtype.c:168
 msgid "internal error in actuar_do_dpqphtype2"
 msgstr ""
 
-#: hierarc.c:100 invgauss.c:201
+#: fpareto.c:186 fpareto.c:246 pareto2.c:139 pareto2.c:193 pareto3.c:144
+#: pareto3.c:199 pareto4.c:160 pareto4.c:219
+#, c-format
+msgid "'order' (%.2f) must be integer, rounded to %.0f"
+msgstr ""
+
+#: hierarc.c:100 invgauss.c:209
 msgid "maximum number of iterations reached before obtaining convergence"
 msgstr ""
 
-#: invgauss.c:142
+#: invgauss.c:150
 msgid "maximum number of iterations must be at least 1"
 msgstr ""
 
-#: invpareto.c:188
+#: invpareto.c:185
 msgid "integration failed"
 msgstr ""
 
@@ -65,27 +76,31 @@ msgid ""
 "complete"
 msgstr ""
 
-#: random.c:51
+#: random.c:54
 msgid "NAs produced"
 msgstr ""
 
-#: random.c:139
+#: random.c:142
 msgid "internal error in actuar_do_random1"
 msgstr ""
 
-#: random.c:253
+#: random.c:256
 msgid "internal error in actuar_do_random2"
 msgstr ""
 
-#: random.c:361
+#: random.c:366
 msgid "internal error in actuar_do_random3"
 msgstr ""
 
-#: random.c:467
+#: random.c:473
 msgid "internal error in actuar_do_random4"
 msgstr ""
 
-#: random.c:498
+#: random.c:582
+msgid "internal error in actuar_do_random5"
+msgstr ""
+
+#: random.c:612
 msgid "internal error in actuar_do_random"
 msgstr ""
 

@@ -4,6 +4,12 @@
  *  functions, raw and limited moments and to simulate random variates
  *  for the Burr distribution. See ../R/Burr.R for details.
  *
+ *  We work with the density expressed as
+ *
+ *    shape1 * shape2 * u^shape1 * (1 - u) / x
+ *
+ *  with u = 1/(1 + v), v = (x/scale)^shape2.
+ *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -16,20 +22,12 @@
 double dburr(double x, double shape1, double shape2, double scale,
              int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  shape1 * shape2 * u^shape1 * (1 - u) / x
-     *
-     *  with u = 1/(1 + v), v = (x/scale)^shape2.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(shape1) || ISNAN(shape2) || ISNAN(scale))
 	return x + shape1 + shape2 + scale;
 #endif
     if (!R_FINITE(shape1) ||
         !R_FINITE(shape2) ||
-        !R_FINITE(scale)  ||
         shape1 <= 0.0 ||
         shape2 <= 0.0 ||
         scale  <= 0.0)
@@ -47,11 +45,11 @@ double dburr(double x, double shape1, double shape2, double scale,
 	return ACT_D_val(shape1 / scale);
     }
 
-    double tmp, logu, log1mu;
+    double logv, logu, log1mu;
 
-    tmp = shape2 * (log(x) - log(scale));
-    logu = - log1pexp(tmp);
-    log1mu = - log1pexp(-tmp);
+    logv = shape2 * (log(x) - log(scale));
+    logu = - log1pexp(logv);
+    log1mu = - log1pexp(-logv);
 
     return ACT_D_exp(log(shape1) + log(shape2) + shape1 * logu
                    + log1mu - log(x));
@@ -66,7 +64,6 @@ double pburr(double q, double shape1, double shape2, double scale,
 #endif
     if (!R_FINITE(shape1) ||
         !R_FINITE(shape2) ||
-        !R_FINITE(scale)  ||
         shape1 <= 0.0 ||
         shape2 <= 0.0 ||
         scale  <= 0.0)
@@ -96,7 +93,7 @@ double qburr(double p, double shape1, double shape2, double scale,
         return R_NaN;
 
     ACT_Q_P01_boundaries(p, 0, R_PosInf);
-    p =  ACT_D_qIv(p);
+    p = ACT_D_qIv(p);
 
     return scale * R_pow(R_pow(ACT_D_Cval(p), -1.0/shape1) - 1.0, 1.0/shape2);
 }
@@ -162,11 +159,15 @@ double levburr(double limit, double shape1, double shape2, double scale,
     if (limit <= 0.0)
         return 0.0;
 
-    double u = exp(-log1pexp(shape2 * (log(limit) - log(scale))));
+    double logv, u, u1m;
     double tmp = order / shape2;
 
+    logv = shape2 * (log(limit) - log(scale));
+    u = exp(-log1pexp(logv));
+    u1m = exp(-log1pexp(-logv));
+
     return R_pow(scale, order)
-	* betaint_raw(0.5 - u + 0.5, 1.0 + tmp, shape1 - tmp)
+	* betaint_raw(u1m, 1.0 + tmp, shape1 - tmp, u)
 	/ gammafn(shape1)
 	+ ACT_DLIM__0(limit, order) * R_pow(u, shape1);
 }

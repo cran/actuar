@@ -94,6 +94,10 @@ levinvtrgamma(limit, shape1, shape2, rate = 1, scale = 1/rate,
 
   Distribution also known as the Inverse Generalized Gamma. See also Kleiber and
   Kotz (2003) for alternative names and parametrizations.
+
+  The \code{"distributions"} package vignette provides the
+  interrelations between the continuous size distributions in
+  \pkg{actuar} and the complete formulas underlying the above functions.
 }
 \references{
   Kleiber, C. and Kotz, S. (2003), \emph{Statistical Size Distributions

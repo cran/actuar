@@ -60,6 +60,10 @@ levinvpareto(limit, shape, scale, order = 1)
 }
 \note{
   Evaluation of \code{levinvpareto} is done using numerical integration.
+
+  The \code{"distributions"} package vignette provides the
+  interrelations between the continuous size distributions in
+  \pkg{actuar} and the complete formulas underlying the above functions.
 }
 \references{
   Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),

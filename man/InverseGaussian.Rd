@@ -96,6 +96,10 @@ mgfinvgauss(t, mean, shape = 1, dispersion = 1/shape, log = FALSE)
   Devroye (1986, chapter 4) provides a nice presentation of the
   algorithm to generate random variates from an inverse Gaussian
   distribution.
+
+  The \code{"distributions"} package vignette provides the
+  interrelations between the continuous size distributions in
+  \pkg{actuar} and the complete formulas underlying the above functions.
 }
 \references{
   Giner, G. and Smyth, G. K. (2016), \dQuote{\pkg{statmod}: Probability

@@ -5,6 +5,10 @@
  *  for the single-parameter Pareto distribution. See
  *  ../R/SingleParameterPareto.R for details.
  *
+ *  The density function is
+ *
+ *    shape * min^shape / x^(shape + 1).
+ *
  *  AUTHORS: Mathieu Pigeon and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -64,7 +68,7 @@ double qpareto1(double p, double shape, double min, int lower_tail, int log_p)
     ACT_Q_P01_boundaries(p, min, R_PosInf);
     p = ACT_D_qIv(p);
 
-    return min / R_pow(ACT_D_Cval(p), 1.0 / shape);
+    return min / R_pow(ACT_D_Cval(p), 1.0/shape);
 }
 
 double rpareto1(double shape, double min)
@@ -75,7 +79,7 @@ double rpareto1(double shape, double min)
         min <= 0.0)
         return R_NaN;
 
-    return min / R_pow(unif_rand(), 1.0 / shape);
+    return min / R_pow(unif_rand(), 1.0/shape);
 }
 
 double mpareto1(double order, double shape, double min, int give_log)

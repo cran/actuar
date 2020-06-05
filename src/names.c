@@ -82,8 +82,8 @@ dpq_tab_struct dpq_tab[] = {
     {"mnorm",           actuar_do_dpq2,        47},
     {"mchisq",          actuar_do_dpq2,        48},
     {"mgfchisq",        actuar_do_dpq2,        49},
-    {"minvGauss",       actuar_do_dpq2,        50}, /* deprecated v2.0-0 */
-    {"mgfinvGauss",     actuar_do_dpq2,        51}, /* deprecated v2.0-0 */
+    /* {"minvGauss",       actuar_do_dpq2,        50}, [defunct v3.0-0] */
+    /* {"mgfinvGauss",     actuar_do_dpq2,        51}, [defunct v3.0-0] */
     {"munif",           actuar_do_dpq2,        52},
     {"dgumbel",         actuar_do_dpq2,        53},
     {"pgumbel",         actuar_do_dpq2,        54},
@@ -148,9 +148,17 @@ dpq_tab_struct dpq_tab[] = {
     {"levweibull",      actuar_do_dpq3,        32},
     {"levbeta",         actuar_do_dpq3,        33},
     {"levchisq",        actuar_do_dpq3,        34},
-    {"levinvGauss",     actuar_do_dpq3,        35}, /* deprecated v2.0-0 */
+    /* {"levinvGauss",     actuar_do_dpq3,        35}, [defunct v3.0-0] */
     {"levunif",         actuar_do_dpq3,        36},
     {"levinvgauss",     actuar_do_dpq3,        37},
+    {"dpareto2",        actuar_do_dpq3,        38},
+    {"ppareto2",        actuar_do_dpq3,        39},
+    {"qpareto2",        actuar_do_dpq3,        40},
+    {"mpareto2",        actuar_do_dpq3,        41},
+    {"dpareto3",        actuar_do_dpq3,        42},
+    {"ppareto3",        actuar_do_dpq3,        43},
+    {"qpareto3",        actuar_do_dpq3,        44},
+    {"mpareto3",        actuar_do_dpq3,        45},
     {"dzmnbinom",       actuar_do_dpq3,       101},
     {"pzmnbinom",       actuar_do_dpq3,       102},
     {"qzmnbinom",       actuar_do_dpq3,       103},
@@ -171,16 +179,27 @@ dpq_tab_struct dpq_tab[] = {
     {"pgenbeta",        actuar_do_dpq4,        11},
     {"qgenbeta",        actuar_do_dpq4,        12},
     {"mgenbeta",        actuar_do_dpq4,        13},
+    {"levpareto2",      actuar_do_dpq4,        14},
+    {"levpareto3",      actuar_do_dpq4,        15},
+    {"dpareto4",        actuar_do_dpq4,        16},
+    {"ppareto4",        actuar_do_dpq4,        17},
+    {"qpareto4",        actuar_do_dpq4,        18},
+    {"mpareto4",        actuar_do_dpq4,        19},
     /* Five parameter distributions */
     {"levtrbeta",       actuar_do_dpq5,        1},
     {"levgenbeta",      actuar_do_dpq5,        2},
+    {"dfpareto",        actuar_do_dpq5,        3},
+    {"pfpareto",        actuar_do_dpq5,        4},
+    {"qfpareto",        actuar_do_dpq5,        5},
+    {"mfpareto",        actuar_do_dpq5,        6},
+    {"levpareto4",      actuar_do_dpq5,        7},
+    /* Six parameter distributions */
+    {"levfpareto",      actuar_do_dpq6,        1},
     /* Phase-type distributions */
     {"dphtype",         actuar_do_dpqphtype2,  1},
     {"pphtype",         actuar_do_dpqphtype2,  2},
     {"mphtype",         actuar_do_dpqphtype2,  3},
     {"mgfphtype",       actuar_do_dpqphtype2,  4},
-    /* Special integrals */
-    {"betaint",         actuar_do_dpq2,        201},
     {0, 0, 0}
 };
 
@@ -215,11 +234,16 @@ random_tab_struct random_tab[] = {
     {"rinvburr",        actuar_do_random3,     3, REALSXP},
     {"rinvtrgamma",     actuar_do_random3,     4, REALSXP},
     {"rtrgamma",        actuar_do_random3,     5, REALSXP},
+    {"rpareto2",        actuar_do_random3,     6, REALSXP},
+    {"rpareto3",        actuar_do_random3,     7, REALSXP},
     {"rzmnbinom",       actuar_do_random3,   101, INTSXP},
     {"rzmbinom",        actuar_do_random3,   102, INTSXP},
     /* Four parameter distributions */
     {"rtrbeta",         actuar_do_random4,     1, REALSXP},
     {"rgenbeta",        actuar_do_random4,     2, REALSXP},
+    {"rpareto4",        actuar_do_random4,     3, REALSXP},
+    /* Five parameter distributions */
+    {"rfpareto",        actuar_do_random5,     1, REALSXP},
     /* Phase-type distributions */
     {"rphtype",         actuar_do_randomphtype2, 1, REALSXP},
     {0, 0, 0}

@@ -21,13 +21,13 @@ double dlgamma(double x, double shapelog, double ratelog, int give_log)
     if (!R_FINITE(shapelog) ||
         !R_FINITE(ratelog)  ||
         shapelog <= 0.0 ||
-        ratelog <= 0.0)
+        ratelog  <  0.0)
         return R_NaN;;
 
     if (!R_FINITE(x) || x < 1.0)
         return ACT_D__0;
 
-    return ACT_D_exp(dgamma(log(x), shapelog, 1.0 / ratelog, 1) - log(x));
+    return ACT_D_exp(dgamma(log(x), shapelog, 1.0/ratelog, 1) - log(x));
 }
 
 double plgamma(double q, double shapelog, double ratelog, int lower_tail,
@@ -40,13 +40,13 @@ double plgamma(double q, double shapelog, double ratelog, int lower_tail,
     if (!R_FINITE(shapelog) ||
         !R_FINITE(ratelog)  ||
         shapelog <= 0.0 ||
-        ratelog <= 0.0)
+        ratelog  <  0.0)
         return R_NaN;;
 
     if (q <= 1.0)
         return ACT_DT_0;
 
-    return pgamma(log(q), shapelog, 1.0 / ratelog, lower_tail, log_p);
+    return pgamma(log(q), shapelog, 1.0/ratelog, lower_tail, log_p);
 }
 
 double qlgamma(double p, double shapelog, double ratelog, int lower_tail,
@@ -65,7 +65,7 @@ double qlgamma(double p, double shapelog, double ratelog, int lower_tail,
     ACT_Q_P01_boundaries(p, 1, R_PosInf);
     p = ACT_D_qIv(p);
 
-    return exp(qgamma(p, shapelog, 1.0 / ratelog, lower_tail, 0));
+    return exp(qgamma(p, shapelog, 1.0/ratelog, lower_tail, 0));
 }
 
 double rlgamma(double shapelog, double ratelog)
@@ -76,7 +76,7 @@ double rlgamma(double shapelog, double ratelog)
         ratelog <= 0.0)
         return R_NaN;;
 
-    return exp(rgamma(shapelog, 1.0 / ratelog));
+    return exp(rgamma(shapelog, 1.0/ratelog));
 }
 
 double mlgamma(double order, double shapelog, double ratelog, int give_log)

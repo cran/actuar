@@ -5,6 +5,20 @@
  *  gaussian distribution. See ../R/PoissonInverseGaussian.R for
  *  details.
  *
+ *  We work with the density expressed as
+ *
+ *    p(x) = sqrt(1/phi) sqrt(1/(pi/2)) exp(1/(phi mu))/x!
+ *         * [sqrt(2 phi (1 + (2 phi mu^2)^(-1)))]^(-(x - 0.5))
+ *         * bessel_k(sqrt(2/phi (1 + (2 phi mu^2)^(-1))), x - 0.5)
+ *
+ *  or, is essence,
+ *
+ *    p(x) = A exp(1/(phi mu))/x! B^(-y) bessel_k(B/phi, y)
+ *
+ *  The limiting case mu = Inf is handled "automatically" with terms
+ *  going to zero when mu is Inf. Specific code not worth it since the
+ *  function should rarely be evaluated with mu = Inf in practice.
+ *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
@@ -14,24 +28,65 @@
 #include "dpq.h"
 #include "actuar.h"
 
+double dpoisinvgauss_raw(double x, double mu, double phi, int give_log)
+{
+/* Here assume that x is integer, 0 < x < Inf, mu > 0, 0 < phi < Inf */
+
+    int i;
+    double p, pi1m, pi2m;
+    double twophi = phi + phi;
+
+    /* limiting case mu = Inf with simpler recursive formulas */
+    if (!R_FINITE(mu))
+    {
+	p = -sqrt(2/phi);	      /* log p[0] */
+	if (x == 0.0)
+	    return ACT_D_exp(p);
+
+	pi2m = exp(p);		      /* p[i - 2] = p[0]*/
+	p = p - (M_LN2 + log(phi))/2; /* log p[1] */
+	if (x == 1.0)
+	    return ACT_D_exp(p);
+
+	pi1m = exp(p);		/* p[i - 1] = p[1] */
+	for (i = 2; i <= x; i++)
+	{
+	    p = (1 - 1.5/i) * pi1m + pi2m/twophi/(i * (i - 1));
+	    pi2m = pi1m;
+	    pi1m = p;
+	}
+	return ACT_D_val(p);
+    }
+
+    /* else: "standard" case with mu < Inf */
+    double A, B;
+    double mu2 = mu * mu;
+    double twophimu2 = twophi * mu2;
+
+    p = (1.0 - sqrt(1.0 + twophimu2))/phi/mu; /* log p[0] */
+    if (x == 0.0)
+	return ACT_D_exp(p);
+
+    pi2m = exp(p);			      /* p[i - 2] = p[0]*/
+    p = log(mu) + p - log1p(twophimu2)/2.0;   /* log p[1] */
+    if (x == 1.0)
+	return ACT_D_exp(p);
+
+    pi1m = exp(p);		              /* p[i - 1] = p[1] */
+    A = 1.0/(1.0 + 1.0/twophimu2);	      /* constant in first term */
+    B = mu2/(1.0 + twophimu2);		      /* constant in second term */
+    for (i = 2; i <= x; i++)
+    {
+	p = A * (1 - 1.5/i) * pi1m + (B * pi2m)/(i * (i - 1));
+	pi2m = pi1m;
+	pi1m = p;
+    }
+
+    return ACT_D_val(p);
+}
+
 double dpoisinvgauss(double x, double mu, double phi, int give_log)
 {
-    /*  We work with the density expressed as
-     *
-     *  p(x) = sqrt(1/phi) sqrt(1/(pi/2)) exp(1/(phi mu))/x!
-     *       * [sqrt(2 phi (1 + (2 phi mu^2)^(-1)))]^(-(x - 0.5))
-     *       * bessel_k(sqrt(2/phi (1 + (2 phi mu^2)^(-1))), x - 0.5)
-     *
-     *  or, is essence,
-     *
-     *  p(x) = A exp(1/(phi mu))/x! B^(-y) bessel_k(B/phi, y)
-     *
-     *  The limiting case mu = Inf is handled "automatically" with
-     *  terms going to zero when mu is Inf. Specific code not worth it
-     *  since the function should rarely be evaluated with mu = Inf in
-     *  practice.
-     */
-
 #ifdef IEEE_754
     if (ISNAN(x) || ISNAN(mu) || ISNAN(phi))
 	return x + mu + phi;
@@ -47,27 +102,11 @@ double dpoisinvgauss(double x, double mu, double phi, int give_log)
     if (!R_FINITE(phi))
 	return (x == 0) ? ACT_D__1 : ACT_D__0;
 
-    /* standard cases (and limiting case mu = Inf) */
-    double phim = phi * mu, lphi = log(phi);
-    double a = 1/(2 * phim * mu), y = x - 0.5;
-    double logA, logB;	      /* log of big constants */
-    double lpx;		      /* log of everything before bessel_k() */
-    double K;		      /* value of the Bessel function */
-
-    logA = -lphi/2 - M_LN_SQRT_PId2 + 1/phim;
-    logB = (M_LN2 + lphi + log1p(a))/2;
-
-    lpx = logA - y * logB - lgamma1p(x);
-    K = bessel_k(exp(logB - lphi), y, /*expo*/1);
-
-    return give_log ? lpx + log(K) : exp(lpx) * K;
+    return dpoisinvgauss_raw(x, mu, phi, give_log);
 }
 
 /*  For ppoisinvgauss(), there does not seem to be algorithms much
- *  more elaborate that successive computations of the probabilities.
- *  Performance wise, the explicit formula used in dpoisinvgauss() is
- *  on par (and slightly faster in certain cases) with the recursive
- *  formulas and we get "for free" the optimizations in bessel_k().
+ *  more elaborate than successive computations of the probabilities.
  */
 
 double ppoisinvgauss(double q, double mu, double phi, int lower_tail, int log_p)
@@ -90,22 +129,12 @@ double ppoisinvgauss(double q, double mu, double phi, int lower_tail, int log_p)
 	return ACT_DT_1;
 
     int x;
-    double phim = phi * mu, lphi = log(phi);
-    double a = 1/(2 * phim * mu);
-    double logA, logB, C;
-    double y, s = 0;
-
-    logA = -lphi/2 - M_LN_SQRT_PId2 + 1/phim;
-    logB = (M_LN2 + lphi + log1p(a))/2;
-    C = exp(logB - lphi);
+    double s = 0;
 
     for (x = 0; x <= q; x++)
-    {
-	y = x - 0.5;
-	s += exp(logA - y * logB - lgamma1p(x)) * bessel_k(C, y, /*expo*/1);
-    }
+	s += dpoisinvgauss_raw(x, mu, phi, /*give_log*/ 0);
 
-    return ACT_D_val(s);
+    return ACT_DT_val(s);
 }
 
 /*  For qpoiinvgauss(), we mostly reuse the code for qnbinom() et al.
@@ -174,11 +203,9 @@ double qpoisinvgauss(double p, double mu, double phi, int lower_tail, int log_p)
 
     double z, y;
 
-    z = qnorm(p, 0.0, 1.0, /*lower_tail*/1, /*log_p*/0);
-
     /* limiting case mu = Inf -> inverse chi-square as starting point*/
     if (!R_FINITE(mu))
-	y = ACT_forceint(1/phi/qchisq(p, 1, !lower_tail, log_p));
+	y = ACT_forceint(1/phi/qchisq(p, 1,  /*l._t.*/0, /*give_log*/0));
     /* other cases -> Corning-Fisher */
     else
     {
@@ -189,6 +216,7 @@ double qpoisinvgauss(double p, double mu, double phi, int lower_tail, int log_p)
 	sigma = sqrt(sigma2);
 	gamma = (3 * phim2 * sigma2 + mu)/sigma2/sigma;
 
+	z = qnorm(p, 0.0, 1.0, /*lower_tail*/1, /*log_p*/0);
 	y = ACT_forceint(mu + sigma * (z + gamma * (z*z - 1)/6));
     }
 

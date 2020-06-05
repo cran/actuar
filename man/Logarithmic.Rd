@@ -82,7 +82,6 @@ rlogarithmic(n, prob)
   Kemp, A. W. (1981), \dQuote{Efficient Generation of Logarithmically
   Distributed Pseudo-Random Variables}, \emph{Journal of the Royal
   Statistical Society, Series C}, vol. 30, p. 249-253.
-  \url{http://www.jstor.org/stable/2346348}
 
   Devroye, L. (1986), \emph{Non-Uniform Random Variate Generation},
   Springer-Verlag. \url{http://luc.devroye.org/rnbookindex.html}

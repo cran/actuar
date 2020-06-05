@@ -41,22 +41,3 @@ levinvgauss <- function(limit, mean, shape = 1, dispersion = 1/shape, order = 1)
 
 mgfinvgauss <- function(t, mean, shape = 1, dispersion = 1/shape, log = FALSE)
     .External(C_actuar_do_dpq, "mgfinvgauss", t, mean, dispersion, log)
-
-## Functions deprecated in actuar v2.0-0
-minvGauss <- function(order, nu, lambda)
-{
-    .Deprecated("minvgauss", package = "actuar")
-    .External(C_actuar_do_dpq, "minvGauss", order, nu, lambda, FALSE)
-}
-
-levinvGauss <- function(limit, nu, lambda, order = 1)
-{
-    .Deprecated("levinvgauss", package = "actuar")
-    .External(C_actuar_do_dpq, "levinvGauss", limit,  nu, lambda, order, FALSE)
-}
-
-mgfinvGauss <- function(x, nu, lambda, log = FALSE)
-{
-    .Deprecated("mgfinvgauss", package = "actuar")
-    .External(C_actuar_do_dpq, "mgfinvGauss", x, nu, lambda, log)
-}
