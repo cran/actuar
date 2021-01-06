@@ -33,6 +33,7 @@ betaint <- actuar:::betaint
 ## No warnings, unless explicitly asserted via tools::assertWarning.
 options(warn = 2)
 assertWarning <- tools::assertWarning
+assertError <- tools::assertError
 
 ## Special values and utilities. Taken from `tests/d-p-q-r-tests.R`.
 Meps <- .Machine$double.eps

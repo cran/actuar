@@ -5,11 +5,11 @@
   Generate random variates from a discrete mixture of distributions.
 }
 \usage{
-rmixture(n, probs, models)
+rmixture(n, probs, models, shuffle = TRUE)
 }
 \arguments{
   \item{n}{number of random variates to generate. If \code{length(n) >
-      1}, only the value is used.}
+    1}, the length is taken to be the number required.}
   \item{probs}{numeric non-negative vector specifying the probability
     for each model; is internally normalized to sum 1. Infinite
     and missing values are not allowed. Values are recycled as necessary
@@ -17,6 +17,8 @@ rmixture(n, probs, models)
   \item{models}{vector of expressions specifying the simulation models
     with the number of variates omitted (see details). Models are
     recycled as necessary to match the length of \code{probs}.}
+  \item{shuffle}{logical; should the random variates from the
+    distributions be shuffled?}
 }
 \details{
   \code{rmixture} generates variates from a discrete mixture, that is
@@ -37,9 +39,15 @@ rmixture(n, probs, models)
 
   The argument of the random number generation functions for the number
   of variates to simulate \strong{must} be named \code{n}.
+
+  If \code{shuffle} is \code{FALSE}, the output vector contains all the
+  random variates from the first model, then all the random variates
+  from the second model, and so on. If the order of the variates is
+  irrelevant, this cuts the time to generate the variates roughly in
+  half.
 }
 \value{
-  A vector of random deviates from the mixture with density \eqn{f(x)}.
+  A vector of random variates from the mixture with density \eqn{f(x)}.
 }
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca}
@@ -51,13 +59,13 @@ rmixture(n, probs, models)
 }
 \examples{
 ## Mixture of two exponentials (with means 1/3 and 1/7) with equal
-## probability.
+## probabilities.
 rmixture(10, 0.5, expression(rexp(3), rexp(7)))
 rmixture(10, 42, expression(rexp(3), rexp(7))) # same
 
 ## Mixture of two lognormals with different probabilities.
-rmixture(10, probs = c(0.554, 0.446),
-         models = expression(rlnorm(3.575, 0.637),
-                             rlnorm(4.555, 0.265)))
+rmixture(10, probs = c(0.55, 0.45),
+         models = expression(rlnorm(3.6, 0.6),
+                             rlnorm(4.6, 0.3)))
 }
 \keyword{datagen}

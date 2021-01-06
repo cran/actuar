@@ -78,7 +78,7 @@ mgfphtype(t, prob, rates, log = FALSE)
   \pkg{actuar} and the complete formulas underlying the above functions.
 }  
 \references{
-  \url{http://en.wikipedia.org/wiki/Phase-type_distribution}
+  \url{https://en.wikipedia.org/wiki/Phase-type_distribution}
 
   Neuts, M. F. (1981), \emph{Generating random variates from a
     distribution of phase type}, WSC '81: Proceedings of the 13th

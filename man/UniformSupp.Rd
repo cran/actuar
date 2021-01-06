@@ -39,7 +39,7 @@ mgfunif(t, min = 0, max = 1, log = FALSE)
   \code{\link{Uniform}}.
 }
 \references{
-  \url{http://en.wikipedia.org/wiki/Uniform_distribution_\%28continuous\%29}
+  \url{https://en.wikipedia.org/wiki/Uniform_distribution_\%28continuous\%29}
 }
 \author{
   Vincent Goulet \email{vincent.goulet@act.ulaval.ca},

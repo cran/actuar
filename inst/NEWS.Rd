@@ -2,6 +2,30 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.1-0}{
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{\code{rmixture} now randomly shuffles the variates by
+	default and gains an argument \code{shuffle} (\code{TRUE} by
+	default). Using \code{shuffle = FALSE} restores the previous
+	behaviour where the output vector contains all the random
+	variates from the first model, then all the random variates from
+	the second model, and so on. When the order of the random
+	variates is irrelevant, this cuts execution time roughly in
+	half. Thanks to Adam Kałdus \email{akaldus@wp.pl} for the
+	stimulating comments on this matter.}
+    }
+  }
+  \subsection{USER VISIBLE CHANGES}{
+    \itemize{
+      \item{The number of variates returned by \code{rmixture} is now
+	the length of argument \code{n} if larger than 1, like other
+	\code{r<dist>} functions.}
+      \item{\code{rmixture} now checks the validity of its arguments.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.0-0}{
   \subsection{NEW FEATURES}{
     \itemize{
@@ -62,7 +86,7 @@
 	  0}, now returns 0 instead of \code{NaN}.}
       \item{\code{d<dist>} and \code{p<dist>} functions for all
 	continuous size distributions now handle limiting cases for
-	infinite scale parameter, or for zero non-scale parameters
+	infinite scale parameter, or for zero non-scale parameters,
 	consistently with functions of base R.
 
 	Affected functions are:

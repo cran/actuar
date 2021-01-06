@@ -53,9 +53,6 @@ TVaR(x, \dots)
   where, as above, \eqn{\mu}{m} is the mean, \eqn{\sigma}{s} the standard
   deviation, \eqn{\alpha}{a} the confidence level and \eqn{\gamma}{g} is
   the skewness.
-
-  the CTE is computed from the
-  definition using \code{\link[stats]{integrate}}.
 }
 \value{
   A numeric vector, named if \code{names} is \code{TRUE}.
