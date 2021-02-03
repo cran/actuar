@@ -38,13 +38,13 @@ rcompound <- function(n, model.freq, model.sev, SIMPLIFY = TRUE)
     cl.freq$n <- n
 
     ## Generate frequencies.
-    N <- eval(cl.freq)
+    N <- eval.parent(cl.freq)
 
     ## Add the number of variates to the 'model.sev' call.
     cl.sev$n <- sum(N)
 
     ## Generate all severities.
-    x <- eval(cl.sev)
+    x <- eval.parent(cl.sev)
 
     ## Create a vector that will be used as a factor to regroup
     ## severities for the computation of aggregate values. Idea:
@@ -91,7 +91,7 @@ rcomppois <- function(n, lambda, model.sev, SIMPLIFY = TRUE)
     cl.sev$n <- sum(N)
 
     ## Generate all severities.
-    x <- eval(cl.sev)
+    x <- eval.parent(cl.sev)
 
     ## Create a vector that will be used as a factor to regroup
     ## severities for the computation of aggregate values. (See

@@ -2,6 +2,15 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.1-1}{
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{\code{rcompound} and \code{rmixture} now correctly find
+	objects defined higher in the call stack.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.1-0}{
   \subsection{BUG FIXES}{
     \itemize{

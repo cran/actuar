@@ -38,7 +38,7 @@ rmixture <- function(n, probs, models, shuffle = TRUE)
     f <- function(n, expr)
     {
         expr$n <- n
-        eval(expr)
+        eval.parent(expr)
     }
 
     ## Simulate from each model the appropriate number of times and
