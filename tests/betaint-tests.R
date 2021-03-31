@@ -30,7 +30,7 @@ if(!interactive())
     set.seed(123)
 
 ## Limiting cases
-stopifnot({
+stopifnot(exprs = {
     !is.finite(betaint(0.3, Inf, 2))
     !is.finite(betaint(0.3, Inf, -2.2))
     is.nan    (betaint(0.3,   0, 2))
@@ -43,7 +43,7 @@ stopifnot({
 x <- c(xMin, runif(10), xMax)
 b <- 2
 for (a in rlnorm(5, 2))
-    stopifnot({
+    stopifnot(exprs = {
         All.eq(betaint(x, a, b),
                gamma(a) * gamma(b) * pbeta(x, a, b))
     })
@@ -56,7 +56,7 @@ for (a in 1 + r + rlnorm(5, 2))
     s <- (x^(a-1) * (1-x)^b)/b +
         ((a-1) * x^(a-2) * (1-x)^(b+1))/(b * (b+1)) +
         ((a-1) * (a-2) * x^(a-3) * (1-x)^(b+2))/(b * (b+1) * (b+2))
-    stopifnot({
+    stopifnot(exprs = {
         all.equal(betaint(x, a, b),
                   -gamma(a+b) * s +
                   (a-1)*(a-2)*(a-3) * gamma(a-r-1)/(b*(b+1)*(b+2)) *

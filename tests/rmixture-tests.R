@@ -30,7 +30,7 @@ probs <- c(2, 3, 5)/10
 nj <- rmultinom(1, n, prob = probs)
 x <- c(f(nj[1], models[[1]]), f(nj[2], models[[2]]), f(nj[3], models[[3]]))
 set.seed(123)
-stopifnot({
+stopifnot(exprs = {
     identical(x, rmixture(n, probs, models, shuffle = FALSE))
 })
 
@@ -40,7 +40,7 @@ probs <- 1
 nj <- rmultinom(1, n, prob = rep_len(probs, 3))
 x <- c(f(nj[1], models[[1]]), f(nj[2], models[[2]]), f(nj[3], models[[3]]))
 set.seed(123)
-stopifnot({
+stopifnot(exprs = {
     identical(x, rmixture(n, probs, models, shuffle = FALSE))
 })
 
@@ -50,12 +50,12 @@ probs <- c(2, 3, 5)
 nj <- rmultinom(1, n, prob = probs)
 x <- f(n, models[[1]])
 set.seed(123)
-stopifnot({
+stopifnot(exprs = {
     identical(x, rmixture(n, probs, models[1], shuffle = FALSE))
 })
 
 ## Test special cases.
-stopifnot({
+stopifnot(exprs = {
     identical(numeric(0), rmixture(0, probs, models))
     identical(2L, length(rmixture(c(n, n), probs, models)))
 })

@@ -33,7 +33,6 @@ betaint <- actuar:::betaint
 ## No warnings, unless explicitly asserted via tools::assertWarning.
 options(warn = 2)
 assertWarning <- tools::assertWarning
-assertError <- tools::assertError
 
 ## Special values and utilities. Taken from `tests/d-p-q-r-tests.R`.
 Meps <- .Machine$double.eps
@@ -66,7 +65,7 @@ if(!interactive())
 
 ## Density: first check that functions return 0 when scale = Inf, and
 ## when x = scale = Inf.
-stopifnot({
+stopifnot(exprs = {
     dfpareto(c(42, Inf), min = 1, shape1 = 2, shape2 = 3, shape3 = 4, scale = Inf) == c(0, 0)
     dpareto4(c(42, Inf), min = 1, shape1 = 2, shape2 = 3, scale = Inf) == c(0, 0)
     dpareto3(c(42, Inf), min = 1, shape  = 3, scale = Inf) == c(0, 0)
@@ -88,7 +87,7 @@ for (i in seq_along(min))
         x <- rfpareto(100, min = m, shape1 = a, shape2 = g, shape3 = t, scale = s)
         y <- (x - m)/s
         u <- 1/(1 + y^(-g))
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dfpareto(x, min = m,
                                      shape1 = a, shape2 = g, shape3 = t,
                                      scale = s),
@@ -111,7 +110,7 @@ for (i in seq_along(min))
         x <- rpareto4(100, min = m, shape1 = a, shape2 = g, scale = s)
         y <- (x - m)/s
         u <- 1/(1 + y^g)
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dpareto4(x, min = m,
                                      shape1 = a, shape2 = g,
                                      scale = s),
@@ -134,7 +133,7 @@ for (i in seq_along(min))
         x <- rpareto3(100, min = m, shape = g, scale = s)
         y <- (x - m)/s
         u <- 1/(1 + y^(-g))
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dpareto3(x, min = m,
                                      shape = g,
                                      scale = s),
@@ -157,7 +156,7 @@ for (i in seq_along(min))
         x <- rpareto2(100, min = m, shape = a, scale = s)
         y <- (x - m)/s
         u <- 1/(1 + y)
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dpareto2(x, min = m,
                                      shape = a,
                                      scale = s),
@@ -191,7 +190,7 @@ for (i in seq_along(min))
 ## compute the cdf with pbeta(1 - u, ..., lower = FALSE).
 scLrg <- 1e300 * c(0.5, 1, 2)
 m <- rnorm(1)
-stopifnot({
+stopifnot(exprs = {
     pfpareto(Inf,         min = 10,   1, 2, 3, scale = xMax) == 1
     pfpareto(2^53,        min = 0,    1, 1, 1, scale = 1) != 1
     pfpareto(2^53 + xMax, min = xMax, 1, 1, 1, scale = 1) != 1
@@ -209,7 +208,7 @@ stopifnot({
                 pbeta(c(4/5, 1/2), 1, 3, lower.tail = TRUE,  log = TRUE),
                 pbeta(4/5, 3, 1, lower.tail = FALSE, log = TRUE)))
 })
-stopifnot({
+stopifnot(exprs = {
     ppareto4(Inf,         min = 10,   1, 3, scale = xMax) == 1
     ppareto4(2^53,        min = 0,    1, 1, scale = 1) != 1
     ppareto4(2^53 + xMax, min = xMax, 1, 1, scale = 1) != 1
@@ -223,7 +222,7 @@ stopifnot({
               c(log(1 - c(1/3, 1/2, 2/3)^3),
                 log(1 - c(1/5, 1/2, 4/5)^3)))
 })
-stopifnot({
+stopifnot(exprs = {
     ppareto3(Inf,         min = 10,   3, scale = xMax) == 1
     ppareto3(2^53,        min = 0,    1, scale = 1) != 1
     ppareto3(2^53 + xMax, min = xMax, 1, scale = 1) != 1
@@ -237,7 +236,7 @@ stopifnot({
               c(log(c(2/3, 1/2, 1/3)),
                 log(c(4/5, 1/2, 1/5))))
 })
-stopifnot({
+stopifnot(exprs = {
     ppareto2(Inf,         min = 10,   3, scale = xMax) == 1
     ppareto2(2^53,        min = 0,    1, scale = 1) != 1
     ppareto2(2^53 + xMax, min = xMax, 1, scale = 1) != 1
@@ -252,7 +251,7 @@ stopifnot({
 })
 
 ## Also check that distribution functions return 0 when scale = Inf.
-stopifnot({
+stopifnot(exprs = {
     pfpareto(x, min = m, shape1 = a, shape2 = g, shape3 = t, scale = Inf) == 0
     ppareto4(x, min = m, shape1 = a, shape2 = g, scale = Inf) == 0
     ppareto3(x, min = m, shape  = g, scale = Inf) == 0
@@ -276,7 +275,7 @@ for (i in seq_along(min))
     Ga <- gamma(a)
     for (s in scpar)
     {
-        stopifnot({
+        stopifnot(exprs = {
             All.eq(mfpareto(1, min = m,
                             shape1 = a, shape2 = g, shape3 = t,
                             scale = s),
@@ -293,7 +292,7 @@ for (i in seq_along(min))
                        + 3 * (s/m)^2 * beta(t + 2/g, a - 2/g)
                        + (s/m)^3 * beta(t + 3/g, a - 3/g))/Be)
         })
-        stopifnot({
+        stopifnot(exprs = {
             All.eq(mpareto4(1, min = m,
                             shape1 = a, shape2 = g,
                             scale = s),
@@ -310,7 +309,7 @@ for (i in seq_along(min))
                        + 3 * (s/m)^2 * gamma(1 + 2/g) * gamma(a - 2/g)
                        + (s/m)^3 * gamma(1 + 3/g) * gamma(a - 3/g))/Ga)
         })
-        stopifnot({
+        stopifnot(exprs = {
             All.eq(mpareto3(1, min = m,
                             shape = g,
                             scale = s),
@@ -327,7 +326,7 @@ for (i in seq_along(min))
                        + 3 * (s/m)^2 * gamma(1 + 2/g) * gamma(1 - 2/g)
                        + (s/m)^3 * gamma(1 + 3/g) * gamma(1 - 3/g)))
         })
-        stopifnot({
+        stopifnot(exprs = {
             All.eq(mpareto2(1, min = m,
                             shape = a,
                             scale = s),
@@ -364,7 +363,7 @@ for (i in seq_along(min))
                           scale = s)
         y <- (limit - m)/s
         u <- 1/(1 + y^(-g))
-        stopifnot({
+        stopifnot(exprs = {
             All.eq(levfpareto(limit, order = 1, min = m,
                               shape1 = a, shape2 = g, shape3 = t,
                               scale = s),
@@ -390,7 +389,7 @@ for (i in seq_along(min))
         y <- (limit - m)/s
         u <- 1/(1 + y^g)
         u1m <- 1/(1 + y^(-g))
-        stopifnot({
+        stopifnot(exprs = {
             All.eq(levpareto4(limit, order = 1, min = m,
                               shape1 = a, shape2 = g,
                               scale = s),
@@ -416,7 +415,7 @@ for (i in seq_along(min))
         y <- (limit - m)/s
         u <- 1/(1 + y^(-g))
         u1m <- 1/(1 + y^g)
-        stopifnot({
+        stopifnot(exprs = {
             All.eq(levpareto3(limit, order = 1, min = m,
                               shape = g,
                               scale = s),
@@ -442,7 +441,7 @@ for (i in seq_along(min))
         y <- (limit - m)/s
         u <- 1/(1 + y)
         u1m <- 1/(1 + y^(-1))
-        stopifnot({
+        stopifnot(exprs = {
             All.eq(levpareto2(limit, order = 1, min = m,
                               shape = a,
                               scale = s),
@@ -471,7 +470,7 @@ for (i in seq_along(min))
 
 ## Density: first check that functions return 0 when scale = Inf, and
 ## when x = scale = Inf.
-stopifnot({
+stopifnot(exprs = {
     dtrbeta      (c(42, Inf), shape1 = 2, shape2 = 3, shape3 = 4, scale = Inf) == c(0, 0)
     dburr        (c(42, Inf), shape1 = 2, shape2 = 3, scale = Inf) == c(0, 0)
     dllogis      (c(42, Inf), shape  = 3, scale = Inf) == c(0, 0)
@@ -484,6 +483,7 @@ stopifnot({
 })
 
 ## Next test density functions for an array of standard values.
+set.seed(123)                   # reset the seed
 nshpar <- 3                     # (maximum) number of shape parameters
 shpar <- replicate(30, rlnorm(nshpar, 2), simplify = FALSE)
 scpar <- rlnorm(30, 2)          # scale parameters
@@ -496,7 +496,7 @@ for (i in seq_along(shpar))
         x <- rtrbeta(100, shape1 = a, shape2 = g, shape3 = t, scale = s)
         y <- x/s
         u <- 1/(1 + y^(-g))
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dtrbeta(x, shape1 = a, shape2 = g, shape3 = t,
                                     scale = s),
                       d2 <- dtrbeta(y, shape1 = a, shape2 = g, shape3 = t,
@@ -512,7 +512,7 @@ for (i in seq_along(shpar))
         x <- rburr(100, shape1 = a, shape2 = g, scale = s)
         y <- x/s
         u <- 1/(1 + y^g)
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dburr(x, shape1 = a, shape2 = g,
                                   scale = s),
                       d2 <- dburr(y, shape1 = a, shape2 = g,
@@ -528,7 +528,7 @@ for (i in seq_along(shpar))
         x <- rllogis(100, shape = g, scale = s)
         y <- x/s
         u <- 1/(1 + y^(-g))
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dllogis(x, shape = g,
                                     scale = s),
                       d2 <- dllogis(y, shape = g,
@@ -544,7 +544,7 @@ for (i in seq_along(shpar))
         x <- rparalogis(100, shape = a, scale = s)
         y <- x/s
         u <- 1/(1 + y^a)
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dparalogis(x, shape = a,
                                        scale = s),
                       d2 <- dparalogis(y, shape = a,
@@ -560,7 +560,7 @@ for (i in seq_along(shpar))
         x <- rgenpareto(100, shape1 = a, shape2 = t, scale = s)
         y <- x/s
         u <- 1/(1 + y^(-1))
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dgenpareto(x, shape1 = a, shape2 = t,
                                        scale = s),
                       d2 <- dgenpareto(y, shape1 = a, shape2 = t,
@@ -576,7 +576,7 @@ for (i in seq_along(shpar))
         x <- rpareto(100, shape = a, scale = s)
         y <- x/s
         u <- 1/(1 + y)
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dpareto(x, shape = a,
                                     scale = s),
                       d2 <- dpareto(y, shape = a,
@@ -590,7 +590,7 @@ for (i in seq_along(shpar))
                       tolerance = 1e-10)
         })
         x <- rpareto1(100, min = s, shape = a)
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dpareto1(x, min = s, shape = a),
                       a * s^a/(x^(a + 1)),
                       tolerance = 1e-10)
@@ -598,7 +598,7 @@ for (i in seq_along(shpar))
         x <- rinvburr(100, shape1 = t, shape2 = g, scale = s)
         y <- x/s
         u <- 1/(1 + y^(-g))
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dinvburr(x, shape1 = t, shape2 = g,
                                      scale = s),
                       d2 <- dinvburr(y, shape1 = t, shape2 = g,
@@ -614,9 +614,9 @@ for (i in seq_along(shpar))
         x <- rinvpareto(100, shape = t, scale = s)
         y <- x/s
         u <- 1/(1 + y^(-1))
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dinvpareto(x, shape = t,
-                                       scale = s),
+                                 scale = s),
                       d2 <- dinvpareto(y, shape = t,
                                        scale = 1)/s,
                       tolerance = 1e-10)
@@ -630,7 +630,7 @@ for (i in seq_along(shpar))
         x <- rinvparalogis(100, shape = t, scale = s)
         y <- x/s
         u <- 1/(1 + y^(-t))
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dinvparalogis(x, shape = t,
                                           scale = s),
                       d2 <- dinvparalogis(y, shape = t,
@@ -656,7 +656,7 @@ for (i in seq_along(shpar))
 ## cdf would jump to 1 if we weren't using the trick to compute the
 ## cdf with pbeta(1 - u, ..., lower = FALSE).
 scLrg <- 1e300 * c(0.5, 1, 2)
-stopifnot({
+stopifnot(exprs = {
     ptrbeta(Inf,  1, 2, 3, scale = xMax) == 1
     ptrbeta(2^53, 1, 1, 1, scale = 1) != 1
     all.equal(ptrbeta(xMin, 1, 1, 1, scale = 1), xMin)
@@ -669,7 +669,7 @@ stopifnot({
                 pbeta(c(4/5, 1/2), 1, 3, lower.tail = TRUE,  log = TRUE),
                 pbeta(4/5, 3, 1, lower.tail = FALSE, log = TRUE)))
 })
-stopifnot({
+stopifnot(exprs = {
     pburr(Inf,  1, 3, scale = xMax) == 1
     pburr(2^53, 1, 1, scale = 1) != 1
     all.equal(pburr(xMin, 1, 1, scale = 1), xMin)
@@ -679,7 +679,7 @@ stopifnot({
               c(log(1 - c(1/3, 1/2, 2/3)^3),
                 log(1 - c(1/5, 1/2, 4/5)^3)))
 })
-stopifnot({
+stopifnot(exprs = {
     pllogis(Inf,  3, scale = xMax) == 1
     pllogis(2^53, 1, scale = 1) != 1
     all.equal(pllogis(xMin, 1, scale = 1), xMin)
@@ -689,7 +689,7 @@ stopifnot({
               c(log(c(2/3, 1/2, 1/3)),
                 log(c(4/5, 1/2, 1/5))))
 })
-stopifnot({
+stopifnot(exprs = {
     pparalogis(Inf,  3, scale = xMax) == 1
     pparalogis(2^53, 1, scale = 1) != 1
     all.equal(pparalogis(xMin, 1, scale = 1), xMin)
@@ -699,7 +699,7 @@ stopifnot({
               c(log(1 - c(1/5, 1/2, 4/5)^2),
                 log(1 - c(1/9, 1/2, 8/9)^3)))
 })
-stopifnot({
+stopifnot(exprs = {
     pgenpareto(Inf,  1, 3, scale = xMax) == 1
     pgenpareto(2^53, 1, 1, scale = 1) != 1
     all.equal(pgenpareto(xMin, 1, 1, scale = 1), xMin)
@@ -709,7 +709,7 @@ stopifnot({
               c(pbeta(c(2/3, 1/2), 1, 3, lower.tail = TRUE,  log = TRUE),
                 pbeta(2/3, 3, 1, lower.tail = FALSE, log = TRUE)))
 })
-stopifnot({
+stopifnot(exprs = {
     ppareto(Inf,  3, scale = xMax) == 1
     ppareto(2^53, 1, scale = 1) != 1
     all.equal(ppareto(xMin, 1, scale = 1), xMin)
@@ -718,7 +718,7 @@ stopifnot({
                       scale = scLrg, log = TRUE),
               c(log(1 - c(1/3, 1/2, 2/3)^3)))
 })
-stopifnot({
+stopifnot(exprs = {
     ppareto1(Inf,  3, min = xMax) == 1
     ppareto1(2^53, 1, min = 1) != 1
     all.equal(ppareto1(xMin, 1, min = 1), xMin)
@@ -727,7 +727,7 @@ stopifnot({
                       min = 1e300 * c(0.001, 0.1, 0.5), log = TRUE),
         c(log(1 - c(0.001, 0.1, 0.5)^3)))
 })
-stopifnot({
+stopifnot(exprs = {
     pinvburr(Inf,  1, 3, scale = xMax) == 1
     pinvburr(2^53, 1, 1, scale = 1) != 1
     all.equal(pinvburr(xMin, 1, 1, scale = 1), xMin)
@@ -737,7 +737,7 @@ stopifnot({
               c(log(c(2/3, 1/2, 1/3)^3),
                 log(c(4/5, 1/2, 1/5)^3)))
 })
-stopifnot({
+stopifnot(exprs = {
     pinvpareto(Inf,  3, scale = xMax) == 1
     pinvpareto(2^53, 1, scale = 1) != 1
     all.equal(pinvpareto(xMin, 1, scale = 1), xMin)
@@ -746,7 +746,7 @@ stopifnot({
                          scale = scLrg, log = TRUE),
               c(log(c(2/3, 1/2, 1/3)^3)))
 })
-stopifnot({
+stopifnot(exprs = {
     pinvparalogis(Inf,  3, scale = xMax) == 1
     pinvparalogis(2^53, 1, scale = 1) != 1
     all.equal(pinvparalogis(xMin, 1, scale = 1), xMin)
@@ -758,7 +758,7 @@ stopifnot({
 })
 
 ## Also check that distribution functions return 0 when scale = Inf.
-stopifnot({
+stopifnot(exprs = {
     ptrbeta      (x, shape1 = a, shape2 = g, shape3 = t, scale = Inf) == 0
     pburr        (x, shape1 = a, shape2 = g, scale = Inf) == 0
     pllogis      (x, shape  = g, scale = Inf) == 0
@@ -786,7 +786,7 @@ for (i in seq_along(shpar))
     Ga <- gamma(a)
     for (s in scpar)
     {
-        stopifnot({
+        stopifnot(exprs = {
             All.eq(mtrbeta(k, shape1 = a, shape2 = g, shape3 = t, scale = s),
                    s^k * beta(t + k/g, a - k/g)/Be)
             All.eq(mburr(k, shape1 = a, shape2 = g, scale = s),
@@ -828,7 +828,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- 1/(1 + y^(-g))
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levtrbeta(limit, order = k, shape1 = a, shape2 = g, shape3 = t, scale = s),
                        s^k * betaint(u, t + k/g, a - k/g)/(Ga * Gt) +
                        limit^k * pbeta(u, t, a, lower = FALSE))
@@ -837,7 +837,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- 1/(1 + y^g)
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levburr(limit, order = k, shape1 = a, shape2 = g, scale = s),
                        s^k * betaint(1 - u, 1 + k/g, a - k/g)/Ga +
                        limit^k * u^a)
@@ -846,7 +846,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- 1/(1 + y^(-g))
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levllogis(limit, order = k, shape = g, scale = s),
                        s^k * betaint(u, 1 + k/g, 1 - k/g) +
                        limit^k * (1 - u))
@@ -855,7 +855,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- 1/(1 + y^a)
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levparalogis(limit, order = k, shape = a, scale = s),
                        s^k * betaint(1 - u, 1 + k/a, a - k/a)/Ga +
                        limit^k * u^a)
@@ -864,7 +864,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- 1/(1 + y^(-1))
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levgenpareto(limit, order = k, shape1 = a, shape2 = t, scale = s),
                        s^k * betaint(u, t + k, a - k)/(Ga * Gt) +
                        limit^k * pbeta(u, t, a, lower = FALSE))
@@ -873,14 +873,14 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- 1/(1 + y)
         for (k in order[order > -1])
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levpareto(limit, order = k, shape = a, scale = s),
                        s^k * betaint(1 - u, 1 + k, a - k)/Ga +
                        limit^k * u^a)
         })
         limit <- qpareto1(q, shape = a, min = s)
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levpareto1(limit, order = k, shape = a, min = s),
                        s^k * a/(a - k) - k * s^a/((a - k) * limit^(a - k)))
             })
@@ -888,7 +888,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- 1/(1 + y^(-g))
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levinvburr(limit, order = k, shape1 = a, shape2 = g, scale = s),
                        s^k * betaint(u, a + k/g, 1 - k/g)/Ga +
                        limit^k * (1 - u^a))
@@ -897,7 +897,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- 1/(1 + y^(-1))
         for (k in order[order < 1])
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levinvpareto(limit, order = k, shape = a, scale = s),
                        s^k * a *
                        sapply(u,
@@ -910,7 +910,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- 1/(1 + y^(-a))
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levinvparalogis(limit, order = k, shape = a, scale = s),
                        s^k * betaint(u, a + k/a, 1 - k/a)/Ga +
                        limit^k * (1 - u^a))
@@ -925,7 +925,7 @@ for (i in seq_along(shpar))
 ## Density: first check that functions return 0 when scale = Inf, and
 ## when x = scale = Inf (transformed gamma), or when scale = 0 and
 ## when x = scale = 0 (inverse distributions).
-stopifnot({
+stopifnot(exprs = {
     dtrgamma   (c(42, Inf), shape1 = 2, shape2 = 3, scale = Inf) == c(0, 0)
     dinvtrgamma(c(42, 0), shape1 = 2, shape2 = 3, scale = 0) == c(0, 0)
     dinvgamma  (c(42, 0), shape  = 2, scale = 0) == c(0, 0)
@@ -934,8 +934,9 @@ stopifnot({
 })
 
 ## Tests on the density
+set.seed(123)                   # reset the seed
 nshpar <- 2                     # (maximum) number of shape parameters
-shpar <- replicate(30, rlnorm(nshpar, 2), simplify = FALSE)
+shpar <- replicate(30, rgamma(nshpar, 5), simplify = FALSE)
 scpar <- rlnorm(30, 2)          # scale parameters
 for (i in seq_along(shpar))
 {
@@ -946,11 +947,11 @@ for (i in seq_along(shpar))
         x <- rtrgamma(100, shape1 = a, shape2 = t, scale = s)
         y <- x/s
         u <- y^t
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dtrgamma(x, shape1 = a, shape2 = t,
                                     scale = s),
                       d2 <- dtrgamma(y, shape1 = a, shape2 = t,
-                                    scale = 1)/s,
+                                     scale = 1)/s,
                       tolerance = 1e-10)
             all.equal(d2,
                       t/(Ga * s^(a * t)) * x^(a * t - 1) * exp(-u),
@@ -962,7 +963,7 @@ for (i in seq_along(shpar))
         x <- rinvtrgamma(100, shape1 = a, shape2 = t, scale = s)
         y <- x/s
         u <- y^(-t)
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dinvtrgamma(x, shape1 = a, shape2 = t,
                                         scale = s),
                       d2 <- dinvtrgamma(y, shape1 = a, shape2 = t,
@@ -978,7 +979,7 @@ for (i in seq_along(shpar))
         x <- rinvgamma(100, shape = a, scale = s)
         y <- x/s
         u <- y^(-1)
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dinvgamma(x, shape = a, scale = s),
                       d2 <- dinvgamma(y, shape = a, scale = 1)/s,
                       tolerance = 1e-10)
@@ -992,7 +993,7 @@ for (i in seq_along(shpar))
         x <- rinvweibull(100, shape = t, scale = s)
         y <- x/s
         u <- y^(-t)
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dinvweibull(x, shape = t, scale = s),
                       d2 <- dinvweibull(y, shape = t, scale = 1)/s,
                       tolerance = 1e-10)
@@ -1006,7 +1007,7 @@ for (i in seq_along(shpar))
         x <- rinvexp(100, scale = s)
         y <- x/s
         u <- y^(-1)
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dinvexp(x, scale = s),
                       d2 <- dinvexp(y, scale = 1)/s,
                       tolerance = 1e-10)
@@ -1022,7 +1023,7 @@ for (i in seq_along(shpar))
 
 ## Tests on the cumulative distribution function.
 scLrg <- c(2, 100, 1e300 * c(0.1, 1, 10, 100), 1e307, xMax, Inf)
-stopifnot({
+stopifnot(exprs = {
     ptrgamma(Inf,  2, 3, scale = xMax) == 1
     ptrgamma(xMax, 2, 3, scale = xMax) == pgamma(1, 2, 1)
     ptrgamma(xMin, 2, 1, scale = 1)    == pgamma(xMin, 2, 1)
@@ -1031,7 +1032,7 @@ stopifnot({
                      2, 1, log = TRUE))
 })
 scLrg <- c(2, 100, 1e300 * c(0.1, 1, 10, 100), 1e307, xMax, 0)
-stopifnot({
+stopifnot(exprs = {
     pinvtrgamma(Inf,  2, 3, scale = xMax) == 1
     pinvtrgamma(xMax, 2, 3, scale = xMax) == pgamma(1, 2, 1, lower = FALSE)
     pinvtrgamma(xMin, 2, 1, scale = 1)    == pgamma(1/xMin, 2, 1, lower = FALSE)
@@ -1039,7 +1040,7 @@ stopifnot({
               pgamma(c(2e-300, 1e-298, 0.1, 1, 10, 100, 1e+7, xMax/1e+300, 0),
                      2, 1, lower = FALSE, log = TRUE))
 })
-stopifnot({
+stopifnot(exprs = {
     pinvgamma(Inf,  2, scale = xMax) == 1
     pinvgamma(xMax, 2, scale = xMax) == pgamma(1, 2, 1, lower = FALSE)
     pinvgamma(xMin, 2, scale = 1)    == pgamma(1/xMin, 2, 1, lower = FALSE)
@@ -1047,14 +1048,14 @@ stopifnot({
               pgamma(c(2e-300, 1e-298, 0.1, 1, 10, 100, 1e+7, xMax/1e+300, 0),
                      2, 1, lower = FALSE, log = TRUE))
 })
-stopifnot({
+stopifnot(exprs = {
     pinvweibull(Inf,  3, scale = xMax) == 1
     pinvweibull(xMax, 3, scale = xMax) == exp(-1)
     pinvweibull(xMin, 1, scale = 1)    == exp(-1/xMin)
     all.equal(pinvweibull(1e300, shape = 1, scale = scLrg, log = TRUE),
               -c(2e-300, 1e-298, 0.1, 1, 10, 100, 1e+7, xMax/1e+300, 0))
 })
-stopifnot({
+stopifnot(exprs = {
     pinvexp(Inf,  3, scale = xMax) == 1
     pinvexp(xMax, 3, scale = xMax) == exp(-1)
     pinvexp(xMin, 1, scale = 1)    == exp(-1/xMin)
@@ -1078,7 +1079,7 @@ for (i in seq_along(shpar))
     Ga <- gamma(a)
     for (s in scpar)
     {
-        stopifnot({
+        stopifnot(exprs = {
             All.eq(mtrgamma(k, shape1 = a, shape2 = t, scale = s),
                    s^k * gamma(a + k/t)/Ga)
             All.eq(mgamma(k, shape = a, scale = s),
@@ -1116,7 +1117,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- y^t
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levtrgamma(limit, order = k, shape1 = a, shape2 = t, scale = s),
                        s^k * gamma(a + k/t)/Ga * pgamma(u, a + k/t, scale = 1) +
                        limit^k * pgamma(u, a, scale = 1, lower = FALSE))
@@ -1124,7 +1125,7 @@ for (i in seq_along(shpar))
         limit <- qgamma(q, shape = a, scale = s)
         y <- limit/s
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levgamma(limit, order = k, shape = a, scale = s),
                        s^k * gamma(a + k)/Ga * pgamma(y, a + k, scale = 1) +
                        limit^k * pgamma(y, a, scale = 1, lower = FALSE))
@@ -1133,7 +1134,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- y^t
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levweibull(limit, order = k, shape = t, scale = s),
                        s^k * gamma(1 + k/t) * pgamma(u, 1 + k/t, scale = 1) +
                        limit^k * pgamma(u, 1, scale = 1, lower = FALSE))
@@ -1141,7 +1142,7 @@ for (i in seq_along(shpar))
         limit <- qexp(q, rate = 1/s)
         y <- limit/s
         for (k in order[order > -1])
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levexp(limit, order = k, rate = 1/s),
                        s^k * gamma(1 + k) * pgamma(y, 1 + k, scale = 1) +
                        limit^k * pgamma(y, 1, scale = 1, lower = FALSE))
@@ -1150,7 +1151,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- y^(-t)
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levinvtrgamma(limit, order = k, shape1 = a, shape2 = t, scale = s),
                        s^k * (gammainc(a - k/t, u)/Ga) +
                        limit^k * pgamma(u, a, scale = 1))
@@ -1159,7 +1160,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- y^(-1)
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levinvgamma(limit, order = k, shape = a, scale = s),
                        s^k * (gammainc(a - k, u)/Ga) +
                        limit^k * pgamma(u, a, scale = 1))
@@ -1168,7 +1169,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- y^(-t)
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levinvweibull(limit, order = k, shape = t, scale = s),
                        s^k * gammainc(1 - k/t, u) +
                        limit^k * (-expm1(-u)))
@@ -1177,7 +1178,7 @@ for (i in seq_along(shpar))
         y <- limit/s
         u <- y^(-1)
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levinvexp(limit, order = k, scale = s),
                        s^k * gammainc(1 - k, u) +
                        limit^k * (-expm1(-u)))
@@ -1189,16 +1190,16 @@ for (i in seq_along(shpar))
 ## OTHER DISTRIBUTIONS
 ##
 
-## Distributions in the category are quite different, so let's treat
+## Distributions in this category are quite different, so let's treat
 ## them separately.
 
 ## LOGGAMMA
 
 ## Tests on the density.
-stopifnot({
+stopifnot(exprs = {
     dlgamma(c(42, Inf), shapelog = 2, ratelog = 0) == c(0, 0)
 })
-assertWarning(stopifnot({
+assertWarning(stopifnot(exprs = {
     is.nan(dlgamma(c(0, 42, Inf), shapelog = 2, ratelog = Inf))
 }))
 x <- rlgamma(100, shapelog = 2, ratelog = 1)
@@ -1206,19 +1207,19 @@ for(a in round(rlnorm(30), 2))
 {
     Ga <- gamma(a)
     for(r in round(rlnorm(30), 2))
-	stopifnot({
+	stopifnot(exprs = {
             All.eq(dlgamma(x, shapelog = a, ratelog = r),
                    r^a * (log(x))^(a - 1)/(Ga * x^(r + 1)))
         })
 }
 
 ## Tests on the cumulative distribution function.
-assertWarning(stopifnot({
+assertWarning(stopifnot(exprs = {
     is.nan(plgamma(Inf,   1, ratelog = Inf))
     is.nan(plgamma(Inf, Inf, ratelog = Inf))
 }))
 scLrg <- log(c(2, 100, 1e300 * c(0.1, 1, 10, 100), 1e307, xMax, Inf))
-stopifnot({
+stopifnot(exprs = {
     plgamma(Inf,  2, ratelog = xMax) == 1
     plgamma(xMax, 2, ratelog = 0) == 0
     all.equal(plgamma(1e300, 2, ratelog = 1/scLrg, log = TRUE),
@@ -1232,7 +1233,7 @@ for(a in round(rlnorm(30), 2))
 {
     Ga <- gamma(a)
     for(r in 3 + round(rlnorm(30), 2))
-	stopifnot({
+	stopifnot(exprs = {
             All.eq(mlgamma(k, shapelog = a, ratelog = r),
                    (1 - k/r)^(-a))
         })
@@ -1251,7 +1252,7 @@ for(a in round(rlnorm(30), 2))
         for (k in order)
         {
             u <- log(limit)
-        stopifnot({
+        stopifnot(exprs = {
             All.eq(levlgamma(limit, order = k, shapelog = a, ratelog = r),
                    (1 - k/r)^(-a) * pgamma((r - k) * u, a, scale = 1) +
                    limit^k * pgamma(r * u, a, scale = 1,lower = FALSE))
@@ -1263,13 +1264,13 @@ for(a in round(rlnorm(30), 2))
 ## GUMBEL
 
 ## Tests on the density.
-stopifnot({
+stopifnot(exprs = {
     dgumbel(c(1, 3, Inf), alpha = 2,   scale = Inf) == c(0, 0, 0)
     dgumbel(c(1, 2, 3),   alpha = 2,   scale = 0) == c(0, Inf, 0)
     dgumbel(c(-Inf, Inf), alpha = 1,   scale = 1) == c(0, 0)
     dgumbel(1,            alpha = Inf, scale = 1) == 0
 })
-assertWarning(stopifnot({
+assertWarning(stopifnot(exprs = {
     is.nan(dgumbel(Inf,  alpha = Inf,  scale =  1))
     is.nan(dgumbel(-Inf, alpha = -Inf, scale =  1))
     is.nan(dgumbel(Inf,  alpha = 1,    scale = -1))
@@ -1283,7 +1284,7 @@ for(a in round(rlnorm(30), 2))
     for(s in round(rlnorm(30), 2))
     {
         u <- (x - a)/s
-	stopifnot({
+	stopifnot(exprs = {
             All.eq(dgumbel(x, alpha = a, scale = s),
                    exp(-(u + exp(-u)))/s)
         })
@@ -1291,7 +1292,7 @@ for(a in round(rlnorm(30), 2))
 }
 
 ## Tests on the cumulative distribution function.
-assertWarning(stopifnot({
+assertWarning(stopifnot(exprs = {
     is.nan(pgumbel(Inf,  alpha = Inf,  scale =  1))
     is.nan(pgumbel(-Inf, alpha = -Inf, scale =  1))
     is.nan(pgumbel(Inf,  alpha = 1,    scale = -1))
@@ -1299,7 +1300,7 @@ assertWarning(stopifnot({
     is.nan(pgumbel(1,    alpha = Inf,  scale = -1))
 }))
 scLrg <- c(2, 100, 1e300 * c(0.1, 1, 10, 100), 1e307, xMax, Inf)
-stopifnot({
+stopifnot(exprs = {
     pgumbel(c(-Inf, Inf),  2, scale = xMax) == c(0, 1)
     pgumbel(c(xMin, xMax), 2, scale = 0) == c(0, 1)
     all.equal(pgumbel(1e300, 0, scale = scLrg, log = TRUE),
@@ -1307,10 +1308,10 @@ stopifnot({
 })
 
 ## Test the first two moments, the only ones implemented.
-assertWarning(stopifnot({
+assertWarning(stopifnot(exprs = {
     is.nan(mgumbel(c(-2, -1, 3, 4), alpha = 2, scale = 5))
 }))
-stopifnot({
+stopifnot(exprs = {
     All.eq(mgumbel(1, alpha = 2, scale = 5),
            2 + 5 * 0.577215664901532860606512090082)
     All.eq(mgumbel(2, alpha = 2, scale = 5),
@@ -1320,13 +1321,13 @@ stopifnot({
 ## INVERSE GAUSSIAN
 
 ## Tests on the density.
-stopifnot({
+stopifnot(exprs = {
     dinvgauss(c(1, 3, Inf),  mean = 2,   dispersion = Inf) == c(0, 0, 0)
     dinvgauss(c(0, 42, Inf), mean = 2,   dispersion = 0) == c(Inf, 0, 0)
     dinvgauss(c(0, Inf),     mean = 1,   dispersion = 1) == c(0, 0)
     dinvgauss(1,             mean = Inf, dispersion = 2) == dinvgamma(1, 0.5, scale = 0.25)
 })
-assertWarning(stopifnot({
+assertWarning(stopifnot(exprs = {
     is.nan(dinvgauss(-Inf, mean = -1,  dispersion =  1))
     is.nan(dinvgauss(Inf,  mean = 1,   dispersion = -1))
     is.nan(dinvgauss(1,    mean = 1,   dispersion = -1))
@@ -1336,25 +1337,34 @@ x <- rinvgauss(100, mean = 2, dispersion = 5)
 for(mu in round(rlnorm(30), 2))
 {
     for(phi in round(rlnorm(30), 2))
-	stopifnot({
+	stopifnot(exprs = {
             All.eq(dinvgauss(x, mean = mu, dispersion = phi),
                    1/sqrt(2*pi*phi*x^3) * exp(-((x/mu - 1)^2)/(2*phi*x)))
         })
 }
 
 ## Tests on the cumulative distribution function.
-assertWarning(stopifnot({
+assertWarning(stopifnot(exprs = {
     is.nan(pinvgauss(-Inf, mean = -Inf, dispersion =  1))
     is.nan(pinvgauss(Inf,  mean = 1,    dispersion = -1))
     is.nan(pinvgauss(1,    mean = Inf,  dispersion = -1))
 }))
 x <- c(1:50, 10^c(3:10, 20, 50, 150, 250))
 sqx <- sqrt(x)
-stopifnot({
+stopifnot(exprs = {
     pinvgauss(c(0, Inf),  mean = 2, dispersion = xMax) == c(0, 1)
     pinvgauss(c(0, xMax), mean = xMax, dispersion = 0) == c(0, 1)
     all.equal(pinvgauss(x, 1, dispersion = 1, log = TRUE),
               log(pnorm(sqx - 1/sqx) + exp(2) * pnorm(-sqx - 1/sqx)))
+})
+
+## Tests for small value of 'shape'. Added for the patch in 4294e9c.
+q <- runif(100)
+stopifnot(exprs = {
+    all.equal(q,
+              pinvgauss(qinvgauss(q, 0.1, 1e-2), 0.1, 1e-2))
+    all.equal(q,
+              pinvgauss(qinvgauss(q, 0.1, 1e-6), 0.1, 1e-6))
 })
 
 ## Tests for first three positive, integer moments.
@@ -1362,7 +1372,7 @@ k <- 1:3
 for(mu in round(rlnorm(30), 2))
 {
     for(phi in round(rlnorm(30), 2))
-	stopifnot({
+	stopifnot(exprs = {
             All.eq(minvgauss(k, mean = mu, dispersion = phi),
                    c(mu,
                      mu^2 * (1 + phi * mu),
@@ -1377,7 +1387,7 @@ for(mu in round(rlnorm(30), 2))
     for(phi in round(rlnorm(30), 2))
     {
         limit <- qinvgauss(q, mean = mu, dispersion = phi)
-        stopifnot({
+        stopifnot(exprs = {
             All.eq(levinvgauss(limit, mean = mu, dispersion = phi),
                    mu * (pnorm((limit/mu - 1)/sqrt(phi * limit)) -
                          exp(2/phi/mu) * pnorm(-(limit/mu + 1)/sqrt(phi * limit))) +
@@ -1387,7 +1397,7 @@ for(mu in round(rlnorm(30), 2))
 }
 
 ## GENERALIZED BETA
-stopifnot({
+stopifnot(exprs = {
     dgenbeta(c(0, 2.5, 5), shape1 = 0,   shape2 = 0,   shape3 = 3,   scale = 5) == c(Inf, 0, Inf)
     dgenbeta(c(0, 2.5, 5), shape1 = 0,   shape2 = 0,   shape3 = 0,   scale = 5) == c(Inf, 0, Inf)
     dgenbeta(c(0, 2.5, 5), shape1 = 0,   shape2 = 2,   shape3 = 0,   scale = 5) == c(Inf, 0, 0)
@@ -1408,7 +1418,7 @@ for (i in seq_along(shpar))
         u <- rbeta(100, a, b)
         y <- u^(1/t)
         x <- s * y
-        stopifnot({
+        stopifnot(exprs = {
             all.equal(d1 <- dgenbeta(x, shape1 = a, shape2 = b, shape3 = t,
                                      scale = s),
                       d2 <- dgenbeta(y, shape1 = a, shape2 = b, shape3 = t,
@@ -1426,7 +1436,7 @@ for (i in seq_along(shpar))
 
 ## Tests on the cumulative distribution function.
 scLrg <- 1e300 * c(0.5, 1, 2, 4)
-stopifnot({
+stopifnot(exprs = {
     all.equal(pgenbeta(1e300,
                        shape1 = 3, shape2 = 1,
                        shape3 = rep(c(1, 2), each = length(scLrg)),
@@ -1449,7 +1459,7 @@ for (i in seq_along(shpar))
     a <- shpar[[c(i, 1)]]; b <- shpar[[c(i, 2)]]; t <- shpar[[c(i, 3)]]
     Be <- beta(a, b)
     for (s in scpar)
-        stopifnot({
+        stopifnot(exprs = {
             All.eq(mgenbeta(k, shape1 = a, shape2 = b, shape3 = t, scale = s),
                    s^k * beta(a + k/t, b)/Be)
         })
@@ -1470,7 +1480,7 @@ for (i in seq_along(shpar))
         limit <- qgenbeta(q, shape1 = a, shape2 = b, shape3 = t, scale = s)
         u <- (limit/s)^t
         for (k in order)
-            stopifnot({
+            stopifnot(exprs = {
                 All.eq(levgenbeta(limit, order = k, shape1 = a, shape2 = b, shape3 = t, scale = s),
                        s^k * beta(a + k/t, b)/Be * pbeta(u, a + k/t, b) +
                        limit^k * pbeta(u, a, b, lower = FALSE))
@@ -1502,10 +1512,10 @@ m <- rnorm(1)
 (Rinvparalogis  <- rinvparalogis(n, shape  = 2,   scale = 2))
 (Rtrgamma       <- rtrgamma     (n, shape1 = 2, shape2 = 3, scale = 5))
 (Rinvtrgamma    <- rinvtrgamma  (n, shape1 = 2, shape2 = 3, scale = 5))
-(Rinvtrgamma    <- rinvgamma    (n, shape  = 2,             scale = 5))
+(Rinvgamma      <- rinvgamma    (n, shape  = 2,             scale = 5))
 (Rinvweibull    <- rinvweibull  (n,             shape  = 3, scale = 5))
 (Rinvexp        <- rinvexp      (n,                         scale = 5))
-(Rlgamma <- rlgamma(n, shapelog = 2, ratelog = 0.2))
+(Rlgamma <- rlgamma(n, shapelog = 1.5, ratelog = 5))
 (Rgumbel <- rgumbel(n, alpha = 2, scale = 5))
 (Rinvgauss <- rinvgauss(n, mean = 2, dispersion = 5))
 (Rgenbeta <- rgenbeta(n, shape1 = 0.8, shape2 = 1.5, shape3 = 2, scale = 2))
@@ -1527,10 +1537,10 @@ m <- rnorm(1)
 (Pinvparalogis  <- pinvparalogis(Rinvparalogis, shape  = 2,   scale = 2))
 (Ptrgamma       <- ptrgamma     (Rtrgamma,      shape1 = 2, shape2 = 3, scale = 5))
 (Pinvtrgamma    <- pinvtrgamma  (Rinvtrgamma,   shape1 = 2, shape2 = 3, scale = 5))
-(Pinvtrgamma    <- pinvgamma    (Rinvtrgamma,   shape  = 2,             scale = 5))
+(Pinvgamma      <- pinvgamma    (Rinvgamma,     shape  = 2,             scale = 5))
 (Pinvweibull    <- pinvweibull  (Rinvweibull,               shape  = 3, scale = 5))
 (Pinvexp        <- pinvexp      (Rinvexp,                               scale = 5))
-(Plgamma <- plgamma(Rlgamma, shapelog = 2, ratelog = 0.2))
+(Plgamma <- plgamma(Rlgamma, shapelog = 1.5, ratelog = 5))
 (Pgumbel <- pgumbel(Rgumbel, alpha = 2, scale = 5))
 (Pinvgauss <- pinvgauss(Rinvgauss, mean = 2, dispersion = 5))
 (Pgenbeta <- pgenbeta(Rgenbeta, shape1 = 0.8, shape2 = 1.5, shape3 = 2, scale = 2))
@@ -1555,13 +1565,13 @@ dinvtrgamma  (Rinvtrgamma,   shape1 = 2, shape2 = 3, scale = 5)
 dinvgamma    (Rinvtrgamma,   shape  = 2,             scale = 5)
 dinvweibull  (Rinvweibull,               shape  = 3, scale = 5)
 dinvexp      (Rinvexp,                               scale = 5)
-dlgamma(Rlgamma, shapelog = 2, ratelog = 0.2)
+dlgamma(Rlgamma, shapelog = 1.5, ratelog = 5)
 dgumbel(Rgumbel, alpha = 2, scale = 5)
 dinvgauss(Rinvgauss, mean = 2, dispersion = 5)
 dgenbeta(Rgenbeta, shape1 = 0.8, shape2 = 1.5, shape3 = 2, scale = 2)
 
 ## Check q<dist>(p<dist>(.)) identity
-stopifnot({
+stopifnot(exprs = {
     All.eq(Rfpareto, qfpareto(Pfpareto, min = m, shape1 = 0.8, shape2 = 1.5, shape3 = 2, scale = 2))
     All.eq(Rpareto4, qpareto4(Ppareto4, min = m, shape1 = 0.8, shape2 = 1.5,             scale = 2))
     All.eq(Rpareto3, qpareto3(Ppareto3, min = m,               shape  = 1.5,             scale = 2))
@@ -1578,17 +1588,17 @@ stopifnot({
     All.eq(Rinvparalogis, qinvparalogis(Pinvparalogis, shape  = 2,   scale = 2))
     All.eq(Rtrgamma,      qtrgamma     (Ptrgamma,      shape1 = 2, shape2 = 3, scale = 5))
     All.eq(Rinvtrgamma,   qinvtrgamma  (Pinvtrgamma,   shape1 = 2, shape2 = 3, scale = 5))
-    All.eq(Rinvtrgamma,   qinvgamma    (Pinvtrgamma,   shape  = 2,             scale = 5))
+    All.eq(Rinvgamma,     qinvgamma    (Pinvgamma,     shape  = 2,             scale = 5))
     All.eq(Rinvweibull,   qinvweibull  (Pinvweibull,               shape  = 3, scale = 5))
     All.eq(Rinvexp,       qinvexp      (Pinvexp,                               scale = 5))
-    All.eq(Rlgamma, qlgamma(Plgamma, shapelog = 2, ratelog = 0.2))
+    All.eq(Rlgamma, qlgamma(Plgamma, shapelog = 1.5, ratelog = 5))
     All.eq(Rgumbel, qgumbel(Pgumbel, alpha = 2, scale = 5))
     All.eq(Rinvgauss, qinvgauss(Pinvgauss, mean = 2, dispersion = 5))
     All.eq(Rgenbeta, qgenbeta(Pgenbeta, shape1 = 0.8, shape2 = 1.5, shape3 = 2, scale = 2))
 })
 
 ## Check q<dist>(p<dist>(.)) identity for special cases
-stopifnot({
+stopifnot(exprs = {
     All.eq(Rfpareto - m, qtrbeta(Pfpareto, shape1 = 0.8, shape2 = 1.5, shape3 = 2, scale = 2))
     All.eq(Rpareto4 - m, qburr  (Ppareto4, shape1 = 0.8, shape2 = 1.5,             scale = 2))
     All.eq(Rpareto3 - m, qllogis(Ppareto3,               shape  = 1.5,             scale = 2))
@@ -1596,7 +1606,7 @@ stopifnot({
 })
 
 ## Check q<dist>(p<dist>(.)) identity with upper tail
-stopifnot({
+stopifnot(exprs = {
     All.eq(Rfpareto, qfpareto(1 - Pfpareto, min = m, shape1 = 0.8, shape2 = 1.5, shape3 = 2, scale = 2, lower = FALSE))
     All.eq(Rpareto4, qpareto4(1 - Ppareto4, min = m, shape1 = 0.8, shape2 = 1.5,             scale = 2, lower = FALSE))
     All.eq(Rpareto3, qpareto3(1 - Ppareto3, min = m,               shape  = 1.5,             scale = 2, lower = FALSE))
@@ -1613,17 +1623,17 @@ stopifnot({
     All.eq(Rinvparalogis, qinvparalogis(1 - Pinvparalogis, shape  = 2,   scale = 2, lower = FALSE))
     All.eq(Rtrgamma,      qtrgamma     (1 - Ptrgamma,      shape1 = 2, shape2 = 3, scale = 5, lower = FALSE))
     All.eq(Rinvtrgamma,   qinvtrgamma  (1 - Pinvtrgamma,   shape1 = 2, shape2 = 3, scale = 5, lower = FALSE))
-    All.eq(Rinvtrgamma,   qinvgamma    (1 - Pinvtrgamma,   shape  = 2,             scale = 5, lower = FALSE))
+    All.eq(Rinvgamma,     qinvgamma    (1 - Pinvgamma,     shape  = 2,             scale = 5, lower = FALSE))
     All.eq(Rinvweibull,   qinvweibull  (1 - Pinvweibull,               shape  = 3, scale = 5, lower = FALSE))
     All.eq(Rinvexp,       qinvexp      (1 - Pinvexp,                               scale = 5, lower = FALSE))
-    All.eq(Rlgamma, qlgamma(1 - Plgamma, shapelog = 2, ratelog = 0.2, lower = FALSE))
+    All.eq(Rlgamma, qlgamma(1 - Plgamma, shapelog = 1.5, ratelog = 5, lower = FALSE))
     All.eq(Rgumbel, qgumbel(1 - Pgumbel, alpha = 2, scale = 5, lower = FALSE))
     All.eq(Rinvgauss, qinvgauss(1 - Pinvgauss, mean = 2, dispersion = 5, lower = FALSE))
     All.eq(Rgenbeta, qgenbeta(1 - Pgenbeta, shape1 = 0.8, shape2 = 1.5, shape3 = 2, scale = 2, lower = FALSE))
 })
 
 ## Check q<dist>(p<dist>(., log), log) identity
-stopifnot({
+stopifnot(exprs = {
     All.eq(Rfpareto, qfpareto(log(Pfpareto), min = m, shape1 = 0.8, shape2 = 1.5, shape3 = 2, scale = 2, log = TRUE))
     All.eq(Rpareto4, qpareto4(log(Ppareto4), min = m, shape1 = 0.8, shape2 = 1.5,             scale = 2, log = TRUE))
     All.eq(Rpareto3, qpareto3(log(Ppareto3), min = m,               shape  = 1.5,             scale = 2, log = TRUE))
@@ -1640,17 +1650,17 @@ stopifnot({
     All.eq(Rinvparalogis, qinvparalogis(log(Pinvparalogis), shape  = 2,   scale = 2, log = TRUE))
     All.eq(Rtrgamma,      qtrgamma     (log(Ptrgamma),      shape1 = 2, shape2 = 3, scale = 5, log = TRUE))
     All.eq(Rinvtrgamma,   qinvtrgamma  (log(Pinvtrgamma),   shape1 = 2, shape2 = 3, scale = 5, log = TRUE))
-    All.eq(Rinvtrgamma,   qinvgamma    (log(Pinvtrgamma),   shape  = 2,             scale = 5, log = TRUE))
+    All.eq(Rinvgamma,     qinvgamma    (log(Pinvgamma),     shape  = 2,             scale = 5, log = TRUE))
     All.eq(Rinvweibull,   qinvweibull  (log(Pinvweibull),               shape  = 3, scale = 5, log = TRUE))
     All.eq(Rinvexp,       qinvexp      (log(Pinvexp),                               scale = 5, log = TRUE))
-    All.eq(Rlgamma, qlgamma(log(Plgamma), shapelog = 2, ratelog = 0.2, log = TRUE))
+    All.eq(Rlgamma, qlgamma(log(Plgamma), shapelog = 1.5, ratelog = 5, log = TRUE))
     All.eq(Rgumbel, qgumbel(log(Pgumbel), alpha = 2, scale = 5, log = TRUE))
     All.eq(Rinvgauss, qinvgauss(log(Pinvgauss), mean = 2, dispersion = 5, log = TRUE))
     All.eq(Rgenbeta, qgenbeta(log(Pgenbeta), shape1 = 0.8, shape2 = 1.5, shape3 = 2, scale = 2, log = TRUE))
 })
 
 ## Check q<dist>(p<dist>(., log), log) identity with upper tail
-stopifnot({
+stopifnot(exprs = {
     All.eq(Rfpareto, qfpareto(log1p(-Pfpareto), min = m, shape1 = 0.8, shape2 = 1.5, shape3 = 2, scale = 2, lower = FALSE, log = TRUE))
     All.eq(Rpareto4, qpareto4(log1p(-Ppareto4), min = m, shape1 = 0.8, shape2 = 1.5,             scale = 2, lower = FALSE, log = TRUE))
     All.eq(Rpareto3, qpareto3(log1p(-Ppareto3), min = m,               shape  = 1.5,             scale = 2, lower = FALSE, log = TRUE))
@@ -1667,10 +1677,10 @@ stopifnot({
     All.eq(Rinvparalogis, qinvparalogis(log1p(-Pinvparalogis), shape  = 2,   scale = 2, lower = FALSE, log = TRUE))
     All.eq(Rtrgamma,      qtrgamma     (log1p(-Ptrgamma),      shape1 = 2, shape2 = 3, scale = 5, lower = FALSE, log = TRUE))
     All.eq(Rinvtrgamma,   qinvtrgamma  (log1p(-Pinvtrgamma),   shape1 = 2, shape2 = 3, scale = 5, lower = FALSE, log = TRUE))
-    All.eq(Rinvtrgamma,   qinvgamma    (log1p(-Pinvtrgamma),   shape  = 2,             scale = 5, lower = FALSE, log = TRUE))
+    All.eq(Rinvgamma,     qinvgamma    (log1p(-Pinvgamma),     shape  = 2,             scale = 5, lower = FALSE, log = TRUE))
     All.eq(Rinvweibull,   qinvweibull  (log1p(-Pinvweibull),               shape  = 3, scale = 5, lower = FALSE, log = TRUE))
     All.eq(Rinvexp,       qinvexp      (log1p(-Pinvexp),                               scale = 5, lower = FALSE, log = TRUE))
-    All.eq(Rlgamma, qlgamma(log1p(-Plgamma), shapelog = 2, ratelog = 0.2, lower = FALSE, log = TRUE))
+    All.eq(Rlgamma, qlgamma(log1p(-Plgamma), shapelog = 1.5, ratelog = 5, lower = FALSE, log = TRUE))
     All.eq(Rgumbel, qgumbel(log1p(-Pgumbel), alpha = 2, scale = 5, lower = FALSE, log = TRUE))
     All.eq(Rinvgauss, qinvgauss(log1p(-Pinvgauss), mean = 2, dispersion = 5, lower = FALSE, log = TRUE))
     All.eq(Rgenbeta, qgenbeta(log1p(-Pgenbeta), shape1 = 0.8, shape2 = 1.5, shape3 = 2, scale = 2, lower = FALSE, log = TRUE))
@@ -1713,7 +1723,7 @@ lambda <- rlnorm(30, 2)                 # Poisson parameters
 r <- lambda                             # size for negative binomial
 prob <- runif(30)                       # probs
 size <- round(lambda)                   # size for binomial
-stopifnot({
+stopifnot(exprs = {
     dztpois(0, lambda) == 0
     dztnbinom(0, r, prob) == 0
     dztgeom(0, prob) == 0
@@ -1722,7 +1732,7 @@ stopifnot({
 })
 
 x <- sapply(size, sample, size = 1)
-stopifnot({
+stopifnot(exprs = {
     All.eq(dztpois(x, lambda),
            mapply(dab1, x,
                   a = 0,
@@ -1752,27 +1762,27 @@ stopifnot({
 
 ## Tests on cumulative distribution function.
 for (l in lambda)
-    stopifnot({
+    stopifnot(exprs = {
         all.equal(cumsum(dztpois(0:20, l)),
                   pztpois(0:20, l), tol = 1e-8)
     })
 for (i in seq_along(r))
-    stopifnot({
+    stopifnot(exprs = {
         all.equal(cumsum(dztnbinom(0:20, r[i], prob[i])),
                   pztnbinom(0:20, r[i], prob[i]), tol = 1e-8)
     })
 for (i in seq_along(r))
-    stopifnot({
+    stopifnot(exprs = {
         all.equal(cumsum(dztgeom(0:20, prob[i])),
                   pztgeom(0:20, prob[i]), tol = 1e-8)
     })
 for (i in seq_along(size))
-    stopifnot({
+    stopifnot(exprs = {
         all.equal(cumsum(dztbinom(0:20, size[i], prob[i])),
                   pztbinom(0:20, size[i], prob[i]), tol = 1e-8)
     })
 for (p in prob)
-    stopifnot({
+    stopifnot(exprs = {
         all.equal(cumsum(dlogarithmic(0:20, p)),
                   plogarithmic(0:20, p), tol = 1e-8)
     })
@@ -1788,7 +1798,7 @@ r <- lambda                             # size for negative binomial
 prob <- runif(30)                       # probs
 size <- round(lambda)                   # size for binomial
 p0 <- runif(30)                         # probs at 0
-stopifnot({
+stopifnot(exprs = {
     dzmpois(0, lambda, p0) == p0
     dzmnbinom(0, r, prob, p0) == p0
     dzmgeom(0, prob, p0) == p0
@@ -1797,7 +1807,7 @@ stopifnot({
 })
 
 x <- sapply(size, sample, size = 1)
-stopifnot({
+stopifnot(exprs = {
     All.eq(dzmpois(x, lambda, p0),
            mapply(dab1, x,
                   a = 0,
@@ -1827,27 +1837,27 @@ stopifnot({
 
 ## Tests on cumulative distribution function.
 for (i in seq_along(lambda))
-    stopifnot({
+    stopifnot(exprs = {
         all.equal(cumsum(dzmpois(0:20, lambda[i], p0 = p0[i])),
                   pzmpois(0:20, lambda[i], p0 = p0[i]), tol = 1e-8)
     })
 for (i in seq_along(r))
-    stopifnot({
+    stopifnot(exprs = {
         all.equal(cumsum(dzmnbinom(0:20, r[i], prob[i], p0[i])),
                   pzmnbinom(0:20, r[i], prob[i], p0[i]), tol = 1e-8)
     })
 for (i in seq_along(r))
-    stopifnot({
+    stopifnot(exprs = {
         all.equal(cumsum(dzmgeom(0:20, prob[i], p0[i])),
                   pzmgeom(0:20, prob[i], p0[i]), tol = 1e-8)
     })
 for (i in seq_along(size))
-    stopifnot({
+    stopifnot(exprs = {
         all.equal(cumsum(dzmbinom(0:20, size[i], prob[i], p0[i])),
                   pzmbinom(0:20, size[i], prob[i], p0[i]), tol = 1e-8)
     })
 for (i in seq_along(prob))
-    stopifnot({
+    stopifnot(exprs = {
         all.equal(cumsum(dzmlogarithmic(0:20, prob[i], p0[i])),
                   pzmlogarithmic(0:20, prob[i], p0[i]), tol = 1e-8)
     })
@@ -1881,7 +1891,7 @@ phi <- rlnorm(30, 2)
 x <- 0:100
 for (i in seq_along(phi))
 {
-    stopifnot({
+    stopifnot(exprs = {
         all.equal(dpoisinvgauss(x, mean = mu[i], dispersion = phi[i]),
               dpigBK(x, mu[i], phi[i]))
         all.equal(dpoisinvgauss(x, mean = Inf, dispersion = phi[i]),
@@ -1891,7 +1901,7 @@ for (i in seq_along(phi))
 
 ## Tests on cumulative distribution function.
 for (i in seq_along(phi))
-    stopifnot({
+    stopifnot(exprs = {
         all.equal(cumsum(dpoisinvgauss(0:20, mu[i], phi[i])),
                   ppoisinvgauss(0:20, mu[i], phi[i]), tol = 1e-8)
         all.equal(cumsum(dpoisinvgauss(0:20, Inf, phi[i])),
@@ -1966,7 +1976,7 @@ dpoisinvgauss(Rpoisinvgauss,    mean = 12,  dispersion = 0.1)
 dpoisinvgauss(RpoisinvgaussInf, mean = Inf, dispersion = 1.1)
 
 ## Check q<dist>(p<dist>(.)) identity
-stopifnot({
+stopifnot(exprs = {
     All.eq(Rztpois,      qztpois     (Pztpois,      lambda = 12))
     All.eq(Rztnbinom,    qztnbinom   (Pztnbinom,    size = 7, prob = 0.01))
     All.eq(Rztgeom,      qztgeom     (Pztgeom,      prob = pi/16))
@@ -1987,7 +1997,7 @@ stopifnot({
 })
 
 ## Check q<dist>(p<dist>(.)) identity with upper tail
-stopifnot({
+stopifnot(exprs = {
     All.eq(Rztpois,      qztpois     (1 - Pztpois,      lambda = 12, lower = FALSE))
     All.eq(Rztnbinom,    qztnbinom   (1 - Pztnbinom,    size = 7, prob = 0.01, lower = FALSE))
     All.eq(Rztgeom,      qztgeom     (1 - Pztgeom,      prob = pi/16, lower = FALSE))
@@ -2008,7 +2018,7 @@ stopifnot({
 })
 
 ## Check q<dist>(p<dist>(., log), log) identity
-stopifnot({
+stopifnot(exprs = {
     All.eq(Rztpois,      qztpois     (log(Pztpois),      lambda = 12, log = TRUE))
     All.eq(Rztnbinom,    qztnbinom   (log(Pztnbinom),    size = 7, prob = 0.01, log = TRUE))
     All.eq(Rztgeom,      qztgeom     (log(Pztgeom),      prob = pi/16, log = TRUE))
@@ -2029,7 +2039,7 @@ stopifnot({
 })
 
 ## Check q<dist>(p<dist>(., log), log) identity with upper tail
-stopifnot({
+stopifnot(exprs = {
     All.eq(Rztpois,      qztpois     (log1p(-Pztpois),      lambda = 12, lower = FALSE, log = TRUE))
     All.eq(Rztnbinom,    qztnbinom   (log1p(-Pztnbinom),    size = 7, prob = 0.01, lower = FALSE, log = TRUE))
     All.eq(Rztgeom,      qztgeom     (log1p(-Pztgeom),      prob = pi/16, lower = FALSE, log = TRUE))

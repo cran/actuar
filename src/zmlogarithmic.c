@@ -106,9 +106,13 @@ double qzmlogarithmic(double x, double p, double p0m, int lower_tail, int log_p)
     ACT_Q_P01_boundaries(x, 1.0, R_PosInf);
     x = ACT_DT_qIv(x);
 
-    /* avoid rounding errors below if x was given in log form */
+    /* avoid rounding errors if x was given in log form */
     if (log_p)
 	p0m = exp(log(p0m));
+
+    /* avoid rounding errors if x was given as upper tail */
+    if (!lower_tail)
+	p0m = 0.5 - (0.5 - p0m + 0.5) + 0.5;
 
     return (x <= p0m) ? 0.0 : qlogarithmic((x - p0m)/(1 - p0m), p, /*l._t.*/1, /*log_p*/0);
 }
