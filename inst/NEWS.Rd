@@ -2,6 +2,20 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.1-3}{
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{Carry over the new implementation of the Cornish-Fisher
+	Expansion of base R used by \code{qlogarithmic} and
+	\code{qpoisinvgauss}.}
+      \item{Fix computation of \code{[pq]zmpois}, \code{[pq]zmbinom} and
+	\code{[pq]zmnbinom} following fixes to the underlying base R
+	functions introduced in r80271 of R sources. With thanks to
+	B.D. Ripley and Martin Maechler.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.1-2}{
   \subsection{BUG FIXES}{
     \itemize{

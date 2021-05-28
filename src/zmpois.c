@@ -19,12 +19,7 @@
  *
  *  for x = 1, 2, ... The distribution function is, for all x,
  *
- *      Pr[Z <= x] = p0m +
- *           (1 - p0m) * (Pr[X <= x] - p0)/(1 - p0)
- *
- *  or, alternatively, the survival function is
- *
- *      Pr[Z > x] = (1 - p0m) * Pr[X > x]/(1 - p0).
+ *      Pr[Z <= x] = 1 - (1 - p0m) * (1 - Pr[X <= x])/(1 - p0).
  *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
@@ -80,7 +75,10 @@ double pzmpois(double x, double lambda, double p0m, int lower_tail, int log_p)
     /* limiting case as lambda approaches zero is mass (1-p0m) at one */
     if (lambda == 0) return ACT_DT_1;
 
-    return ACT_DT_Cval((1 - p0m) * ppois(x, lambda, /*l._t.*/0, /*log_p*/0) / (-expm1(-lambda)));
+    /* working in log scale improves accuracy */
+    return ACT_DT_CEval(log1p(-p0m)
+			+ ppois(x, lambda, /*l._t.*/0, /*log_p*/1)
+			- log1mexp(lambda));
 }
 
 double qzmpois(double x, double lambda, double p0m, int lower_tail, int log_p)
@@ -110,11 +108,11 @@ double qzmpois(double x, double lambda, double p0m, int lower_tail, int log_p)
     }
 
     ACT_Q_P01_boundaries(x, 0, R_PosInf);
-    x = ACT_DT_1mqIv(x);
+    x = ACT_DT_qIv(x);
 
-    double p0c = -expm1(-lambda); /* 1 - p0 */
-
-    return qpois(p0c * x/(1 - p0m), lambda, /*l._t.*/0, /*log_p*/0);
+    /* working in log scale improves accuracy */
+    return qpois(-expm1(log1mexp(lambda) - log1p(-p0m) + log1p(-x)),
+		 lambda, /*l._t.*/1, /*log_p*/0);
 }
 
 /* ALGORITHM FOR GENERATION OF RANDOM VARIATES

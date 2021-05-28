@@ -137,8 +137,8 @@ double ppoisinvgauss(double q, double mu, double phi, int lower_tail, int log_p)
     return ACT_DT_val(s);
 }
 
-/*  For qpoiinvgauss(), we mostly reuse the code for qnbinom() et al.
- *  in the R sources. From src/nmath/qnbinom.c:
+/*  For qpoisinvgauss() we mostly reuse the code from qnbinom() et al.
+ *  of R sources. From src/nmath/qnbinom.c:
  *
  *  METHOD
  *
@@ -153,25 +153,11 @@ double ppoisinvgauss(double q, double mu, double phi, int lower_tail, int log_p)
  *  starting point.
  */
 
-static double
-do_search(double y, double *z, double p, double mu, double phi, double incr)
-{
-    if(*z >= p) {	/* search to the left */
-	for(;;) {
-	    if(y == 0 ||
-	       (*z = ppoisinvgauss(y - incr, mu, phi, /*l._t.*/1, /*log_p*/0)) < p)
-		return y;
-	    y = fmax2(0, y - incr);
-	}
-    }
-    else {		/* search to the right */
-	for(;;) {
-	    y = y + incr;
-	    if((*z = ppoisinvgauss(y, mu, phi, /*l._t.*/1, /*log_p*/0)) >= p)
-		return y;
-	}
-    }
-}
+#define _thisDIST_ poisinvgauss
+#define _dist_PARS_DECL_ double mu, double phi
+#define _dist_PARS_      mu, phi
+
+#include "qDiscrete_search.h"	/* do_search() et al. */
 
 double qpoisinvgauss(double p, double mu, double phi, int lower_tail, int log_p)
 {
@@ -188,58 +174,26 @@ double qpoisinvgauss(double p, double mu, double phi, int lower_tail, int log_p)
 
     ACT_Q_P01_boundaries(p, 0, R_PosInf);
 
-    /* ## From R sources ##
-     * Note : "same" code in qpois.c, qbinom.c, qnbinom.c --
-     * FIXME: This is far from optimal [cancellation for p ~= 1, etc]: */
-    if (!lower_tail || log_p)
-    {
-	p = ACT_DT_qIv(p); /* need check again (cancellation!): */
-	if (p == ACT_DT_0) return 0;
-	if (p == ACT_DT_1) return R_PosInf;
-    }
-    /* ## From R sources ##
-     * temporary hack --- FIXME --- */
-    if (p + 1.01 * DBL_EPSILON >= 1.0) return R_PosInf;
-
-    double z, y;
-
-    /* limiting case mu = Inf -> inverse chi-square as starting point*/
-    if (!R_FINITE(mu))
-	y = ACT_forceint(1/phi/qchisq(p, 1,  /*l._t.*/0, /*give_log*/0));
-    /* other cases -> Corning-Fisher */
-    else
-    {
-	double sigma, sigma2, gamma;
-	double phim2 = phi * mu * mu;
-
-	sigma2 = phim2 * mu + mu;
-	sigma = sqrt(sigma2);
+    double
+	phim2 = phi * mu * mu,
+	sigma2 = phim2 * mu + mu,
+	sigma = sqrt(sigma2),
 	gamma = (3 * phim2 * sigma2 + mu)/sigma2/sigma;
 
-	z = qnorm(p, 0.0, 1.0, /*lower_tail*/1, /*log_p*/0);
-	y = ACT_forceint(mu + sigma * (z + gamma * (z*z - 1)/6));
-    }
+    /* q_DISCRETE_01_CHECKS(); */
 
-    z = ppoisinvgauss(y, mu, phi, /*lower_tail*/1, /*log_p*/0);
-
-    /* ## From R sources ##
-     * fuzz to ensure left continuity: */
-    p *= 1 - 64*DBL_EPSILON;
-
-    /* ## From R sources ##
-     * If the C-F value is not too large a simple search is OK */
-    if (y < 1e5) return do_search(y, &z, p, mu, phi, 1);
-    /* ## From R sources ##
-     * Otherwise be a bit cleverer in the search */
+    /* limiting case mu = Inf -> inverse chi-square as starting point*/
+    /* other cases -> Cornish-Fisher as usual */
+    double z, y;
+    if (!R_FINITE(mu))
+	y = ACT_forceint(1/phi/qchisq(p, 1, lower_tail, log_p));
+    else
     {
-	double incr = floor(y * 0.001), oldincr;
-	do {
-	    oldincr = incr;
-	    y = do_search(y, &z, p, mu, phi, incr);
-	    incr = fmax2(1, floor(incr/100));
-	} while(oldincr > 1 && incr > y*1e-15);
-	return y;
+	z = qnorm(p, 0., 1., lower_tail, log_p);
+	y = ACT_forceint(mu + sigma * (z + gamma * (z*z - 1) / 6));
     }
+
+    q_DISCRETE_BODY();
 }
 
 double rpoisinvgauss(double mu, double phi)

@@ -249,9 +249,9 @@ double actuar_expmprod(double *x, double *M, double *y, int n)
 /* Solution of a real system of linear equations AX = B, where A is an
  * (n x n) matrix and B is an (n x p) matrix. Essentially a simple
  * interface to the LAPACK routine DGESV based on modLa_dgesv() in
- * file .../modules/lapack/laphack.c of R sources. Very little error
- * checking (e.g. no check that A is square) since it is currently
- * used in a very narrow and already controlled context.
+ * modules/lapack/laphack.c of R sources. Very little error checking
+ * (e.g. no check that A is square) since it is currently used in a
+ * very narrow and already controlled context.
  */
 void actuar_solve(double *A, double *B, int n, int p, double *z)
 {

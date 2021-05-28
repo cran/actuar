@@ -17,11 +17,7 @@
  *
  *  for x = 1, 2, ... The distribution function is, for all x,
  *
- *      Pr[Z <= x] = p0m + (1 - p0m) Pr[X <= x]
- *
- *  and the survival function is
- *
- *      Pr[Z > x] = (1 - p0m) * Pr[X > x].
+ *      Pr[Z <= x] = 1 - (1 - p0m) * (1 - Pr[X <= x]).
  *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */

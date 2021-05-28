@@ -5,7 +5,7 @@
  *  callable from .External(); second element is the C function
  *  actually called; third element is a code used in the latter.
  *
- *  Idea taken from R sources (see .../src/main/names.c).
+ *  Idea taken from R sources (see src/main/names.c).
  *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */

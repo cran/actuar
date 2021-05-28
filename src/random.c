@@ -17,14 +17,14 @@
  *  variates from distribution "dist".
  *
  *  This scheme is essentially what is used in base R (see files
- *  .../src/main/random.c, .../src/main/names.c in R sources) with
- *  add-ons taken from .../src/library/stats/src/random.c to support
- *  return values that can be either real or integer.
+ *  src/main/random.c, src/main/names.c) with add-ons taken from
+ *  src/library/stats/src/random.c to support return values that can
+ *  be either real or integer.
  *
- * To add a new distribution: write an rdist() function, add an entry
- * in names.c and in the definition of the corresponding
- * actuar_do_random{1,2,3,4} function, declare the function in
- * actuar.h.
+ *  To add a new distribution: write an rdist() function, add an entry
+ *  in names.c and in the definition of the corresponding
+ *  actuar_do_random{1,2,3,4} function, declare the function in
+ *  actuar.h.
  *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  *          with much indirect help from the R Core Team

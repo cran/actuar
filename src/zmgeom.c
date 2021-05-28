@@ -19,12 +19,7 @@
  *
  *  for x = 1, 2, ... The distribution function is, for all x,
  *
- *      Pr[Z <= x] = p0m +
- *           (1 - p0m) * (Pr[X <= x] - p0)/(1 - p0)
- *
- *  or, alternatively, the survival function is
- *
- *      Pr[Z > x] = (1 - p0m) * Pr[X > x]/(1 - p0).
+ *      Pr[Z <= x] = 1 - (1 - p0m) * (1 - Pr[X <= x])/(1 - p0).
  *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
@@ -74,7 +69,9 @@ double pzmgeom(double x, double prob, double p0m, int lower_tail, int log_p)
     /* limiting case as prob approaches one is mass (1-p0m) at one */
     if (prob == 1) return ACT_DT_1;
 
-    return ACT_DT_Cval((1 - p0m) * pgeom(x - 1, prob, /*l._t.*/0, /*log_p*/0));
+    /* working in log scale improves accuracy */
+    return ACT_DT_CEval(log1p(-p0m)
+			+ pgeom(x - 1, prob, /*l._t.*/0, /*log_p*/1));
 }
 
 double qzmgeom(double x, double prob, double p0m, int lower_tail, int log_p)
@@ -104,9 +101,12 @@ double qzmgeom(double x, double prob, double p0m, int lower_tail, int log_p)
     }
 
     ACT_Q_P01_boundaries(x, 1, R_PosInf);
-    x = ACT_DT_1mqIv(x);
+    x = ACT_DT_qIv(x);
 
-    return qgeom((1 - prob) * x/(1 - p0m), prob, /*l._t.*/0, /*log_p*/0);
+    /* working in log scale improves accuracy */
+    return qgeom(-expm1(log1p(-prob) - log1p(-p0m) + log1p(-x)),
+		 prob, /*l._t.*/1, /*log_p*/0);
+
 }
 
 /* ALGORITHM FOR GENERATION OF RANDOM VARIATES
@@ -137,7 +137,7 @@ double rzmgeom(double prob, double p0m)
 	return (unif_rand() * (1 - prob) < (1 - p0m)) ? rgeom(prob) : 0.0;
 
     /* inversion method */
-    if (p0m < ACT_INVERSION) 
+    if (p0m < ACT_INVERSION)
     return qgeom(runif((prob - p0m)/(1 - p0m), 1), prob, 1, 0);
 
     /* generate from zero truncated mixture */

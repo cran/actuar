@@ -31,15 +31,14 @@
  *  dpq{1,2,3,4,5}_0() below.
  *
  *  Functions therein are essentially identical to those found in
- *  .../src/main/arithmetic.c of R sources with a different naming
- *  scheme.
+ *  src/main/arithmetic.c of R sources with a different naming scheme.
  *
  *  To add a new distribution: write a {d,p,q,m,lev,mgf}dist()
  *  function, add an entry in names.c and in the definition of the
  *  corresponding actuar_do_dpq{1,2,3,4,6} function, declare the
  *  function in actuar.h.
  *
- *  Adapted from src/main/arithmetic.c in R sources.
+ *  Adapted from src/main/arithmetic.c of R sources.
  *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  *          with much indirect help from the R Core Team

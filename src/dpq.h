@@ -1,14 +1,13 @@
 /*  actuar: Actuarial Functions and Heavy Tailed Distributions
  *
- * Utilities for `dpq' handling (density/probability/quantile)
+ *  Utilities for `dpq' handling (density/probability/quantile)
  *
- * These (except ACT_DLIM__0) are copied from nmath/dpq.h in the R
- * sources with the names changed from "R_" to "ACT_".
+ *  These (except ACT_DLIM__0) are copied from src/nmath/dpq.h of R
+ *  sources with the names changed from "R_" to "ACT_".
  *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  *          with much indirect help from the R Core Team
  */
-
 
 /* give_log in "d" & "mgf";  log_p in "p" & "q" : */
 #define give_log log_p
@@ -35,12 +34,13 @@
 #define ACT_DT_val(x)     (lower_tail ? ACT_D_val(x)  : ACT_D_Clog(x))
 #define ACT_DT_Eval(x)    (lower_tail ? ACT_D_exp(x)  : ACT_D_Cexp(x))
 #define ACT_DT_Cval(x)    (lower_tail ? ACT_D_Clog(x) : ACT_D_val(x))
+#define ACT_DT_CEval(x)   (lower_tail ? ACT_D_Cexp(x) : ACT_D_exp(x))
 
 // log(1 - exp(x))  in more stable form than log1p(- R_D_qIv(x)) :
 #define ACT_Log1_Exp(x)   ((x) > -M_LN2 ? log(-expm1(x)) : log1p(-exp(x)))
 
 /*Boundaries*/
-#define ACT_Q_P01_boundaries(p, _LEFT_, _RIGHT_)          \
+#define ACT_Q_P01_boundaries(p, _LEFT_, _RIGHT_)	\
     if (log_p) {                                        \
         if(p > 0)                                       \
             return R_NaN;				\
@@ -62,7 +62,7 @@
 #define ACT_DLIM__0(x, y)   (R_FINITE(x) ? R_pow(x, y) : 0.)
 
 
-/* This is taken from nmath/nmath.h in the R sources */
+/* This is taken from src/nmath/nmath.h of R sources */
 #ifdef HAVE_NEARYINT
 # define ACT_forceint(x)   nearbyint()
 #else

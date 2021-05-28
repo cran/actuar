@@ -19,12 +19,7 @@
  *
  *  for x = 1, 2, ... The distribution function is, for all x,
  *
- *      Pr[Z <= x] = p0m +
- *           (1 - p0m) * (Pr[X <= x] - p0)/(1 - p0)
- *
- *  or, alternatively, the survival function is
- *
- *      Pr[Z > x] = (1 - p0m) * Pr[X > x]/(1 - p0).
+ *      Pr[Z <= x] = 1 - (1 - p0m) * (1 - Pr[X <= x])/(1 - p0).
  *
  *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
@@ -87,7 +82,10 @@ double pzmbinom(double x, double size, double prob, double p0m, int lower_tail, 
 
     double lp0 = dbinom_raw(0, size, prob, 1 - prob, /*give_log*/1);
 
-    return ACT_DT_Cval((1 - p0m) * pbinom(x, size, prob, /*l._t.*/0, /*log_p*/0)/(-expm1(lp0)));
+    /* working in log scale improves accuracy */
+    return ACT_DT_CEval(log1p(-p0m)
+			+ pbinom(x, size, prob, /*l._t.*/0, /*log_p*/1)
+			- log1mexp(-lp0));
 }
 
 double qzmbinom(double x, double size, double prob, double p0m, int lower_tail, int log_p)
@@ -117,11 +115,12 @@ double qzmbinom(double x, double size, double prob, double p0m, int lower_tail, 
     }
 
     ACT_Q_P01_boundaries(x, 1, size);
-    x = ACT_DT_1mqIv(x);
+    x = ACT_DT_qIv(x);
 
-    double p0 = dbinom_raw(0, size, prob, 1 - prob, /*give_log*/0);
-
-    return qbinom((1 - p0) * x/(1 - p0m), size, prob, /*l._t.*/0, /*log_p*/0);
+    /* working in log scale improves accuracy */
+    double lp0 = dbinom_raw(0, size, prob, 1 - prob, /*give_log*/1);
+    return qbinom(-expm1(log1mexp(-lp0) - log1p(-p0m) + log1p(-x)),
+		  size, prob, /*l._t.*/1, /*log_p*/0);
 }
 
 /* ALGORITHM FOR GENERATION OF RANDOM VARIATES

@@ -15,28 +15,29 @@
 
 #include <R.h>
 #include <Rmath.h>
+#include <R_ext/Utils.h>	/* for R_CheckUserInterrupt() */
 #include "locale.h"
 #include "dpq.h"
 
-double dlogarithmic(double x, double p, int give_log)
+double dlogarithmic(double x, double prob, int give_log)
 {
 #ifdef IEEE_754
-    if (ISNAN(x) || ISNAN(p))
-	return x + p;
+    if (ISNAN(x) || ISNAN(prob))
+	return x + prob;
 #endif
-    if (p < 0 || p >= 1) return R_NaN;
+    if (prob < 0 || prob >= 1) return R_NaN;
     ACT_D_nonint_check(x);
 
     if (!R_FINITE(x) || x < 1) return ACT_D__0;
 
-    /* limiting case as p approaches zero is point mass at one */
-    if (p == 0) return (x == 1) ? ACT_D__1 : ACT_D__0;
+    /* limiting case as prob approaches zero is point mass at one */
+    if (prob == 0) return (x == 1) ? ACT_D__1 : ACT_D__0;
 
     x = ACT_forceint(x);
 
-    double a = -1.0/log1p(-p);
+    double a = -1.0/log1p(-prob);
 
-    return ACT_D_exp(log(a) + x * log(p) - log(x));
+    return ACT_D_exp(log(a) + x * log(prob) - log(x));
 }
 
 /*  For plogarithmic(), there does not seem to be algorithms much more
@@ -48,39 +49,39 @@ double dlogarithmic(double x, double p, int give_log)
  *  with Pr[X = 1] = -p/log(1 - p). This is what is done here.
  */
 
-double plogarithmic(double x, double p, int lower_tail, int log_p)
+double plogarithmic(double q, double prob, int lower_tail, int log_p)
 {
 #ifdef IEEE_754
-    if (ISNAN(x) || ISNAN(p))
-	return x + p;
+    if (ISNAN(q) || ISNAN(prob))
+	return q + prob;
 #endif
-    if (p < 0 || p >= 1) return R_NaN;
+    if (prob < 0 || prob >= 1) return R_NaN;
 
-    if (x < 1) return ACT_DT_0;
-    if (!R_FINITE(x)) return ACT_DT_1;
+    if (q < 1) return ACT_DT_0;
+    if (!R_FINITE(q)) return ACT_DT_1;
 
-    /* limiting case as p approaches zero is point mass at one. */
-    if (p == 0) return (x >= 1) ? ACT_DT_1 : ACT_DT_0;
+    /* limiting case as prob approaches zero is point mass at one. */
+    if (prob == 0) return (q >= 1) ? ACT_DT_1 : ACT_DT_0;
 
     int k;
     double s, pk;
 
-    pk = -p/log1p(-p);		      /* Pr[X = 1] */
+    pk = -prob/log1p(-prob);		      /* Pr[X = 1] */
     s = pk;
 
-    if (x == 1) return ACT_DT_val(s); /* simple case */
+    if (q == 1) return ACT_DT_val(s); /* simple case */
 
-    for (k = 1; k < x; k++)
+    for (k = 1; k < q; k++)
     {
-	pk *= p * k/(k + 1.0);
+	pk *= prob * k/(k + 1.0);
 	s += pk;
     }
 
     return ACT_DT_val(s);
 }
 
-/* For qlogarithmic(), we mostly reuse the code for qnbinom() et al.
- * in the R sources. From src/nmath/qnbinom.c:
+/* For qlogarithmic() we mostly reuse the code from qnbinom() et al.
+ * of R sources. From src/nmath/qnbinom.c:
  *
  *  METHOD
  *
@@ -91,100 +92,51 @@ double plogarithmic(double x, double p, int lower_tail, int log_p)
  *	this initial start point.
  */
 
-static double
-do_search(double y, double *z, double x, double pr, double incr)
-{
-    if(*z >= x) {	/* search to the left */
-	for(;;) {
-	    if(y == 0 ||
-	       (*z = plogarithmic(y - incr, pr, /*l._t.*/1, /*log_p*/0)) < x)
-		return y;
-	    y = fmax2(0, y - incr);
-	}
-    }
-    else {		/* search to the right */
-	for(;;) {
-	    y = y + incr;
-	    if((*z = plogarithmic(y, pr, /*l._t.*/1, /*log_p*/0)) >= x)
-		return y;
-	}
-    }
-}
+#define _thisDIST_ logarithmic
+#define _dist_PARS_DECL_ double prob
+#define _dist_PARS_      prob
 
-double qlogarithmic(double x, double p, int lower_tail, int log_p)
+#include "qDiscrete_search.h"	/* do_search() et al. */
+
+double qlogarithmic(double p, double prob, int lower_tail, int log_p)
 {
 #ifdef IEEE_754
-    if (ISNAN(x) || ISNAN(p))
-	return x + p;
+    if (ISNAN(p) || ISNAN(prob))
+	return p + prob;
 #endif
-    if (p < 0 || p >= 1) return R_NaN;
+    if (prob < 0 || prob >= 1) return R_NaN;
 
-    /* limiting case as p approaches zero is point mass at one */
-    if (p == 0)
+    /* limiting case as prob approaches zero is point mass at one */
+    if (prob == 0)
     {
 	/* simplified ACT_Q_P01_boundaries macro */
 	if (log_p)
 	{
-	    if (x > 0)
+	    if (p > 0)
 		return R_NaN;
 	    return 1.0;
 	}
 	else /* !log_p */
 	{
-	    if (x < 0 || x > 1)
+	    if (p < 0 || p > 1)
 		return R_NaN;
 	    return 1.0;
 	}
     }
 
-    ACT_Q_P01_boundaries(x, 1.0, R_PosInf);
+    ACT_Q_P01_boundaries(p, 1.0, R_PosInf);
 
-    double a = -1.0/log1p(-p);
-    double P = a * p;
-    double Q = 1.0/(0.5 - p + 0.5);
-    double mu = P * Q;
-    double sigma = sqrt(mu * (Q - mu));
-    double gamma = (P * (1 + p - P*(3 + 2*P)) * R_pow_di(Q, 3))/R_pow_di(sigma, 3);
-    double z, y;
+    double
+	a = -1.0/log1p(-prob),
+	P = a * prob,
+	Q = 1.0/(0.5 - prob + 0.5),
+	mu = P * Q,
+	sigma = sqrt(mu * (Q - mu)),
+	gamma = (P * (1 + prob - P*(3 + 2*P)) * R_pow_di(Q, 3))/R_pow_di(sigma, 3);
 
-    /* ## From R sources ##
-     * Note : "same" code in qpois.c, qbinom.c, qnbinom.c --
-     * FIXME: This is far from optimal [cancellation for p ~= 1, etc]: */
-    if (!lower_tail || log_p)
-    {
-	x = ACT_DT_qIv(x); /* need check again (cancellation!): */
-	if (x == ACT_DT_0) return 0;
-	if (x == ACT_DT_1) return R_PosInf;
-    }
-    /* ## From R sources ##
-     * temporary hack --- FIXME --- */
-    if (x + 1.01 * DBL_EPSILON >= 1.0) return R_PosInf;
-
-    /* ## From R sources ##
-     * y := approx.value (Cornish-Fisher expansion) :  */
-    z = qnorm(x, 0.0, 1.0, /*lower_tail*/1, /*log_p*/0);
-    y = ACT_forceint(mu + sigma * (z + gamma * (z*z - 1)/6));
-
-    z = plogarithmic(y, p, /*lower_tail*/1, /*log_p*/0);
-
-    /* ## From R sources ##
-     * fuzz to ensure left continuity: */
-    x *= 1 - 64*DBL_EPSILON;
-
-    /* ## From R sources ##
-     * If the C-F value is not too large a simple search is OK */
-    if (y < 1e5) return do_search(y, &z, x, p, 1);
-    /* ## From R sources ##
-     * Otherwise be a bit cleverer in the search */
-    {
-	double incr = floor(y * 0.001), oldincr;
-	do {
-	    oldincr = incr;
-	    y = do_search(y, &z, x, p, incr);
-	    incr = fmax2(1, floor(incr/100));
-	} while(oldincr > 1 && incr > y*1e-15);
-	return y;
-    }
+    /* q_DISCRETE_01_CHECKS(); */
+    q_DISCRETE_DECL;
+    q_DISCRETE_BODY();
 }
 
 /*  rlogarithmic() is an implementation with automatic selection of
@@ -198,17 +150,17 @@ double qlogarithmic(double x, double p, int lower_tail, int log_p)
  *  The algorithms are also discussed in chapter 10 of Devroye (1986).
  */
 
-double rlogarithmic(double p)
+double rlogarithmic(double prob)
 {
-    if (p < 0 || p > 1) return R_NaN;
+    if (prob < 0 || prob > 1) return R_NaN;
 
-    /* limiting case as p approaches zero is point mass at one. */
-    if (p == 0) return 1.0;
+    /* limiting case as prob approaches zero is point mass at one. */
+    if (prob == 0) return 1.0;
 
     /* Automatic selection between the LS and LK algorithms */
-    if (p < 0.95)
+    if (prob < 0.95)
     {
-	double s = -p/log1p(-p);
+	double s = -prob/log1p(-prob);
 	double x = 1.0;
 	double u = unif_rand();
 
@@ -216,24 +168,24 @@ double rlogarithmic(double p)
 	{
 	    u -= s;
 	    x += 1.0;
-	    s *= p * (x - 1.0)/x;
+	    s *= prob * (x - 1.0)/x;
 	}
 
 	return x;
     }
 
-    /* else (p >= 0.95) */
+    /* else (prob >= 0.95) */
     {
-	double r = log1p(-p);
+	double r = log1p(-prob);
 	double v = unif_rand();
 
-	if (v >= p)       return 1.0;
+	if (v >= prob)       return 1.0;
 
 	double u = unif_rand();
 	double q = -expm1(r * u);
 
 	if (v <= (q * q)) return floor(1.0 + log(v)/log(q));
 	if (v <= q)       return 2.0; /* case q^2 < v <= q */
-	return 1.0;		       /* case v > q */
+	return 1.0;		      /* case v > q */
     }
 }
