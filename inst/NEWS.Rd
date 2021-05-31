@@ -2,6 +2,15 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.1-4}{
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{Due to its use of \code{log1mexp} since the previous
+	release, the package depends on R >= 4.1.0.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.1-3}{
   \subsection{BUG FIXES}{
     \itemize{

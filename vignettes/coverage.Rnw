@@ -365,7 +365,7 @@ axis(1, at = c(0, d, u), labels = c("0", "d", "u"))
 \end{document}
 
 %%% Local Variables:
-%%% mode: latex
+%%% mode: noweb
 %%% TeX-master: t
 %%% coding: utf-8
 %%% End:

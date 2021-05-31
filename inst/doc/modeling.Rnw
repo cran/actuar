@@ -698,7 +698,7 @@ and the cdf under various combinations of coverage modifications.
 \end{document}
 
 %%% Local Variables:
-%%% mode: latex
+%%% mode: noweb
 %%% TeX-master: t
 %%% coding: utf-8
 %%% End:

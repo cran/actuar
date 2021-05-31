@@ -850,7 +850,7 @@ $X|\Theta = \theta$ and $\Theta$:
 \end{document}
 
 %%% Local Variables:
-%%% mode: latex
+%%% mode: noweb
 %%% TeX-master: t
 %%% coding: utf-8
 %%% End:

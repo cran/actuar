@@ -616,7 +616,7 @@ data in \cite{Goulet_cfs}.
 \end{document}
 
 %%% Local Variables:
-%%% mode: latex
+%%% mode: noweb
 %%% coding: utf-8
 %%% TeX-master: t
 %%% End:
