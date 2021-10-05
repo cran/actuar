@@ -15,7 +15,7 @@ rmixture(n, probs, models, shuffle = TRUE)
     and missing values are not allowed. Values are recycled as necessary
     to match the length of \code{models}.}
   \item{models}{vector of expressions specifying the simulation models
-    with the number of variates omitted (see details). Models are
+    with the number of variates omitted; see Details. Models are
     recycled as necessary to match the length of \code{probs}.}
   \item{shuffle}{logical; should the random variates from the
     distributions be shuffled?}

@@ -23,10 +23,10 @@ rcomphierarc(nodes, model.freq = NULL, model.sev = NULL, weights = NULL)
     in the hierarchy of the portfolio. The nodes are listed from top
     (portfolio) to bottom (usually the years of experience).}
   \item{model.freq}{a named vector of expressions specifying the
-    frequency of claims model (see details); if \code{NULL}, only claim
+    frequency of claims model (see Details); if \code{NULL}, only claim
     amounts are simulated.}
   \item{model.sev}{a named vector of expressions specifying the severity
-    of claims model (see details); if \code{NULL}, only claim numbers
+    of claims model (see Details); if \code{NULL}, only claim numbers
     are simulated.}
   \item{weights}{a vector of weights.}
   \item{x}{a \code{portfolio} object.}

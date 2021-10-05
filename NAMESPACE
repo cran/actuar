@@ -69,7 +69,7 @@ export(
     ## Phase-type distributions
     dphtype, pphtype, rphtype, mphtype, mgfphtype,
     ## Loss distributions
-    grouped.data, ogive, emm, mde, elev, coverage
+    grouped.data, ogive, emm, mde, elev, coverage, var, sd
 )
 
 ### Methods
@@ -97,6 +97,11 @@ S3method(knots, elev)
 
 S3method(mean, aggregateDist)
 S3method(mean, grouped.data)
+
+S3method(sd, default)
+S3method(sd, grouped.data)
+S3method(var, default)
+S3method(var, grouped.data)
 
 S3method(ogive, default)
 S3method(ogive, grouped.data)
@@ -131,6 +136,7 @@ S3method(severity, portfolio)
 
 S3method(summary, aggregateDist)
 S3method(summary, cm)
+S3method(summary, grouped.data)
 S3method(summary, elev)
 S3method(summary, ogive)
 

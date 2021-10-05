@@ -6,8 +6,7 @@
 ###
 ### AUTHORS:  Mathieu Pigeon, Vincent Goulet <vincent.goulet@act.ulaval.ca>
 
-emm <- function(x, order = 1, ...)
-  UseMethod("emm")
+emm <- function(x, order = 1, ...) UseMethod("emm")
 
 emm.default <- function(x, order = 1, ...)
 {
@@ -34,7 +33,7 @@ emm.grouped.data <- function(x, order = 1, ...)
     y <- diff(outer(cj, order + 1, "^")) / outer(diff(cj), order + 1)
 
     ## Drop the group boundaries column
-    x <- as.matrix(x[-1])
+    x <- as.matrix(x[-1L])
 
     ## Compute sum(n_j * f_j)/sum(nj) for all values of 'order'.
     drop(crossprod(x, y)) / colSums(x, ...)

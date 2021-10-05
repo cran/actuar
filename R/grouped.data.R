@@ -12,7 +12,7 @@
 ### 2. Group boundaries and frequencies. The call has one or more
 ###    elements in '...' and either 'breaks' or 'nclass' is provided
 ###    or 'group' is TRUE. In this case, elements of '...' are grouped
-###    using graphics:::hist automatically based on the first element
+###    using graphics::hist automatically based on the first element
 ###    of '...', or with group boundaries 'breaks' if the latter is a
 ###    vector.
 ###
@@ -24,7 +24,7 @@
 ###
 ### CREDITS: Manipulation and creation of names taken in part from R
 ### function data.frame(). Arguments, 'breaks', 'nclass' and their
-### treatment taken from R function hist().
+### treatment taken from R function 'hist'.
 
 grouped.data <- function(..., breaks = "Sturges",
                          include.lowest = TRUE, right = TRUE,

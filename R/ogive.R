@@ -64,8 +64,8 @@ ogive.grouped.data <- function(x, ...)
         Call <- match.call()
     chkDots(...)                      # method does not use '...'
 
-    ## Group frequencies in the second column of the data frame; group
-    ## boundaries in the environment of 'x'.
+    ## We keep the first frequencies column only; group boundaries are
+    ## in the environment of 'x'
     y <- x[, 2L]
     x <- eval(expression(cj), envir = environment(x))
 
@@ -83,13 +83,13 @@ ogive.grouped.data <- function(x, ...)
     FUN
 }
 
-### Essentially identical to stats::print.ecdf().
+### Essentially identical to stats:::print.ecdf.
 print.ogive <- function(x, digits = getOption("digits") - 2, ...)
 {
     ## Utility function
     numform <- function(x) paste(formatC(x, digits = digits), collapse = ", ")
 
-    ## The rest is adapted from ecdf()
+    ## The rest is adapted from stats::ecdf
     cat("Ogive for grouped data \nCall: ")
     print(attr(x, "call"), ...)
     nc <- length(xxc <- get("x", envir = environment(x)))
@@ -105,7 +105,7 @@ print.ogive <- function(x, digits = getOption("digits") - 2, ...)
     invisible(x)
 }
 
-### Essentially identical to stats::summary.ecdf().
+### Essentially identical to stats:::summary.ecdf.
 summary.ogive <- function (object, ...)
 {
     n <- length(eval(expression(x), envir = environment(object)))
@@ -115,17 +115,18 @@ summary.ogive <- function (object, ...)
               header = header, class = "summary.ogive")
 }
 
-### Identical to stats::print.summary.ecdf().
+### Identical to stats:::print.summary.ecdf.
 print.summary.ogive <- function(x, ...)
 {
     cat(attr(x, "header"))
-    y <- unclass(x); attr(y, "header") <- NULL
+    y <- x; attr(y, "header") <- NULL; class(y) <- "summaryDefault"
     print(y, ...)
     invisible(x)
 }
 
-### Identical to stats::knots.stepfun().
-knots.ogive <- stats:::knots.stepfun
+### Identical to stats:::knots.stepfun.
+knots.ogive <- function(Fn, ...)
+    eval(expression(x), envir = environment(Fn))
 
 plot.ogive <- function(x, main = NULL, xlab = "x", ylab = "F(x)", ...)
 {

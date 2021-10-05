@@ -4,8 +4,7 @@
 ###
 ### AUTHORS: Tommy Ouellet, Vincent Goulet <vincent.goulet@act.ulaval.ca>
 
-CTE <- function(x, ...)
-    UseMethod("CTE")
+CTE <- function(x, ...) UseMethod("CTE")
 
 CTE.aggregateDist <- function(x, conf.level = c(0.9, 0.95, 0.99),
                               names = TRUE, ...)

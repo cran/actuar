@@ -258,7 +258,7 @@ x[, -1]                            # group frequencies
 @
 \item Extraction of a subset of the whole object (first three lines):
 <<echo=TRUE>>=
-x[1:3,]                            # first 3 groups
+x[1:3, ]                            # first 3 groups
 @
 \end{enumerate}
 Notice how extraction results in a simple vector or matrix if either
@@ -280,14 +280,21 @@ x[c(3, 4), 1] <- c(55, 110, 160); x
 It is not possible to replace the boundaries and the frequencies
 simultaneously.
 
-The package defines methods of a few existing summary functions for
-grouped data objects. Computing the mean
+The mean of grouped data is
 \begin{equation}
-  \sum_{j = 1}^r \left( \frac{c_{j - 1} + c_j}{2} \right) n_j
+  \hat{\mu} = \frac{1}{n} \sum_{j = 1}^r a_j n_j,
 \end{equation}
-is made simple with a method for the \code{mean} function:
+where $a_j = (c_{j - 1} + c_j)/2$ is the midpoint of the $j$th
+interval, and $n = \sum_{j = 1}^r n_j$, whereas the variance is
+\begin{equation}
+  \frac{1}{n} \sum_{j = 1}^r n_j (a_j - \hat{\mu})^2.
+\end{equation}
+The standard deviation is the square root of the variance. The package
+defines methods to easily compute the above descriptive statistics:
 <<echo=TRUE>>=
 mean(x)
+var(x)
+sd(x)
 @
 Higher empirical moments can be computed with \code{emm}; see
 \autoref{sec:empirical-moments}.
@@ -384,7 +391,7 @@ knots(Fnt)
   \qed
 \end{example}
 
-Finally, a method of function \code{quantile} for grouped data objects
+A method of function \code{quantile} for grouped data objects
 returns linearly smoothed quantiles, that is, the inverse of the ogive
 evaluated at various points:
 <<echo=FALSE>>=
@@ -395,6 +402,11 @@ quantile(x)
 Fnt(quantile(x))
 @
 
+Finally, a \code{summary} method for grouped data objects returns the
+quantiles and the mean, as is usual for individual data:
+<<echo=TRUE>>=
+summary(x)
+@
 
 \section{Data sets}
 \label{sec:data-sets}

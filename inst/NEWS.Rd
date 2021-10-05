@@ -2,6 +2,34 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.2-0}{
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{Generic versions of \code{var} and \code{sd} with methods
+	for grouped data. The default methods (for individual data) call
+	the standard functions of the \pkg{stats} package. Grouped data
+	methods contributed by Walter Garcia-Fontes
+	\email{walter.garcia@upf.edu}.}
+      \item{Method of \code{summary} for grouped data objects
+	contributed by Walter Garcia-Fontes
+	\email{walter.garcia@upf.edu}.}
+      \item{Examples for the new methods for grouped data objects in
+	\code{\dQuote{lossdist}} demonstration R script.}
+    }
+  }
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{Use \code{USE_FC_LEN_T} in the C prototypes of LAPACK
+	functions to correspond to code produced by gfortran >= 7. The
+	mechanism was introduced in R 3.6.2 and is planned to make its
+	use obligatory in R 4.2.0.}
+      \item{Miscellaneous fixes to formulas for grouped data in the
+	documentation for \code{mean.grouped.data} and \code{emm}, as
+	well as in the \dQuote{modeling} package vignette.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.1-4}{
   \subsection{BUG FIXES}{
     \itemize{
@@ -29,7 +57,7 @@
   \subsection{BUG FIXES}{
     \itemize{
       \item{\code{qinvgauss} now returns a finite value when
-	\eqn{\code{1.5/shape} > 1000}. Thanks to Bettina Grün
+	\eqn{1.5/\code{shape} > 1000}. Thanks to Bettina Grün
 	\email{bettina.gruen@wu.ac.at} for the fix.}
       \item{A protection against rounding errors now ensures that
 	\code{qzmlogarithmic(1 - pzmlogarithmic(x), lower.tail = FALSE)

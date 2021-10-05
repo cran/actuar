@@ -23,7 +23,7 @@ ruin(claims = c("exponential", "Erlang", "phase-type"), par.claims,
   \item{wait}{character; the type of claim interarrival (wait) time
     distribution.}
   \item{par.claims, par.wait}{named list containing the parameters of
-    the distribution (see details).}
+    the distribution; see Details.}
   \item{premium.rate}{numeric vector of length 1; the premium rate.}
   \item{tol, maxit, echo}{respectively the tolerance level of the
     stopping criteria, the maximum number of iterations and whether or

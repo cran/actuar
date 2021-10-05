@@ -5,9 +5,9 @@
 ###
 ### AUTHORS: Tommy Ouellet, Vincent Goulet <vincent.goulet@act.ulaval.ca>
 
-### codetools does not like the way 'coll1' is defined in function
+### codetools does not like the way 'coll1' is defined in
 ### 'hache.origin' below. Avoid false positive in R CMD check.
-if(getRversion() >= "2.15.1")  utils::globalVariables(c("coll1"))
+if (getRversion() >= "2.15.1")  utils::globalVariables(c("coll1"))
 
 hache.origin <- function(ratios, weights, xreg, tol, maxit, echo)
 {
@@ -42,7 +42,7 @@ hache.origin <- function(ratios, weights, xreg, tol, maxit, echo)
 
     ## Individual variance estimators. The contribution of contracts
     ## without data is 0.
-    S <- function(z)                    # from stats:::summary.lm
+    S <- function(z)                    # from stats::summary.lm
     {
         nQr <- NROW(z$qr$qr)
         r1 <- z$rank
@@ -62,7 +62,7 @@ hache.origin <- function(ratios, weights, xreg, tol, maxit, echo)
 
     ## Weight matrices: we use directly (X'WX)^{-1}. This is quite
     ## different from hache.barycenter().
-    V <- function(z)                # from stats:::summary.lm
+    V <- function(z)                # from stats::summary.lm
     {
         r1 <- z$rank
         if (r1 == 1L)

@@ -9,26 +9,27 @@
 hist.grouped.data <-
     function(x, freq = NULL, probability = !freq,
              density = NULL, angle = 45, col = NULL, border = NULL,
-             main = paste("Histogram of", xname), xlim = range(cj),
+             main = paste("Histogram of", xname), xlim = range(x),
              ylim = NULL, xlab = xname, ylab, axes = TRUE,
              plot = TRUE, labels = FALSE, ...)
 {
-    ## Group boundaries are in the environment of 'x'
-    cj <- eval(expression(cj), envir = environment(x))
-    nj <- x[, 2]
+    ## We keep the first frequencies column only; group boundaries are
+    ## in the environment of 'x'
+    y <- x[, 2L]
+    x <- eval(expression(cj), envir = environment(x))
 
     ## If any frequency is non finite, omit the group
-    keep <- which(is.finite(nj))
-    nj <- nj[keep]
-    cj <- cj[c(1, keep + 1)]
+    keep <- which(is.finite(y))
+    y <- y[keep]
+    x <- x[c(1L, keep + 1L)]
 
     ## Some useful values
-    n <- sum(nj)                        # total number of observations
-    h <- diff(cj)                       # group widths
-    dens <- nj/(n * h)                  # group "densities"
+    n <- sum(y)                         # total number of observations
+    h <- diff(x)                        # group widths
+    dens <- y/(n * h)                   # group "densities"
 
     ## Cannot plot histogram with infinite group
-    if (any(is.infinite(cj)))
+    if (any(is.infinite(x)))
         stop("infinite group boundaries")
 
     ## The rest is taken from hist.default()
@@ -37,13 +38,13 @@ hist.grouped.data <-
     if (is.null(freq))
     {
         freq <- if (!missing(probability))
-            !as.logical(probability)
-        else equidist
+                    !as.logical(probability)
+                else equidist
     }
     else if (!missing(probability) && any(probability == freq))
         stop("'probability' is an alias for '!freq', however they differ.")
-    mids <- 0.5 * (cj[-1] + cj[-length(cj)])
-    r <- structure(list(breaks = cj, counts = nj, intensities = dens,
+    mids <- 0.5 * (x[-1L] + x[-length(x)])
+    r <- structure(list(breaks = x, counts = y, intensities = dens,
                         density = dens, mids = mids, xname = xname,
                         equidist = equidist),
                    class = "histogram")

@@ -6,8 +6,7 @@
 ###
 ### AUTHORS: Tommy Ouellet, Vincent Goulet <vincent.goulet@act.ulaval.ca>
 
-VaR <- function(x, ...)
-    UseMethod("VaR")
+VaR <- function(x, ...) UseMethod("VaR")
 
 VaR.aggregateDist <- function(x, conf.level = c(0.9, 0.95, 0.99),
                               smooth = FALSE, names = TRUE, ...)

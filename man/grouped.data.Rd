@@ -13,8 +13,8 @@ grouped.data(\dots, breaks = "Sturges", include.lowest = TRUE,
              check.names = TRUE)
 }
 \arguments{
-  \item{\dots}{these arguments are either of the form \code{value} or
-    \code{tag = value}. See Details.}
+  \item{\dots}{arguments of the form \code{value} or \code{tag = value};
+    see Details.}
   \item{breaks}{same as for \code{\link{hist}}, namely one of:
     \itemize{
       \item{a vector giving the breakpoints between groups;}

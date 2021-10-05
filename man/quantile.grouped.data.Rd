@@ -1,5 +1,6 @@
 \name{quantile.grouped.data}
 \alias{quantile.grouped.data}
+\alias{summary.grouped.data}
 \title{Quantiles of Grouped Data}
 \description{
   Sample quantiles corresponding to the given probabilities for objects
@@ -8,13 +9,15 @@
 \usage{
 \method{quantile}{grouped.data}(x, probs = seq(0, 1, 0.25),
          names = TRUE, \dots)
+
+\method{summary}{grouped.data}(object, \dots)
 }
 \arguments{
-  \item{x}{an object of class \code{"grouped.data"}.}
+  \item{x, object}{an object of class \code{"grouped.data"}.}
   \item{probs}{numeric vector of probabilities with values
     in \eqn{[0, 1]}.}
   \item{names}{logical; if true, the result has a \code{names}
-    attribute.  Set to \code{FALSE} for speedup with many \code{probs}.}
+    attribute. Set to \code{FALSE} for speedup with many \code{probs}.}
   \item{\dots}{further arguments passed to or from other methods.}
 }
 \details{
@@ -32,11 +35,19 @@
   the sample.
 }
 \value{
-  A numeric vector, named if \code{names} is \code{TRUE}.
+  For \code{quantile}, a numeric vector, named if \code{names} is
+  \code{TRUE}.
+
+  For the \code{summary} method, an object of class
+  \code{c("summaryDefault", "\link{table}")} which has specialized
+  \code{\link{format}} and \code{\link{print}} methods.
 }
 \seealso{
   \code{\link{ogive}} for the smoothed empirical distribution of which
   \code{quantile.grouped.data} is an inverse;
+  \code{\link{mean.grouped.data}} and \code{\link{var.grouped.data}} to
+  compute the mean and variance of grouped data.
+  
   \code{\link{grouped.data}} to create grouped data objects.
 }
 \author{
@@ -45,6 +56,7 @@
 \examples{
 data(gdental)
 quantile(gdental)
+summary(gdental)
 Fn <- ogive(gdental)
 Fn(quantile(gdental))		# inverse function
 }

@@ -12,10 +12,14 @@
  *  Dutang
  */
 
+#define USE_FC_LEN_T
 #include <R.h>
 #include <Rmath.h>
 #include <R_ext/Lapack.h>
 #include <R_ext/BLAS.h>
+#ifndef FCONE
+# define FCONE
+#endif
 #include "locale.h"
 
 
@@ -97,17 +101,17 @@ void actuar_expm(double *x, int n, double *z)
         }
         else
         {
-            F77_CALL(dgebal)("P", &n, z, &n, &iloperm, &ihiperm, perm, &info);
+            F77_CALL(dgebal)("P", &n, z, &n, &iloperm, &ihiperm, perm, &info FCONE);
             if (info)
                 error(_("LAPACK routine dgebal returned info code %d when permuting"), info);
         }
-        F77_CALL(dgebal)("S", &n, z, &n, &iloscal, &ihiscal, scale, &info);
+        F77_CALL(dgebal)("S", &n, z, &n, &iloscal, &ihiscal, scale, &info FCONE);
         if (info)
             error(_("LAPACK routine dgebal returned info code %d when scaling"), info);
 
         /* Step 3 of preconditioning: Scaling according to infinity
          * norm (a priori always needed). */
-        infnorm = F77_CALL(dlange)("I", &n, &n, z, &n, work);
+        infnorm = F77_CALL(dlange)("I", &n, &n, z, &n, work FCONE);
         sqrpowscal = (infnorm > 0) ? imax2((int) 1 + log(infnorm)/M_LN2, 0) : 0;
         if (sqrpowscal > 0)
         {
@@ -127,13 +131,13 @@ void actuar_expm(double *x, int n, double *z)
         {
             /* npp = z * npp + padec88[j] * z */
             F77_CALL(dgemm) ("N", "N", &n, &n, &n, &one, z, &n, npp,
-                             &n, &zero, work, &n);
+                             &n, &zero, work, &n FCONE FCONE);
             /* npp <- work + padec88[j] * z */
             for (i = 0; i < nsqr; i++)
                 npp[i] = work[i] + padec88[j] * z[i];
             /* dpp = z * dpp + (-1)^j * padec88[j] * z */
             F77_CALL(dgemm) ("N", "N", &n, &n, &n, &one, z, &n, dpp,
-                             &n, &zero, work, &n);
+                             &n, &zero, work, &n FCONE FCONE);
             for (i = 0; i < nsqr; i++)
                 dpp[i] = work[i] + m1pj * padec88[j] * z[i];
             m1pj *= -1;         /* (-1)^j */
@@ -151,7 +155,7 @@ void actuar_expm(double *x, int n, double *z)
         F77_CALL(dgetrf) (&n, &n, dpp, &n, pivot, &info);
         if (info)
             error(_("LAPACK routine dgetrf returned info code %d"), info);
-        F77_CALL(dgetrs) ("N", &n, &n, dpp, &n, pivot, npp, &n, &info);
+        F77_CALL(dgetrs) ("N", &n, &n, dpp, &n, pivot, npp, &n, &info FCONE);
         if (info)
             error(_("LAPACK routine dgetrs returned info code %d"), info);
 
@@ -162,7 +166,7 @@ void actuar_expm(double *x, int n, double *z)
         while (sqrpowscal--)
         {
             F77_CALL(dgemm)("N", "N", &n, &n, &n, &one, z, &n,
-                            z, &n, &zero, work, &n);
+                            z, &n, &zero, work, &n FCONE FCONE);
             Memcpy(z, work, nsqr);
         }
         /* Preconditioning 2: apply inverse scaling */
@@ -237,7 +241,7 @@ double actuar_expmprod(double *x, double *M, double *y, int n)
     /* Product      tmp   := x     * exp(M)
      * (Dimensions: 1 x n    1 x n   n x n) */
     F77_CALL(dgemm)(transa, transa, &p, &n, &n, &one,
-                    x, &p, expM, &n, &zero, tmp, &p);
+                    x, &p, expM, &n, &zero, tmp, &p FCONE FCONE);
 
     /* Product      z     := tmp   * y
      * (Dimensions: 1 x 1    1 x n   n x 1) */
@@ -333,7 +337,7 @@ void actuar_matpow(double *x, int n, int k, double *z)
             if (k & 1)          /* z = z * xtmp */
             {
                 F77_CALL(dgemm)(transa, transa, &n, &n, &n, &one,
-                                z, &n, xtmp, &n, &zero, tmp, &n);
+                                z, &n, xtmp, &n, &zero, tmp, &n FCONE FCONE);
                 Memcpy(z, tmp, (size_t) (n * n));
             }
 
@@ -342,7 +346,7 @@ void actuar_matpow(double *x, int n, int k, double *z)
             if (k > 0)          /* xtmp = xtmp * xtmp */
             {
                 F77_CALL(dgemm)(transa, transa, &n, &n, &n, &one,
-                                xtmp, &n, xtmp, &n, &zero, tmp, &n);
+                                xtmp, &n, xtmp, &n, &zero, tmp, &n FCONE FCONE);
                 Memcpy(xtmp, tmp, (size_t) (n * n));
             }
         }

@@ -203,29 +203,37 @@ x[1:3,]                                 # first 3 groups
 x[1, 2] <- 22; x                        # frequency replacement
 x[1, 1] <- c(0, 20); x                  # boundary replacement
 
-## A method for 'mean' exists for grouped data objects.
+## Mean, variance and standard deviation for grouped data objects.
 mean(x)
+var(x)
+sd(x)
+
+## In the sequel, only the first frequencies column is considered.
+x <- x[, -3]
 
 ## Function 'hist' handles individual data only. We provide a method
-## for grouped data.  Only the first frequencies column is considered.
-hist(x[, -3])
+## for grouped data.
+hist(x)
 
 ## Function 'ogive' returns a function to compute the ogive of grouped
-## data in any point, much like 'ecdf' does for individual
-## data. Methods also exist to extract the group boundaries ('knots')
-## and plot the ogive.
+## data in any point, much like 'ecdf' does for individual data.
+## Methods also exist to extract the group boundaries ('knots') and
+## to plot the ogive.
 Fnt <- ogive(x)
 summary(Fnt)
 knots(Fnt)                              # group boundaries
 Fnt(knots(Fnt))                         # ogive at group boundaries
 plot(Fnt)                               # plot of the ogive
 
-## A method of 'quantile' for grouped data objects computes linearly
-## smoothed quantiles from a sample, that is the inverse of the ogive
-## in various points.
+## The method of 'quantile' for grouped data objects computes linearly
+## smoothed quantiles, that is the inverse of the ogive in various
+## points.
 quantile(x)
-Fnt(ogive(x))
+Fnt(quantile(x))
 
+## The method of 'summary' for grouped data objects returns the
+## quantiles and the mean in a single object.
+summary(x)
 
 ###
 ### EMPIRICAL MOMENTS CALCULATION

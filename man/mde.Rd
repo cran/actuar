@@ -22,7 +22,7 @@ mde(x, fun, start, measure = c("CvM", "chi-square", "LAS"),
   \item{measure}{either \code{"CvM"} for the Cramer-von Mises method,
     \code{"chi-square"} for the modified chi-square method, or \code{"LAS"}
     for the layer average severity method.}
-  \item{weights}{weights; see details.}
+  \item{weights}{weights; see Details.}
   \item{\dots}{Additional parameters, either for \code{fun} or for
     \code{optim}. In particular, it can be used to specify bounds via
     \code{lower} or \code{upper} or both.  If arguments of \code{fun}

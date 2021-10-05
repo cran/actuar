@@ -15,8 +15,8 @@ rcomppois(n, lambda, model.sev, SIMPLIFY = TRUE)}
   \item{n}{number of observations. If \code{length(n) > 1}, the length is
     taken to be the number required.}
   \item{model.freq, model.sev}{expressions specifying the frequency and
-    severity simulation models with the number of variates omitted (see
-    details).}
+    severity simulation models with the number of variates omitted; see
+    Details.}
   \item{lambda}{Poisson parameter.}
   \item{SIMPLIFY}{boolean; if \code{FALSE} the frequency and severity
     variates are returned along with the aggregate variates.}

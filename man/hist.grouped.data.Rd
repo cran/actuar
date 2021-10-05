@@ -12,7 +12,7 @@
 \method{hist}{grouped.data}(x, freq = NULL, probability = !freq,
      density = NULL, angle = 45, col = NULL, border = NULL,
      main = paste("Histogram of" , xname),
-     xlim = range(cj), ylim = NULL, xlab = xname, ylab,
+     xlim = range(x), ylim = NULL, xlab = xname, ylab,
      axes = TRUE, plot = TRUE, labels = FALSE, \dots)
 }
 \arguments{

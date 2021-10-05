@@ -19,8 +19,8 @@ simS <- function(n, model.freq, model.sev)
                          model.sev = model.sev))[-1]
 
     ## Compute the empirical cdf of the sample. Done manually instead
-    ## of calling stats:::ecdf() to keep a copy of the empirical pmf
-    ## in the environment without computing it twice.
+    ## of calling stats::ecdf to keep a copy of the empirical pmf in
+    ## the environment without computing it twice.
     x <- sort(x)
     vals <- unique(x)
     fs <- tabulate(match(x, vals))/length(x)

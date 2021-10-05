@@ -9,7 +9,7 @@
 "[.grouped.data" <- function(x, i, j)
 {
     ## Only columns to extract are specified.
-    if (nargs() < 3)
+    if (nargs() < 3L)
     {
         if (missing(i))
             return(x)
@@ -25,11 +25,11 @@
     }
 
     ## Convert row and column indexes to strictly positive integers.
-    ii <- if (missing(i)) seq(nrow(x)) else seq(nrow(x))[i]
-    ij <- if (missing(j)) integer(0) else seq(ncol(x))[j]
+    ii <- if (missing(i)) seq.int(nrow(x)) else seq.int(nrow(x))[i]
+    ij <- if (missing(j)) integer(0) else seq.int(ncol(x))[j]
 
     ## Extraction of at least the group boundaries (the complicated case).
-    if (!length(ij) || 1 %in% ij)
+    if (!length(ij) || 1L %in% ij)
     {
         ## Extraction of group boundaries in increasing order only
         ## (untractable otherwise).
@@ -41,11 +41,11 @@
 
         ## Fetch the appropriate group boundaries.
         cj <- eval(expression(cj), envir = environment(x))
-        cj <- cj[sort(unique(c(ii, ii + 1)))]
+        cj <- cj[sort(unique(c(ii, ii + 1L)))]
 
         ## Extraction of the first column only: return the vector of group
         ## boundaries.
-        if (identical(ij, as.integer(1)))
+        if (identical(ij, 1L))
             return(cj)
 
         ## Return a modified 'grouped.data' object.
@@ -62,12 +62,12 @@
 "[<-.grouped.data" <- function(x, i, j, value)
 {
     nA <- nargs()
-    if (nA == 4)
+    if (nA == 4L)
     {
         ii <- if (missing(i)) NULL else i
         ij <- if (missing(j)) NULL else j
     }
-    else if (nA == 3)
+    else if (nA == 3L)
     {
         ## No arguments inside [ ]: only replacing by NULL is supported.
         if (missing(i) && missing(j))
@@ -103,18 +103,18 @@
         stop("need 0, 1, or 2 subscripts")
 
     ## Convert row and column indexes to integers.
-    ii <- if (is.null(ii)) seq(nrow(x)) else seq(nrow(x))[ii]
-    ij <- if (is.null(ij)) integer(0) else seq(ncol(x))[ij]
+    ii <- if (is.null(ii)) seq.int(nrow(x)) else seq.int(nrow(x))[ii]
+    ij <- if (is.null(ij)) integer(0) else seq.int(ncol(x))[ij]
 
     ## Replacement at least in the group boundaries column.
-    if (!length(ij) || 1 %in% ij)
+    if (!length(ij) || 1L %in% ij)
     {
         ## supported: replacement of group boundaries only
-        if (identical(ij, as.integer(1)))
+        if (identical(ij, 1L))
         {
             cj <- eval(expression(cj), envir = environment(x))
-            cj[sort(unique(c(ii, ii + 1)))] <- value
-            res <- grouped.data(cj, x[, -1])
+            cj[sort(unique(c(ii, ii + 1L)))] <- value
+            res <- grouped.data(cj, x[, -1L])
             names(res) <- names(x)
             return(res)
         }

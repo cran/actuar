@@ -52,10 +52,9 @@ cm(formula, data, ratios, weights, subset,
     model is located at the barycenter of the regressor instead of the
     origin.}
   \item{method}{estimation method for the variance components of the
-    model; see details below.}
+    model; see Details.}
   \item{likelihood}{a character string giving the name of the likelihood
-    function in one of the supported linear Bayes cases; see details
-    below.}
+    function in one of the supported linear Bayes cases; see Details.}
   \item{tol}{tolerance level for the stopping criteria for iterative
     estimation method.}
   \item{maxit}{maximum number of iterations in iterative estimation

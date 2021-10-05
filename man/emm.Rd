@@ -27,13 +27,13 @@ emm(x, order = 1, \dots)
   For individual data, the \eqn{k}th empirical moment is
   \eqn{\sum_{j = 1}^n x_j^k}{sum(j; x[j]^k)}.
 
-  For grouped data with group boundaries \eqn{c_1, \dots, c_r}{c[1],
-    \dots, c[r]} and group frequencies \eqn{n_1, \dots, n_r}{n[1],
-    \dots, n[r]}, the \eqn{k}th empirical moment is
-  \deqn{\sum_{j = 1}^r \frac{n_j (c_j^{k + 1} - c_{j - 1}^{k + 1})}{%
-      n (k + 1) (c_j - c_{j - 1})},}{%
-    sum(j; (n[j] * {c[j]^(k+1) - c[j-1]^(k+1)})/%
-           (n * (k+1) * {c[j] - c[j-1]})),}
+  For grouped data with group boundaries \eqn{c_0, c_1, \dots,
+    c_r}{c[0], c[1], \dots, c[r]} and group frequencies \eqn{n_1, \dots,
+    n_r}{n[1], \dots, n[r]}, the \eqn{k}th empirical moment is
+  \deqn{\frac{1}{n} \sum_{j = 1}^r \frac{n_j (c_j^{k + 1} - c_{j - 1}^{k + 1})}{%
+      (k + 1) (c_j - c_{j - 1})},}{%
+    (1/n) * sum(j; (n[j] * {c[j]^(k+1) - c[j-1]^(k+1)})/%
+    ((k+1) * {c[j] - c[j-1]})),}
   where \eqn{n = \sum_{j = 1}^r n_j}{n = sum(j; n[j])}.
 }
 \value{

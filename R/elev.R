@@ -31,7 +31,7 @@ elev.default <- function(x, ...)
 ### Function 'elev.grouped.data' below returns a function that uses
 ### data stored in its environment. Avoid false positive in R CMD
 ### check.
-if(getRversion() >= "2.15.1")  utils::globalVariables(c("cj", "nj"))
+if (getRversion() >= "2.15.1")  utils::globalVariables(c("cj", "nj"))
 
 ### This function assumes right-closed intervals, but the numerical
 ### values are identical for left-closed intervals.

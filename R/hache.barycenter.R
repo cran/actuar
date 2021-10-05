@@ -55,7 +55,7 @@ hache.barycenter <- function(ratios, weights, xreg, method,
 
     ## Individual variance estimators. The contribution of contracts
     ## without data is 0.
-    S <- function(z)                    # from stats:::summary.lm
+    S <- function(z)                    # from stats::summary.lm
     {
         nQr <- NROW(z$qr$qr)
         rank <- z$rank
