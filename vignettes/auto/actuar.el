@@ -1,45 +1,54 @@
 (TeX-add-style-hook
  "actuar"
  (lambda ()
-   (TeX-add-to-alist 'LaTeX-provided-class-options
-                     '(("article" "x11names" "english")))
-   (TeX-add-to-alist 'LaTeX-provided-package-options
-                     '(("fontenc" "T1") ("inputenc" "utf8") ("natbib" "round") ("helvet" "scaled=0.9") ("mathpazo" "sc") ("Sweave" "noae" "inconsolata")))
-   (add-to-list 'LaTeX-verbatim-environments-local "Verbatim")
-   (add-to-list 'LaTeX-verbatim-environments-local "lstlisting")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "href")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "nolinkurl")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "url")
-   (add-to-list 'LaTeX-verbatim-macros-with-braces-local "path")
-   (add-to-list 'LaTeX-verbatim-macros-with-delims-local "path")
-   (TeX-run-style-hooks
-    "latex2e"
-    "article"
-    "art10"
-    "fontenc"
-    "inputenc"
-    "amsmath"
-    "natbib"
-    "babel"
-    "helvet"
-    "mathpazo"
-    "Sweave"
-    "framed"
-    "xcolor"
-    "hyperref")
-   (TeX-add-symbols
-    '("pkg" 1)
-    "FrameCommand")
-   (LaTeX-add-labels
-    "sec:introduction")
-   (LaTeX-add-bibliographies)
-   (LaTeX-add-xcolor-definecolors
-    "link"
-    "url"
-    "citation"
-    "codebg"))
- :latex)
+   (LaTeX-add-bibitems
+    "Abramowitz:1972"
+    "Arnold:pareto:2ed"
+    "AsmussenRolski_91"
+    "BJ_87"
+    "BS_70"
+    "Bateman:1953:2"
+    "BeekmanFormula_EAS"
+    "Beekman_68"
+    "Buhlmann:regression:1997"
+    "Buhlmann_69"
+    "Buhlmann_Gisler"
+    "Centeno_02"
+    "Dalgaard:r-help:2005"
+    "Daykin_et_al"
+    "DenuitCharpentier1"
+    "GSL"
+    "Gerber_MRT"
+    "Goulet:lossdist:2008"
+    "Goulet:simpf:2008"
+    "Goulet_JAP"
+    "Goulet_cfs"
+    "Hachemeister_75"
+    "HoggKlugman"
+    "Holla:PIG:1966"
+    "Jewell_75"
+    "Johnson:discrete:2005"
+    "LivreVert"
+    "LossModels"
+    "LossModels2e"
+    "LossModels3e"
+    "LossModels4e"
+    "MART"
+    "MART:2e"
+    "MASS"
+    "Matrix"
+    "Neuts_81"
+    "Ohlsson"
+    "Panjer_81"
+    "R-exts"
+    "Scollnik:2001:MCMC"
+    "Shaban:PIG:1981"
+    "SuppDists"
+    "Thomopoulos:2013:simulation"
+    "cm"
+    "expint"
+    "statmod")
+   (LaTeX-add-environments
+    '("exercice" LaTeX-env-args ["argument"] 0)))
+ :bibtex)
 

@@ -2,6 +2,14 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.2-1}{
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{Fix incorrect usage of \code{all.equal} in tests.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.2-0}{
   \subsection{NEW FEATURES}{
     \itemize{
@@ -14,15 +22,15 @@
 	contributed by Walter Garcia-Fontes
 	\email{walter.garcia@upf.edu}.}
       \item{Examples for the new methods for grouped data objects in
-	\code{\dQuote{lossdist}} demonstration R script.}
+	\code{\dQuote{lossdist}} demonstration \R script.}
     }
   }
   \subsection{BUG FIXES}{
     \itemize{
       \item{Use \code{USE_FC_LEN_T} in the C prototypes of LAPACK
 	functions to correspond to code produced by gfortran >= 7. The
-	mechanism was introduced in R 3.6.2 and is planned to make its
-	use obligatory in R 4.2.0.}
+	mechanism was introduced in \R 3.6.2 and is planned to make its
+	use obligatory in \R 4.2.0.}
       \item{Miscellaneous fixes to formulas for grouped data in the
 	documentation for \code{mean.grouped.data} and \code{emm}, as
 	well as in the \dQuote{modeling} package vignette.}
@@ -34,7 +42,7 @@
   \subsection{BUG FIXES}{
     \itemize{
       \item{Due to its use of \code{log1mexp} since the previous
-	release, the package depends on R >= 4.1.0.}
+	release, the package depends on \R >= 4.1.0.}
     }
   }
 }
@@ -43,11 +51,11 @@
   \subsection{BUG FIXES}{
     \itemize{
       \item{Carry over the new implementation of the Cornish-Fisher
-	Expansion of base R used by \code{qlogarithmic} and
+	Expansion of base \R used by \code{qlogarithmic} and
 	\code{qpoisinvgauss}.}
       \item{Fix computation of \code{[pq]zmpois}, \code{[pq]zmbinom} and
-	\code{[pq]zmnbinom} following fixes to the underlying base R
-	functions introduced in r80271 of R sources. With thanks to
+	\code{[pq]zmnbinom} following fixes to the underlying base \R
+	functions introduced in r80271 of \R sources. With thanks to
 	B.D. Ripley and Martin Maechler.}
     }
   }
@@ -169,7 +177,7 @@
       \item{\code{d<dist>} and \code{p<dist>} functions for all
 	continuous size distributions now handle limiting cases for
 	infinite scale parameter, or for zero non-scale parameters,
-	consistently with functions of base R.
+	consistently with functions of base \R.
 
 	Affected functions are:
 	\code{[dp]trbeta},

@@ -195,14 +195,15 @@ stopifnot(exprs = {
     pfpareto(2^53,        min = 0,    1, 1, 1, scale = 1) != 1
     pfpareto(2^53 + xMax, min = xMax, 1, 1, 1, scale = 1) != 1
     all.equal(pfpareto(xMin + m, min = m, 1, 1, 1, scale = 1), xMin)
-    all.equal(pfpareto(1e300 + m, min = m,
-                       shape1 = 3, shape2 = rep(c(1, 2), each = length(scLrg)),
-                       shape3 = 1,
-                       scale = scLrg, log = TRUE),
-              ptrbeta (1e300,
-                       shape1 = 3, shape2 = rep(c(1, 2), each = length(scLrg)),
-                       shape3 = 1,
-                       scale = scLrg, log = TRUE),
+    all.equal(y <- pfpareto(1e300 + m, min = m,
+                            shape1 = 3, shape2 = rep(c(1, 2), each = length(scLrg)),
+                            shape3 = 1,
+                            scale = scLrg, log = TRUE),
+              ptrbeta(1e300,
+                      shape1 = 3, shape2 = rep(c(1, 2), each = length(scLrg)),
+                      shape3 = 1,
+                      scale = scLrg, log = TRUE))
+    all.equal(y,
               c(pbeta(c(2/3, 1/2), 1, 3, lower.tail = TRUE,  log = TRUE),
                 pbeta(2/3, 3, 1, lower.tail = FALSE, log = TRUE),
                 pbeta(c(4/5, 1/2), 1, 3, lower.tail = TRUE,  log = TRUE),
@@ -213,12 +214,13 @@ stopifnot(exprs = {
     ppareto4(2^53,        min = 0,    1, 1, scale = 1) != 1
     ppareto4(2^53 + xMax, min = xMax, 1, 1, scale = 1) != 1
     all.equal(ppareto4(xMin + m, min = m, 1, 1, scale = 1), xMin)
-    all.equal(ppareto4(1e300 + m, min = m,
-                       shape1 = 3, shape2 = rep(c(1, 2), each = length(scLrg)),
-                       scale = scLrg, log = TRUE),
-              pburr   (1e300,
-                       shape1 = 3, shape2 = rep(c(1, 2), each = length(scLrg)),
-                       scale = scLrg, log = TRUE),
+    all.equal(y <- ppareto4(1e300 + m, min = m,
+                            shape1 = 3, shape2 = rep(c(1, 2), each = length(scLrg)),
+                            scale = scLrg, log = TRUE),
+              pburr(1e300,
+                    shape1 = 3, shape2 = rep(c(1, 2), each = length(scLrg)),
+                    scale = scLrg, log = TRUE))
+    all.equal(y,
               c(log(1 - c(1/3, 1/2, 2/3)^3),
                 log(1 - c(1/5, 1/2, 4/5)^3)))
 })
@@ -227,12 +229,13 @@ stopifnot(exprs = {
     ppareto3(2^53,        min = 0,    1, scale = 1) != 1
     ppareto3(2^53 + xMax, min = xMax, 1, scale = 1) != 1
     all.equal(ppareto3(xMin + m, min = m, 1, scale = 1), xMin)
-    all.equal(ppareto3(1e300 + m, min = m,
-                       shape = rep(c(1, 2), each = length(scLrg)),
-                       scale = scLrg, log = TRUE),
+    all.equal(y <- ppareto3(1e300 + m, min = m,
+                            shape = rep(c(1, 2), each = length(scLrg)),
+                            scale = scLrg, log = TRUE),
               pllogis (1e300,
                        shape = rep(c(1, 2), each = length(scLrg)),
-                       scale = scLrg, log = TRUE),
+                       scale = scLrg, log = TRUE))
+    all.equal(y,
               c(log(c(2/3, 1/2, 1/3)),
                 log(c(4/5, 1/2, 1/5))))
 })
@@ -241,12 +244,13 @@ stopifnot(exprs = {
     ppareto2(2^53,        min = 0,    1, scale = 1) != 1
     ppareto2(2^53 + xMax, min = xMax, 1, scale = 1) != 1
     all.equal(ppareto2(xMin + m, min = m, 1, scale = 1), xMin)
-    all.equal(ppareto2(1e300 + m, min = m,
-                       shape = 3,
-                       scale = scLrg, log = TRUE),
+    all.equal(y <- ppareto2(1e300 + m, min = m,
+                            shape = 3,
+                            scale = scLrg, log = TRUE),
               ppareto (1e300,
                        shape = 3,
-                       scale = scLrg, log = TRUE),
+                       scale = scLrg, log = TRUE))
+    all.equal(y,
               c(log(1 - c(1/3, 1/2, 2/3)^3)))
 })
 
@@ -725,7 +729,7 @@ stopifnot(exprs = {
     all.equal(ppareto1(1e300,
                       shape = 3,
                       min = 1e300 * c(0.001, 0.1, 0.5), log = TRUE),
-        c(log(1 - c(0.001, 0.1, 0.5)^3)))
+              c(log(1 - c(0.001, 0.1, 0.5)^3)))
 })
 stopifnot(exprs = {
     pinvburr(Inf,  1, 3, scale = xMax) == 1
@@ -1304,7 +1308,7 @@ stopifnot(exprs = {
     pgumbel(c(-Inf, Inf),  2, scale = xMax) == c(0, 1)
     pgumbel(c(xMin, xMax), 2, scale = 0) == c(0, 1)
     all.equal(pgumbel(1e300, 0, scale = scLrg, log = TRUE),
-        -exp(-c(5e299, 1e+298, 10, 1, 0.1, 0.01, 1e-7, 1e+300/xMax, 0)))
+              -exp(-c(5e299, 1e+298, 10, 1, 0.1, 0.01, 1e-7, 1e+300/xMax, 0)))
 })
 
 ## Test the first two moments, the only ones implemented.
@@ -1764,27 +1768,32 @@ stopifnot(exprs = {
 for (l in lambda)
     stopifnot(exprs = {
         all.equal(cumsum(dztpois(0:20, l)),
-                  pztpois(0:20, l), tol = 1e-8)
+                  pztpois(0:20, l),
+                  tolerance = 1e-8)
     })
 for (i in seq_along(r))
     stopifnot(exprs = {
         all.equal(cumsum(dztnbinom(0:20, r[i], prob[i])),
-                  pztnbinom(0:20, r[i], prob[i]), tol = 1e-8)
+                  pztnbinom(0:20, r[i], prob[i]),
+                  tolerance = 1e-8)
     })
 for (i in seq_along(r))
     stopifnot(exprs = {
         all.equal(cumsum(dztgeom(0:20, prob[i])),
-                  pztgeom(0:20, prob[i]), tol = 1e-8)
+                  pztgeom(0:20, prob[i]),
+                  tolerance = 1e-8)
     })
 for (i in seq_along(size))
     stopifnot(exprs = {
         all.equal(cumsum(dztbinom(0:20, size[i], prob[i])),
-                  pztbinom(0:20, size[i], prob[i]), tol = 1e-8)
+                  pztbinom(0:20, size[i], prob[i]),
+                  tolerance = 1e-8)
     })
 for (p in prob)
     stopifnot(exprs = {
         all.equal(cumsum(dlogarithmic(0:20, p)),
-                  plogarithmic(0:20, p), tol = 1e-8)
+                  plogarithmic(0:20, p),
+                  tolerance = 1e-8)
     })
 
 ## ZERO-MODIFIED (a, b, 1) CLASS
@@ -1839,27 +1848,32 @@ stopifnot(exprs = {
 for (i in seq_along(lambda))
     stopifnot(exprs = {
         all.equal(cumsum(dzmpois(0:20, lambda[i], p0 = p0[i])),
-                  pzmpois(0:20, lambda[i], p0 = p0[i]), tol = 1e-8)
+                  pzmpois(0:20, lambda[i], p0 = p0[i]),
+                  tolerance = 1e-8)
     })
 for (i in seq_along(r))
     stopifnot(exprs = {
         all.equal(cumsum(dzmnbinom(0:20, r[i], prob[i], p0[i])),
-                  pzmnbinom(0:20, r[i], prob[i], p0[i]), tol = 1e-8)
+                  pzmnbinom(0:20, r[i], prob[i], p0[i]),
+                  tolerance = 1e-8)
     })
 for (i in seq_along(r))
     stopifnot(exprs = {
         all.equal(cumsum(dzmgeom(0:20, prob[i], p0[i])),
-                  pzmgeom(0:20, prob[i], p0[i]), tol = 1e-8)
+                  pzmgeom(0:20, prob[i], p0[i]),
+                  tolerance = 1e-8)
     })
 for (i in seq_along(size))
     stopifnot(exprs = {
         all.equal(cumsum(dzmbinom(0:20, size[i], prob[i], p0[i])),
-                  pzmbinom(0:20, size[i], prob[i], p0[i]), tol = 1e-8)
+                  pzmbinom(0:20, size[i], prob[i], p0[i]),
+                  tolerance = 1e-8)
     })
 for (i in seq_along(prob))
     stopifnot(exprs = {
         all.equal(cumsum(dzmlogarithmic(0:20, prob[i], p0[i])),
-                  pzmlogarithmic(0:20, prob[i], p0[i]), tol = 1e-8)
+                  pzmlogarithmic(0:20, prob[i], p0[i]),
+                  tolerance = 1e-8)
     })
 
 ## POISSON-INVERSE GAUSSIAN
@@ -1893,7 +1907,7 @@ for (i in seq_along(phi))
 {
     stopifnot(exprs = {
         all.equal(dpoisinvgauss(x, mean = mu[i], dispersion = phi[i]),
-              dpigBK(x, mu[i], phi[i]))
+                  dpigBK(x, mu[i], phi[i]))
         all.equal(dpoisinvgauss(x, mean = Inf, dispersion = phi[i]),
                   dpigBK(x, Inf, phi[i]))
     })
@@ -1903,9 +1917,11 @@ for (i in seq_along(phi))
 for (i in seq_along(phi))
     stopifnot(exprs = {
         all.equal(cumsum(dpoisinvgauss(0:20, mu[i], phi[i])),
-                  ppoisinvgauss(0:20, mu[i], phi[i]), tol = 1e-8)
+                  ppoisinvgauss(0:20, mu[i], phi[i]),
+                  tolerance = 1e-8)
         all.equal(cumsum(dpoisinvgauss(0:20, Inf, phi[i])),
-                  ppoisinvgauss(0:20, Inf, phi[i]), tol = 1e-8)
+                  ppoisinvgauss(0:20, Inf, phi[i]),
+                  tolerance = 1e-8)
     })
 
 ##
