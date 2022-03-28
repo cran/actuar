@@ -2,6 +2,15 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.2-2}{
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{Replace deprecated (as of R 4.2.0) macro DOUBLE_EPS by
+	DBL_EPSILON in C code.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.2-1}{
   \subsection{BUG FIXES}{
     \itemize{

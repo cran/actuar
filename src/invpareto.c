@@ -165,7 +165,7 @@ double levinvpareto(double limit, double shape, double scale, double order,
     ex[0] = shape; ex[1] = order;
     lower = 0.0; upper = limit / (limit + scale);
     subdiv = 100;
-    epsabs = R_pow(DOUBLE_EPS, 0.25);
+    epsabs = R_pow(DBL_EPSILON, 0.25);
     epsrel = epsabs;
     lenw = 4 * subdiv;		     /* as instructed in WRE */
     iwork =   (int *) R_alloc(subdiv, sizeof(int));  /* idem */

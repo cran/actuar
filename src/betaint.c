@@ -78,7 +78,7 @@ double betaint_raw(double x, double a, double b, double x1m)
      *  {[previous term] * [(1 - x)/x]} * [(a - i - 1)/(b + i + 1)]
      *
      * to preserve accuracy for very small values of x (near
-     * DOUBLE_XMIN).
+     * DBL_MIN).
      */
     for (i = 0; i < r; i++)
     {

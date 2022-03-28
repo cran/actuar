@@ -229,8 +229,8 @@ cm(formula, data, ratios, weights, subset,
   and \eqn{\Theta \sim \mathrm{Gamma}(\alpha, \lambda)}{\Theta ~
   Gamma(\alpha, \lambda)}. In this case, the Bayesian estimator not of
   the risk premium, but rather of parameter \eqn{\theta} is linear with
-  a \dQuote{credibility} factor that is not restricted to \eqn{(0, 1)}.  
-      
+  a \dQuote{credibility} factor that is not restricted to \eqn{(0, 1)}.
+
   Argument \code{likelihood} identifies the distribution of \eqn{X|\Theta
     = \theta} as one of
   \code{"poisson"},
@@ -256,7 +256,7 @@ cm(formula, data, ratios, weights, subset,
   Data for the linear Bayes case may be a matrix or data frame as usual;
   an atomic vector to fit the model to a single contract; missing or
   \code{NULL} to fit the prior model. Arguments \code{ratios},
-  \code{weights} and \code{subset} are ignored.  
+  \code{weights} and \code{subset} are ignored.
 }
 \value{
   Function \code{cm} computes the structure parameters estimators of the
