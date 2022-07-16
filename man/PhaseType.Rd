@@ -1,4 +1,5 @@
 \name{PhaseType}
+\alias{PhaseType}
 \alias{dphtype}
 \alias{pphtype}
 \alias{rphtype}

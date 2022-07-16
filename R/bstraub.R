@@ -117,17 +117,17 @@ bvar.iterative <- function(x, w, within, n, start,
     if (echo)
     {
         cat("Iteration\tBetween variance estimator\n")
-        exp <- expression(cat(" ", count, "\t\t ", a1 <- a, fill = TRUE))
+        expr <- expression(cat(" ", count, "\t\t ", a1 <- a, fill = TRUE))
     }
     else
-        exp <- expression(a1 <-  a)
+        expr <- expression(a1 <-  a)
 
     a <- start
     count <- 0L
 
     repeat
     {
-        eval(exp)
+        eval(expr)
 
         if (maxit < (count <- count + 1L))
         {

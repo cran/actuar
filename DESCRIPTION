@@ -1,8 +1,8 @@
 Package: actuar
 Type: Package
 Title: Actuarial Functions and Heavy Tailed Distributions
-Version: 3.2-2
-Date: 2022-03-27
+Version: 3.3-0
+Date: 2022-07-15
 Authors@R: c(person("Vincent", "Goulet", role = c("cre", "aut"),
  	            email = "vincent.goulet@act.ulaval.ca"),
 	     person("Sébastien", "Auclair", role = "ctb"),
@@ -37,7 +37,9 @@ Description: Functions and data sets for actuarial science:
   Poisson-inverse Gaussian discrete distribution; zero-truncated and
   zero-modified extensions of the standard discrete distributions.
   Support for phase-type distributions commonly used to compute ruin
-  probabilities.
+  probabilities. Main reference: <doi:10.18637/jss.v025.i07>.
+  Implementation of the Feller-Pareto family of distributions:
+  <doi:10.18637/jss.v103.i06>.
 Depends: R (>= 4.1.0)
 Imports: stats, graphics, expint
 LinkingTo: expint
@@ -49,7 +51,7 @@ Encoding: UTF-8
 LazyData: yes
 Classification/MSC-2010: 62P05, 91B30, 62G32
 NeedsCompilation: yes
-Packaged: 2022-03-27 23:02:56 UTC; vincent
+Packaged: 2022-07-15 18:34:17 UTC; vincent
 Author: Vincent Goulet [cre, aut],
   Sébastien Auclair [ctb],
   Christophe Dutang [aut],
@@ -67,4 +69,4 @@ Author: Vincent Goulet [cre, aut],
   R Foundation [aut] (Parts of the R to C interface)
 Maintainer: Vincent Goulet <vincent.goulet@act.ulaval.ca>
 Repository: CRAN
-Date/Publication: 2022-03-28 03:30:02 UTC
+Date/Publication: 2022-07-16 07:30:28 UTC

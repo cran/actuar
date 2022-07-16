@@ -2,6 +2,19 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.3-0}{
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{Italian translations contributed by Daniele Medri
+	\email{dmedri@gmail.com}.}
+      \item{Package help file; use \code{?actuar} to read.}
+      \item{New entry in the CITATION file for the paper in the Journal
+	of Statistical Software presenting our implementation of the
+	Feller-Pareto family of distributions.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.2-2}{
   \subsection{BUG FIXES}{
     \itemize{

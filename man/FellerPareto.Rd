@@ -117,7 +117,16 @@ levfpareto(limit, min, shape1, shape2, shape3, rate = 1, scale = 1/rate,
   \pkg{actuar} and the complete formulas underlying the above functions.
 }
 \references{
-  Arnold, B.C. (2015), \emph{Pareto Distributions}, Second Edition, CRC
+  Dutang, C., Goulet, V., Langevin, N. (2022).
+  Feller-Pareto and Related Distributions: Numerical Implementation and Actuarial
+  Applications.
+  \emph{Journal of Statistical Software}, \bold{103}(6), 1--22.
+  \doi{10.18637/jss.v103.i06}.
+
+  Abramowitz, M. and Stegun, I. A. (1972), \emph{Handbook of 
+  Mathematical Functions}, Dover.
+  
+  Arnold, B. C. (2015), \emph{Pareto Distributions}, Second Edition, CRC
   Press.
 
   Kleiber, C. and Kotz, S. (2003), \emph{Statistical Size Distributions
@@ -125,9 +134,6 @@ levfpareto(limit, min, shape1, shape2, shape3, rate = 1, scale = 1/rate,
 
   Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012),
   \emph{Loss Models, From Data to Decisions, Fourth Edition}, Wiley.
-
-  Abramowitz, M. and Stegun, I. A. (1972), \emph{Handbook of 
-  Mathematical Functions}, Dover.
 }
 \seealso{
   \code{\link{dtrbeta}} for the transformed beta distribution.

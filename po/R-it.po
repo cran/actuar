@@ -1,0 +1,315 @@
+# Italian translation for actuar package
+# Copyright (C) 2022 Daniele Medri
+# This file is distributed under the same license as the actuar package.
+# Daniele Medri <dmedri@gmail.com>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: actuar 2.0-0\n"
+"Report-Msgid-Bugs-To: bugs@r-project.org\n"
+"POT-Creation-Date: 2021-01-05 14:10\n"
+"PO-Revision-Date: 2022-04-13 12:05+0200\n"
+"Last-Translator: Daniele Medri <dmedri@gmail.com>\n"
+"Language-Team: Daniele Medri <dmedri@gmail.com>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "rows extracted in increasing order"
+msgstr "righe estratte in ordine crescente"
+
+msgid "impossible to replace boundaries and frequencies simultaneously"
+msgstr "non è possibile sostituire estremi e frequenze contemporaneamente"
+
+msgid "only logical matrix subscripts are allowed in replacement"
+msgstr "in sostituzione sono consentiti solo pedici di matrice logica"
+
+msgid "need 0, 1, or 2 subscripts"
+msgstr "richiede 0, 1 o due indici"
+
+msgid "one of 'mgf.claim' or 'h' is needed"
+msgstr "richiesto uno di 'mgf.claim' o 'h'"
+
+msgid "'h' must be a function or an expression containing 'x'"
+msgstr "'h' dev'essere una funzione o un'espressione contenente 'x'"
+
+msgid "'mgf.claim' must be a function or an expression containing 'x'"
+msgstr "'mgf.claim' dev'essere una funzione o un'espressione contenente 'x'"
+
+msgid "'mgf.wait' must be a function or an expression containing 'x'"
+msgstr "'mgf.wait' dev'essere una funzione o un'espressione contenente 'x'"
+
+msgid "'h' must be a function or an expression containing 'x' and 'y'"
+msgstr "'h' dev'essere una funzione o un'espressione contenente 'x' e 'y'"
+
+msgid "'premium.rate' must be a function when using reinsurance"
+msgstr "'premium.rate' dev'essere una funzione quando si utilizza la riassicurazione"
+
+msgid "'mgf.claim' must be a function or an expression containing 'x' and 'y'"
+msgstr "'mgf.claim' dev'essere una funzione o un'espressione contenente 'x' e 'y'"
+
+msgid "'premium.rate' must be a function or an expression containing 'y'"
+msgstr "'premium.rate' dev'essere una funzione o un'espressione contenente 'y'"
+
+msgid "'moments' must supply the mean and variance of the distribution"
+msgstr "'moments' deve fornire la media e la varianza della distribuzione"
+
+msgid "'moments' must supply the mean, variance and skewness of the distribution"
+msgstr "'moments' deve fornire la media, la varianza e l'asimmetria della distribuzione"
+
+msgid "'nb.simul' must supply the number of simulations"
+msgstr "'nb.simul' deve indicare il numero di simulazioni"
+
+msgid "expressions in 'model.freq' and 'model.sev' must be named"
+msgstr "le espressioni in 'model.freq' e 'model.sev' devono essere indicate"
+
+msgid "'model.sev' must be a vector of probabilities"
+msgstr "'model.sev' dev'essere un vettore di probabilità"
+
+msgid "frequency distribution must be supplied as a character string"
+msgstr "la distribuzione di frequenza devono essere passate come una stringa carattere"
+
+msgid "'model.freq' must be a vector of probabilities"
+msgstr "'model.freq' dev'essere un vettore di probabilità"
+
+msgid "internal error"
+msgstr "errore interno"
+
+msgid "function not defined for approximating distributions"
+msgstr "funzione non definita per approssimare distribuzioni"
+
+msgid "lower bound of the likelihood missing"
+msgstr "estremo inferiore mancante per la verosimiglianza"
+
+msgid "one of the Gamma prior parameter \"shape\", \"rate\" or \"scale\" missing"
+msgstr "manca uno dei parametri Gamma a priori tra \"shape\", \"rate\" o \"scale\""
+
+msgid "one of the Beta prior parameter \"shape1\" or \"scale2\" missing"
+msgstr "manca uno dei parametri Beta a priori tra \"shape1\" o \"scale2\""
+
+msgid "parameter \"size\" of the likelihood missing"
+msgstr "parametro \"size\" mancante per la verosimiglianza"
+
+msgid "parameter \"shape.lik\" of the likelihood missing"
+msgstr "parametro \"shape.lik\" mancante per la verosimiglianza"
+
+msgid "parameter \"sd.lik\" of the likelihood missing"
+msgstr "parametro \"sd.lik\" mancante per la verosimiglianza"
+
+msgid "unsupported likelihood"
+msgstr "verosimiglianza non supportata"
+
+msgid "missing ratios not allowed when weights are not supplied"
+msgstr "non sono ammessi rapporti mancanti quando i pesi non sono indicati"
+
+msgid "there must be at least one node with more than one period of experience"
+msgstr "dev'esserci almeno un nodo con più di un periodo di esperienza"
+
+msgid "there must be more than one node"
+msgstr "dev'esserci più di un nodo"
+
+msgid "missing values are not in the same positions in 'weights' and in 'ratios'"
+msgstr "i valori mancanti non sono nelle medesime posizioni in 'weights' e in 'ratios'"
+
+msgid "no available data to fit model"
+msgstr "non ci sono abbastanza dati per stimare il modello"
+
+msgid "maximum number of iterations reached before obtaining convergence"
+msgstr "raggiunto il numero massimo di iterazioni prima della convergenza"
+
+msgid "unsupported interactions in 'formula'"
+msgstr "interazioni non supportate in 'formula'"
+
+msgid "hierarchical regression models not supported"
+msgstr "modelli di regressione gerarchica non supportati"
+
+msgid "ratios have to be supplied if weights are"
+msgstr "i rapporti devono essere passati se i pesi sono"
+
+msgid "empty regression model; fitting with Buhlmann-Straub's model"
+msgstr "modello di regressione vuoto; stima con il modello Buhlmann-Straub"
+
+msgid "invalid level name"
+msgstr "nome livello non valido"
+
+msgid "coverage modifications must be positive"
+msgstr "le modifiche alla copertura devono essere positive"
+
+msgid "deductible must be smaller than the limit"
+msgstr "deductible dev'essere più piccolo del limite"
+
+msgid "coinsurance must be between 0 and 1"
+msgstr "coinsurance dev'essere tra 0 e 1"
+
+msgid "'cdf' must be supplied"
+msgstr "'cdf' dev'essere passata"
+
+msgid "'cdf' must be a function or an expression containing 'x'"
+msgstr "'cdf' dev'essere una funzione o un'espressione contenente 'x'"
+
+msgid "'lev' required with method \"unbiased\""
+msgstr "'lev' richiesto con il metodo \"unbiased\""
+
+msgid "'lev' must be a function or an expression containing 'x'"
+msgstr "'lev' dev'essere una funzione o un'espressione contenente 'x'"
+
+msgid "'order' must be positive"
+msgstr "'order' dev'essere positivo"
+
+msgid "'nclass' not used when 'breaks' is specified"
+msgstr "'nclass' non viene usata quando viene specificato 'breaks'"
+
+msgid "'group' ignored when 'breaks' is specified"
+msgstr "'group' ignorato quando 'breaks' è presente"
+
+msgid "'group' ignored when 'nclass' is specified"
+msgstr "'group' ignorato quando 'nclass' è presente"
+
+msgid "invalid number of group boundaries and frequencies"
+msgstr "numero di estremi di gruppo e frequenze non valido"
+
+msgid "missing frequencies replaced by zeros"
+msgstr "frequenze mancanti sostituite con zero"
+
+msgid "there must be at least two nodes at every level"
+msgstr "devono esserci almeno due nodi in ogni livello"
+
+msgid "invalid level number"
+msgstr "numero livello non valido"
+
+msgid "infinite group boundaries"
+msgstr "estremi di gruppo non finiti"
+
+msgid "'probability' is an alias for '!freq', however they differ."
+msgstr "'probability' è un alisa per '!freq', comunque sono differenti."
+
+msgid "'start' must be a named list"
+msgstr "'start' dev'essere una lista nominata"
+
+msgid "'fun' must be supplied as a function"
+msgstr "'fun' dev'essere passata come una funzione"
+
+msgid "'x' must be a numeric vector or an object of class \"grouped.data\""
+msgstr "'x' dev'essere un vettore numerico o un oggetto di classe \"grouped.data\""
+
+msgid "'start' specifies names which are not arguments to 'fun'"
+msgstr "'start' specifica nomi che non sono argomenti per 'fun'"
+
+msgid "\"chi-square\" measure requires an object of class \"grouped.data\""
+msgstr "la misura \"chi-square\" richiede un oggetto di classe \"grouped.data\""
+
+msgid "frequency must be larger than 0 in all groups"
+msgstr "la frequenza dev'essere più grande di 0 in tutti i gruppi"
+
+msgid "\"LAS\" measure requires an object of class \"grouped.data\""
+msgstr "la misura \"LAS\" richiede un oggetto di classe \"grouped.data\""
+
+msgid "optimization failed"
+msgstr "ottimizzazione fallita"
+
+msgid "'p0' has many elements: only the first used"
+msgstr "'p0' ha molti elementi: solo il primo è utilizzato"
+
+msgid "'p0' must be a valid probability (between 0 and 1)"
+msgstr "'p0' dev'essere una probabilità valida (tra 0 e 1)"
+
+msgid "value of 'p0' ignored with a zero-truncated distribution"
+msgstr "valore di 'p0' ignorato con una distribuzione troncata zero"
+
+msgid "value of 'lambda' missing"
+msgstr "valore di 'lambda' mancante"
+
+msgid "value of 'prob' or 'size' missing"
+msgstr "valore di 'prob' o 'size' mancante"
+
+msgid "value of 'prob' missing"
+msgstr "valore di 'prob' mancante"
+
+msgid "frequency distribution not in the (a, b, 0) or (a, b, 1) families"
+msgstr "distribuzione di frequenza non nelle famiglie (a, b, 0) o (a, b, 1)"
+
+msgid "Pr[S = 0] is numerically equal to 0; impossible to start the recursion"
+msgstr "Pr[S = 0] è numericamente uguale a 0; non è possibile avviare la ricorsione"
+
+msgid "invalid first argument 'n'"
+msgstr "primo argomento 'n' non valido"
+
+msgid "no positive probabilities"
+msgstr "nessuna probabilità positiva"
+
+msgid "invalid third argument 'models'"
+msgstr "terzo argomento 'models' non valido"
+
+msgid "'par.claims' must be a named list"
+msgstr "'par.claims' dev'essere una lista nominata"
+
+msgid "'par.wait' must be a named list"
+msgstr "'par.wait' dev'essere una lista nominata"
+
+msgid "parameters %s missing in 'par.claims'"
+msgstr "parametri %s mancanti in 'par.claims'"
+
+msgid "parameter \"rate\" missing in 'par.claims'"
+msgstr "parametro \"rate\" mancante in 'par.claims'"
+
+msgid "parameter \"weights\" missing in 'par.claims'"
+msgstr "parametro \"weights\" mancante in 'par.claims'"
+
+msgid "parameter \"shape\" missing in 'par.claims'"
+msgstr "parametro \"shape\" mancante in 'par.claims'"
+
+msgid "parameter \"rate\" or \"scale\" missing in 'par.claims'"
+msgstr "parametro \"rate\" o \"scale\" mancante in 'par.claims'"
+
+msgid "parameter \"prob\" missing in 'par.claims'"
+msgstr "parametro \"prob\" mancante in 'par.claims'"
+
+msgid "parameter \"rates\" missing in 'par.claims'"
+msgstr "parametro \"rates\" mancante in 'par.claims'"
+
+msgid "invalid parameters in 'par.claims'"
+msgstr "parametri non validi in 'par.claims'"
+
+msgid "parameters %s missing in 'par.wait'"
+msgstr "parametri %s mancanti in 'par.wait'"
+
+msgid "parameter \"rate\" missing in 'par.wait'"
+msgstr "parametro \"rate\" mancante in 'par.wait'"
+
+msgid "parameter \"weights\" missing in 'par.wait'"
+msgstr "parametro \"weights\" mancante in 'par.wait'"
+
+msgid "parameter \"shape\" missing in 'par.wait'"
+msgstr "parametro \"shape\" mancante in 'par.wait'"
+
+msgid "parameter \"rate\" or \"scale\" missing in 'par.wait'"
+msgstr "parametro \"rate\" o \"scale\" mancante in 'par.wait'"
+
+msgid "parameter \"prob\" missing in 'par.wait'"
+msgstr "parametro \"prob\" mancante in 'par.wait'"
+
+msgid "parameter \"rates\" missing in 'par.wait'"
+msgstr "parametro \"rates\" mancante in 'par.wait'"
+
+msgid "invalid parameters in 'par.wait'"
+msgstr "parametri non validi in 'par.wait'"
+
+msgid "'nodes' must be a named list"
+msgstr "'nodes' dev'essere una lista nominata"
+
+msgid "level names different in 'nodes', 'model.freq' and 'model.sev'"
+msgstr "nomi livello differenti in 'nodes', 'model.freq' e 'model.sev'"
+
+msgid "one of 'model.freq' or 'model.sev' must be non-NULL"
+msgstr "uno di 'model.freq' o 'model.sev' non dev'essere NULL"
+
+msgid "nothing to do"
+msgstr "niente da fare"
+
+msgid "invalid 'by' specification"
+msgstr "specificazione di 'by' non valida"
+
+msgid "'x' must be a vector or a matrix"
+msgstr "'x' dev'essere un vettore numerico o una matrice"
