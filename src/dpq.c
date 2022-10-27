@@ -49,11 +49,36 @@
 #include "actuar.h"
 #include "locale.h"
 
+/* Prototypes of auxiliary functions */
+static SEXP dpq1_1(SEXP, SEXP, SEXP,
+		   double (*f)(double, double, int));
+static SEXP dpq1_2(SEXP, SEXP, SEXP, SEXP,
+		   double (*f)(double, double, int, int));
+static SEXP dpq2_1(SEXP, SEXP, SEXP, SEXP,
+		   double (*f)(double, double, double, int));
+static SEXP dpq2_2(SEXP, SEXP, SEXP, SEXP, SEXP,
+		   double (*f)(double, double, double, int, int));
+static SEXP dpq2_5(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,
+		   double (*f)(double, double, double, int, int, double, int, int));
+static SEXP dpq3_1(SEXP, SEXP, SEXP, SEXP, SEXP,
+		   double (*f)(double, double, double, double, int));
+static SEXP dpq3_2(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,
+		   double (*f)(double, double, double, double, int, int));
+static SEXP dpq4_1(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,
+		   double (*f)(double, double, double, double, double, int));
+static SEXP dpq4_2(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,
+		   double (*f)(double, double, double, double, double, int, int));
+static SEXP dpq5_1(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,
+		   double (*f)(double, double, double, double, double, double, int));
+static SEXP dpq5_2(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,
+		   double (*f)(double, double, double, double, double, double, int, int));
+static SEXP dpq6_1(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,
+		   double (*f)(double, double, double, double, double, double, double, int));
+
 /* Additional access macros */
 #define CAD5R(e) CAR(CDR(CDR(CDR(CDR(CDR(e))))))
 #define CAD6R(e) CAR(CDR(CDR(CDR(CDR(CDR(CDR(e)))))))
 #define CAD7R(e) CAR(CDR(CDR(CDR(CDR(CDR(CDR(CDR(e))))))))
-
 
 /* Functions for one parameter distributions */
 #define if_NA_dpq1_set(y, x, a)                         \
@@ -66,7 +91,8 @@
              i2 = (++i2 == n2) ? 0 : i2,        \
              ++i)
 
-static SEXP dpq1_1(SEXP sx, SEXP sa, SEXP sI, double (*f)())
+static SEXP dpq1_1(SEXP sx, SEXP sa, SEXP sI,
+		   double (*f)(double, double, int))
 {
     SEXP sy;
     int i, ix, ia, n, nx, na, sxo = OBJECT(sx), sao = OBJECT(sa);
@@ -125,7 +151,8 @@ static SEXP dpq1_1(SEXP sx, SEXP sa, SEXP sI, double (*f)())
     return sy;
 }
 
-static SEXP dpq1_2(SEXP sx, SEXP sa, SEXP sI, SEXP sJ, double (*f)())
+static SEXP dpq1_2(SEXP sx, SEXP sa, SEXP sI, SEXP sJ,
+		   double (*f)(double, double, int, int))
 {
     SEXP sy;
     int i, ix, ia, n, nx, na, sxo = OBJECT(sx), sao = OBJECT(sa);
@@ -198,7 +225,8 @@ SEXP actuar_do_dpq1(int code, SEXP args)
              i3 = (++i3 == n3) ? 0 : i3,        \
              ++i)
 
-static SEXP dpq2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI, double (*f)())
+static SEXP dpq2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI,
+		   double (*f)(double, double, double, int))
 {
     SEXP sy;
     int i, ix, ia, ib, n, nx, na, nb,
@@ -269,7 +297,8 @@ static SEXP dpq2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI, double (*f)())
     return sy;
 }
 
-static SEXP dpq2_2(SEXP sx, SEXP sa, SEXP sb, SEXP sI, SEXP sJ, double (*f)())
+static SEXP dpq2_2(SEXP sx, SEXP sa, SEXP sb, SEXP sI, SEXP sJ,
+		   double (*f)(double, double, double, int, int))
 {
     SEXP sy;
     int i, ix, ia, ib, n, nx, na, nb,
@@ -305,7 +334,8 @@ static SEXP dpq2_2(SEXP sx, SEXP sa, SEXP sb, SEXP sI, SEXP sJ, double (*f)())
  * for the tolerance, the maximum number of iterations and echoing of
  * the iterations. */
 static SEXP dpq2_5(SEXP sx, SEXP sa, SEXP sb, SEXP sI, SEXP sJ,
-		   SEXP sT, SEXP sM, SEXP sE, double (*f)())
+		   SEXP sT, SEXP sM, SEXP sE,
+		   double (*f)(double, double, double, int, int, double, int, int))
 {
     SEXP sy;
     int i, ix, ia, ib, n, nx, na, nb,
@@ -369,7 +399,7 @@ SEXP actuar_do_dpq2(int code, SEXP args)
     case  18: return DPQ2_1(args, dlgamma);
     case  19: return DPQ2_2(args, plgamma);
     case  20: return DPQ2_2(args, qlgamma);
-    case  21: return DPQ2_2(args, mlgamma);
+    case  21: return DPQ2_1(args, mlgamma);
     case  22: return DPQ2_1(args, dllogis);
     case  23: return DPQ2_2(args, pllogis);
     case  24: return DPQ2_2(args, qllogis);
@@ -451,7 +481,8 @@ SEXP actuar_do_dpq2(int code, SEXP args)
              i4 = (++i4 == n4) ? 0 : i4,                \
              ++i)
 
-static SEXP dpq3_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sI, double (*f)())
+static SEXP dpq3_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sI,
+		   double (*f)(double, double, double, double, int))
 {
     SEXP sy;
     int i, ix, ia, ib, ic, n, nx, na, nb, nc,
@@ -531,7 +562,8 @@ static SEXP dpq3_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sI, double (*f)())
     return sy;
 }
 
-static SEXP dpq3_2(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sI, SEXP sJ, double (*f)())
+static SEXP dpq3_2(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sI, SEXP sJ,
+		   double (*f)(double, double, double, double, int, int))
 {
     SEXP sy;
     int i, ix, ia, ib, ic, n, nx, na, nb, nc,
@@ -648,7 +680,8 @@ SEXP actuar_do_dpq3(int code, SEXP args)
              i5 = (++i5 == n5) ? 0 : i5,                        \
              ++i)
 
-static SEXP dpq4_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP sI, double (*f)())
+static SEXP dpq4_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP sI,
+		   double (*f)(double, double, double, double, double, int))
 {
     SEXP sy;
     int i, ix, ia, ib, ic, id, n, nx, na, nb, nc, nd,
@@ -739,7 +772,8 @@ static SEXP dpq4_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP sI, double 
     return sy;
 }
 
-static SEXP dpq4_2(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP sI, SEXP sJ, double (*f)())
+static SEXP dpq4_2(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP sI, SEXP sJ,
+		   double (*f)(double, double, double, double, double, int, int))
 {
     SEXP sy;
     int i, ix, ia, ib, ic, id, n, nx, na, nb, nc, nd,
@@ -824,7 +858,8 @@ SEXP actuar_do_dpq4(int code, SEXP args)
              i6 = (++i6 == n6) ? 0 : i6,                        \
              ++i)
 
-static SEXP dpq5_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sI, double (*f)())
+static SEXP dpq5_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sI,
+		   double (*f)(double, double, double, double, double, double, int))
 {
     SEXP sy;
     int i, ix, ia, ib, ic, id, ie, n, nx, na, nb, nc, nd, ne,
@@ -924,7 +959,8 @@ static SEXP dpq5_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sI
     return sy;
 }
 
-static SEXP dpq5_2(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sI, SEXP sJ, double (*f)())
+static SEXP dpq5_2(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sI, SEXP sJ,
+		   double (*f)(double, double, double, double, double, double, int, int))
 {
     SEXP sy;
     int i, ix, ia, ib, ic, id, ie, n, nx, na, nb, nc, nd, ne,
@@ -973,7 +1009,7 @@ SEXP actuar_do_dpq5(int code, SEXP args)
     case  4:  return DPQ5_2(args, pfpareto);
     case  5:  return DPQ5_2(args, qfpareto);
     case  6:  return DPQ5_1(args, mfpareto);
-    case  7:  return DPQ5_2(args, levpareto4);
+    case  7:  return DPQ5_1(args, levpareto4);
     default:
         error(_("internal error in actuar_do_dpq5"));
     }
@@ -999,7 +1035,8 @@ SEXP actuar_do_dpq5(int code, SEXP args)
              i7 = (++i7 == n7) ? 0 : i7,                        \
              ++i)
 
-static SEXP dpq6_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sg, SEXP sI, double (*f)())
+static SEXP dpq6_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sg, SEXP sI,
+		   double (*f)(double, double, double, double, double, double, double, int))
 {
     SEXP sy;
     /* skip argument "sf" because "if" is a C keyword. */

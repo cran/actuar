@@ -2,6 +2,15 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.3-1}{
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{Include prototypes for all C level functions to please
+	\code{-Wstrict-prototypes}.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.3-0}{
   \subsection{NEW FEATURES}{
     \itemize{

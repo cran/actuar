@@ -35,6 +35,33 @@
 #include "actuar.h"
 #include "locale.h"
 
+/* Prototypes of auxiliary functions */
+static Rboolean random1(double (*f)(double),
+			double *, int,
+			SEXP, int, SEXPTYPE);
+static Rboolean random2(double (*f)(double, double),
+			double *, int,
+			double *, int,
+			SEXP, int, SEXPTYPE);
+static Rboolean random3(double (*f)(double, double, double),
+			double *, int,
+			double *, int,
+			double *, int,
+			SEXP, int, SEXPTYPE);
+static Rboolean random4(double (*f)(double, double, double, double),
+			double *, int,
+			double *, int,
+			double *, int,
+			double *, int,
+			SEXP, int, SEXPTYPE);
+static Rboolean random5(double (*f)(double, double, double, double, double),
+			double *, int,
+			double *, int,
+			double *, int,
+			double *, int,
+			double *, int,
+			SEXP, int, SEXPTYPE);
+
 /* Additional access macros */
 #define CAD5R(e) CAR(CDR(CDR(CDR(CDR(CDR(e))))))
 
@@ -56,7 +83,9 @@ static void fill_with_NAs(SEXP x, int n, SEXPTYPE type) {
 
 
 /* Functions for one parameter distributions */
-static Rboolean random1(double (*f)(), double *a, int na, SEXP x, int n, SEXPTYPE type)
+static Rboolean random1(double (*f)(double),
+			double *a, int na,
+			SEXP x, int n, SEXPTYPE type)
 {
     int i;
     Rboolean naflag = FALSE;
@@ -152,8 +181,10 @@ SEXP actuar_do_random1(int code, SEXP args, SEXPTYPE type)
 
 
 /* Functions for two parameter distributions */
-static Rboolean random2(double (*f)(), double *a, int na,
-                        double *b, int nb, SEXP x, int n, SEXPTYPE type)
+static Rboolean random2(double (*f)(double, double),
+			double *a, int na,
+			double *b, int nb,
+			SEXP x, int n, SEXPTYPE type)
 {
     int i;
     Rboolean naflag = FALSE;
@@ -266,8 +297,10 @@ SEXP actuar_do_random2(int code, SEXP args, SEXPTYPE type)
 
 
 /* Functions for three parameter distributions */
-static Rboolean random3(double (*f) (), double *a, int na,
-                        double *b, int nb, double *c, int nc,
+static Rboolean random3(double (*f)(double, double, double),
+			double *a, int na,
+			double *b, int nb,
+			double *c, int nc,
                         SEXP x, int n, SEXPTYPE type)
 {
     int i;
@@ -376,9 +409,12 @@ SEXP actuar_do_random3(int code, SEXP args, SEXPTYPE type)
 
 
 /* Functions for four parameter distributions */
-static Rboolean random4(double (*f) (), double *a, int na,
-                        double *b, int nb, double *c, int nc,
-                        double *d, int nd, SEXP x, int n, SEXPTYPE type)
+static Rboolean random4(double (*f)(double, double, double, double),
+			double *a, int na,
+			double *b, int nb,
+			double *c, int nc,
+                        double *d, int nd,
+			SEXP x, int n, SEXPTYPE type)
 {
     int i;
     Rboolean naflag = FALSE;
@@ -483,9 +519,12 @@ SEXP actuar_do_random4(int code, SEXP args, SEXPTYPE type)
 
 
 /* Functions for Five parameter distributions */
-static Rboolean random5(double (*f) (), double *a, int na,
-                        double *b, int nb, double *c, int nc,
-                        double *d, int nd, double *e, int ne,
+static Rboolean random5(double (*f)(double, double, double, double, double),
+			double *a, int na,
+			double *b, int nb,
+			double *c, int nc,
+                        double *d, int nd,
+			double *e, int ne,
                         SEXP x, int n, SEXPTYPE type)
 {
     int i;

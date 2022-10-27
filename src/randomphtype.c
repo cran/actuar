@@ -19,8 +19,12 @@
 #include "actuar.h"
 #include "locale.h"
 
-static Rboolean randomphtype2(double (*f)(), double *a, double *b,
-                              int na, double *x, int n)
+/* Prototypes of auxiliary function */
+static Rboolean randomphtype2(double (*f)(double *, double **, double *, int),
+			      double *, double *, int, double *, int);
+
+static Rboolean randomphtype2(double (*f)(double *, double **, double *, int),
+			      double *a, double *b, int na, double *x, int n)
 {
     int i, j;
     double *rates, **Q;

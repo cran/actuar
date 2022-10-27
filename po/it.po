@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: actuar 1.1-7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-03 12:26-0400\n"
+"POT-Creation-Date: 2022-10-27 15:25-0400\n"
 "PO-Revision-Date: 2022-04-13 11:12+0200\n"
 "Last-Translator: Daniele Medri <dmedri@gmail.com>\n"
 "Language-Team: Daniele Medri <dmedri@gmail.com>\n"
@@ -18,38 +18,38 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.4.2\n"
 
-#: betaint.c:143 dpq.c:80 dpq.c:214 dpq.c:467 dpq.c:665 dpq.c:841 dpq.c:1019
-#: dpqphtype.c:49 random.c:105 random.c:112 random.c:204 random.c:211
-#: random.c:320 random.c:327 random.c:431 random.c:438 random.c:540
-#: random.c:547 randomphtype.c:70 randomphtype.c:77
+#: betaint.c:143 dpq.c:105 dpq.c:241 dpq.c:497 dpq.c:697 dpq.c:875 dpq.c:1055
+#: dpqphtype.c:57 random.c:134 random.c:141 random.c:235 random.c:242
+#: random.c:353 random.c:360 random.c:467 random.c:474 random.c:579
+#: random.c:586 randomphtype.c:74 randomphtype.c:81
 msgid "invalid arguments"
 msgstr "argomenti non validi"
 
-#: dpq.c:182
+#: dpq.c:208
 msgid "internal error in actuar_do_dpq1"
 msgstr "errore interno in actuar_do_dpq1"
 
-#: dpq.c:434
+#: dpq.c:463
 msgid "internal error in actuar_do_dpq2"
 msgstr "errore interno in actuar_do_dpq2"
 
-#: dpq.c:628
+#: dpq.c:659
 msgid "internal error in actuar_do_dpq3"
 msgstr "errore interno in actuar_do_dpq3"
 
-#: dpq.c:805
+#: dpq.c:838
 msgid "internal error in actuar_do_dpq4"
 msgstr "errore interno in actuar_do_dpq4"
 
-#: dpq.c:979
+#: dpq.c:1014
 msgid "internal error in actuar_do_dpq5"
 msgstr "errore interno in actuar_do_dpq5"
 
-#: dpq.c:1124
+#: dpq.c:1160
 msgid "internal error in actuar_do_dpq6"
 msgstr "errore interno in actuar_do_dpq6"
 
-#: dpqphtype.c:168
+#: dpqphtype.c:177
 msgid "internal error in actuar_do_dpqphtype2"
 msgstr "errore interno in actuar_do_dpqphtype2"
 
@@ -79,87 +79,87 @@ msgstr ""
 "raggiunto il numero massimo di ricorsioni prima che la distribuzione di "
 "probabilità fosse completata"
 
-#: random.c:54
+#: random.c:81
 msgid "NAs produced"
 msgstr "Generati valori NA"
 
-#: random.c:142
+#: random.c:171
 msgid "internal error in actuar_do_random1"
 msgstr "errore interno in actuar_do_random1"
 
-#: random.c:256
+#: random.c:287
 msgid "internal error in actuar_do_random2"
 msgstr "errore interno in actuar_do_random2"
 
-#: random.c:366
+#: random.c:399
 msgid "internal error in actuar_do_random3"
 msgstr "errore interno in actuar_do_random3"
 
-#: random.c:473
+#: random.c:509
 msgid "internal error in actuar_do_random4"
 msgstr "errore interno in actuar_do_random4"
 
-#: random.c:582
+#: random.c:621
 msgid "internal error in actuar_do_random5"
 msgstr "errore interno in actuar_do_random5"
 
-#: random.c:612
+#: random.c:651
 msgid "internal error in actuar_do_random"
 msgstr "errore interno in actuar_do_random"
 
-#: randomphtype.c:97
+#: randomphtype.c:101
 msgid "non-square sub-intensity matrix"
 msgstr "matrice non quadrata"
 
-#: randomphtype.c:100
+#: randomphtype.c:104
 msgid "non-conformable arguments"
 msgstr "gli argomenti non sono compatibili"
 
-#: randomphtype.c:119
+#: randomphtype.c:123
 msgid "internal error in actuar_do_randomphtype2"
 msgstr "errore interno in actuar_do_randomphtype2"
 
-#: randomphtype.c:146
+#: randomphtype.c:150
 msgid "internal error in actuar_do_randomphtype"
 msgstr "errore interno in actuar_do_randomphtype"
 
-#: util.c:102
+#: util.c:106
 #, c-format
 msgid "LAPACK routine dgebal returned info code %d when permuting"
 msgstr ""
 "La routine dgebal di LAPACK ha restituito il codice informativo %d durante "
 "la permutazione"
 
-#: util.c:106
+#: util.c:110
 #, c-format
 msgid "LAPACK routine dgebal returned info code %d when scaling"
 msgstr ""
 "La routine dgebal di LAPACK ha restituito il codice informativo %d durante "
 "lo scaling"
 
-#: util.c:153
+#: util.c:157
 #, c-format
 msgid "LAPACK routine dgetrf returned info code %d"
 msgstr "La routine dgetrf di LAPACK ha restituito il codice informativo %d"
 
-#: util.c:156
+#: util.c:160
 #, c-format
 msgid "LAPACK routine dgetrs returned info code %d"
 msgstr "La routine dgetrs di LAPACK ha restituito il codice informativo %d"
 
-#: util.c:262
+#: util.c:266
 msgid "'A' is 0-diml"
 msgstr "'A' è 0-diml"
 
-#: util.c:264
+#: util.c:268
 msgid "no right-hand side in 'B'"
 msgstr "nessun membro di destra in 'B'"
 
-#: util.c:275
+#: util.c:279
 #, c-format
 msgid "argument %d of Lapack routine dgesv had invalid value"
 msgstr "l'argomento %d della routine dgesv di Lapack ha un valore non valido"
 
-#: util.c:278
+#: util.c:282
 msgid "Lapack routine dgesv: system is exactly singular"
 msgstr "La routine dgesv di Lapack: il sistema è esattamente singolare"

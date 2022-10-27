@@ -26,13 +26,21 @@
 #include "actuar.h"
 #include "locale.h"
 
+/* Prototypes of auxiliary functions */
+static SEXP dpqphtype2_1(SEXP, SEXP, SEXP, SEXP,
+			 double (*f)(double, double *, double *, int, int));
+static SEXP dpqphtype2_2(SEXP, SEXP, SEXP, SEXP, SEXP,
+			 double (*f)(double, double *, double *, int, int, int));
+
+
 #define if_NA_dpqphtype2_set(y, x)                              \
     if      (ISNA (x) || naargs) y = NA_REAL;                   \
     else if (ISNAN(x) || nanargs) y = R_NaN;                    \
     else if (naflag) y = R_NaN;
 
 
-static SEXP dpqphtype2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI, double (*f)())
+static SEXP dpqphtype2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI,
+			 double (*f)(double, double *, double *, int, int))
 {
     SEXP sy, bdims;
     int i, j, ij, n, m, sxo = OBJECT(sx);
@@ -48,7 +56,7 @@ static SEXP dpqphtype2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI, double (*f)())
     if (!isNumeric(sx) || !isNumeric(sa) || !isMatrix(sb))      \
         error(_("invalid arguments"));                          \
                                                                 \
-    n  = LENGTH(sx);                                            \
+    n = LENGTH(sx);						\
     if (n == 0)                                                 \
         return(allocVector(REALSXP, 0));                        \
                                                                 \
@@ -123,7 +131,8 @@ static SEXP dpqphtype2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI, double (*f)())
     return sy;
 }
 
-static SEXP dpqphtype2_2(SEXP sx, SEXP sa, SEXP sb, SEXP sI, SEXP sJ, double (*f)())
+static SEXP dpqphtype2_2(SEXP sx, SEXP sa, SEXP sb, SEXP sI, SEXP sJ,
+			 double (*f)(double, double *, double *, int, int, int))
 {
     SEXP sy, bdims;
     int i, j, ij, n, m, sxo = OBJECT(sx);
