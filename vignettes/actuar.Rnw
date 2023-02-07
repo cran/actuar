@@ -1,13 +1,4 @@
-\documentclass[x11names,english]{article}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-  \usepackage{amsmath}
-  \usepackage[round]{natbib}
-  \usepackage{babel}
-  \usepackage[scaled=0.9]{helvet}
-  \usepackage[sc]{mathpazo}
-  \usepackage[noae,inconsolata]{Sweave}
-  \usepackage{framed}
+\input{share/preamble}
 
   %\VignetteIndexEntry{Introduction to actuar}
   %\VignettePackage{actuar}
@@ -18,55 +9,6 @@
     Vincent Goulet \\ Université Laval \\[3ex]
     Mathieu Pigeon \\ Université du Québec à Montréal}
   \date{}
-
-  %% Colors
-  \usepackage{xcolor}
-  \definecolor{link}{rgb}{0,0.4,0.6}             % internal links
-  \definecolor{url}{rgb}{0.6,0,0}                % external links
-  \definecolor{citation}{rgb}{0,0.5,0}           % citations
-  \definecolor{codebg}{named}{LightYellow1}      % R code background
-
-  %% Hyperlinks
-  \usepackage{hyperref}
-  \hypersetup{%
-    pdfauthor={Vincent Goulet},
-    colorlinks = {true},
-    linktocpage = {true},
-    urlcolor = {url},
-    linkcolor = {link},
-    citecolor = {citation},
-    pdfpagemode = {UseOutlines},
-    pdfstartview = {Fit},
-    bookmarksopen = {true},
-    bookmarksnumbered = {true},
-    bookmarksdepth = {subsubsection}}
-
-  %% Sweave Sinput and Soutput environments reinitialized to remove
-  %% default configuration. Space between input and output blocks also
-  %% reduced.
-  \DefineVerbatimEnvironment{Sinput}{Verbatim}{}
-  \DefineVerbatimEnvironment{Soutput}{Verbatim}{}
-  \fvset{listparameters={\setlength{\topsep}{0pt}}}
-
-  %% Environment Schunk redefined as an hybrid of environments
-  %% snugshade* and leftbar of framed.sty.
-  \makeatletter
-  \renewenvironment{Schunk}{%
-    \setlength{\topsep}{1pt}
-    \def\FrameCommand##1{\hskip\@totalleftmargin
-       \vrule width 2pt\colorbox{codebg}{\hspace{3pt}##1}%
-      % There is no \@totalrightmargin, so:
-      \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
-    \MakeFramed {\advance\hsize-\width
-      \@totalleftmargin\z@ \linewidth\hsize
-      \advance\labelsep\fboxsep
-      \@setminipage}%
-  }{\par\unskip\@minipagefalse\endMakeFramed}
-  \makeatother
-
-  \newcommand{\pkg}[1]{\textbf{#1}}
-
-  \bibliographystyle{plainnat}
 
 \begin{document}
 

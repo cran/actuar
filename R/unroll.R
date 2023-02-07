@@ -11,7 +11,7 @@ unroll <- function(x, bycol = FALSE, drop = TRUE)
     dx <- dim(x)
 
     if (length(dx) > 2L)
-        stop("'x' must be a vector or a matrix")
+        stop(sprintf("%s must be a vector or a matrix", sQuote("x")))
 
     if (length(dx) < 2L)
         x <- rbind(x, deparse.level = 0L)

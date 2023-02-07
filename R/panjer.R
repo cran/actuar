@@ -25,10 +25,12 @@ panjer <- function(fx, dist, p0 = NULL, x.scale = 1, ...,
         if (length(p0) > 1L)
         {
             p0 <- p0[1L]
-            warning("'p0' has many elements: only the first used")
+            warning(sprintf("%s has many elements: only the first used",
+                            sQuote("p0")))
         }
         if ((p0 < 0) || (p0 > 1))
-            stop("'p0' must be a valid probability (between 0 and 1)")
+            stop(sprintf("%s must be a valid probability (between 0 and 1)",
+                         sQuote("p0")))
     }
 
     ## Treat trivial case where 'p0 == 1' and hence F_S(0) = 1.
@@ -58,7 +60,8 @@ panjer <- function(fx, dist, p0 = NULL, x.scale = 1, ...,
     if (startsWith(dist, "zero-truncated"))
     {
         if (!(is.null(p0) || identical(p0, 0)))
-            warning("value of 'p0' ignored with a zero-truncated distribution")
+            warning(sprintf("value of %s ignored with a zero-truncated distribution",
+                            sQuote("p0")))
         dist <- sub("zero-truncated ", "", dist) # drop "zero truncated" prefix
         p0 <- 0
     }
@@ -75,7 +78,7 @@ panjer <- function(fx, dist, p0 = NULL, x.scale = 1, ...,
     if (dist == "poisson")
     {
         if (!"lambda" %in% names(par))
-            stop("value of 'lambda' missing")
+            stop(sprintf("value of %s missing", sQuote("lambda")))
         lambda <- par$lambda
         a <- 0
         b <- lambda
@@ -90,7 +93,8 @@ panjer <- function(fx, dist, p0 = NULL, x.scale = 1, ...,
     else if (dist == "negative binomial")
     {
         if (!all(c("prob", "size") %in% names(par)))
-            stop("value of 'prob' or 'size' missing")
+            stop(sprintf("value of %s or %s missing",
+                         sQuote("prob"), sQuote("size")))
         r <- par$size
         p <- par$prob
         a <- 1 - p
@@ -106,7 +110,8 @@ panjer <- function(fx, dist, p0 = NULL, x.scale = 1, ...,
     else if (dist == "binomial")
     {
         if (!all(c("prob", "size") %in% names(par)))
-            stop("value of 'prob' or 'size' missing")
+            stop(sprintf("value of %s or %s missing",
+                         sQuote("prob"), sQuote("size")))
         n <- par$size
         p <- par$prob
         a <- p/(p - 1)                  # equivalent to -p/(1 - p)
@@ -122,7 +127,7 @@ panjer <- function(fx, dist, p0 = NULL, x.scale = 1, ...,
     else if (dist == "logarithmic")
     {
         if (!"prob" %in% names(par))
-            stop("value of 'prob' missing")
+            stop(sprintf("value of %s missing", sQuote("prob")))
         a <- par$prob
         b <- -a
         if (is.null(p0) || identical(p0, 0)) # standard logarithmic

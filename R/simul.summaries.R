@@ -107,7 +107,7 @@ severity.portfolio <- function(x, by = head(names(x$node), -1),
     if (tail(level.names, 1L) %in% by)
     {
         if (length(by) > 1L)
-            stop("invalid 'by' specification")
+            stop(sprintf("invalid %s specification", sQuote("by")))
         #x <- x$data
         res <- unroll(x$data, bycol = TRUE, drop = FALSE)
         colnames(res) <- paste(prefix, colnames(res), sep = "")

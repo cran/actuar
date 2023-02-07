@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: actuar 3.3-1\n"
-"POT-Creation-Date: 2022-10-27 15:25\n"
+"Project-Id-Version: actuar 3.3-2\n"
+"POT-Creation-Date: 2023-02-05 12:53\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,49 +22,64 @@ msgstr ""
 msgid "need 0, 1, or 2 subscripts"
 msgstr ""
 
-msgid "one of 'mgf.claim' or 'h' is needed"
+msgid "one of %s or %s is needed"
 msgstr ""
 
-msgid "'h' must be a function or an expression containing 'x'"
+msgid "mgf.claim"
 msgstr ""
 
-msgid "'mgf.claim' must be a function or an expression containing 'x'"
+msgid "h"
 msgstr ""
 
-msgid "'mgf.wait' must be a function or an expression containing 'x'"
+msgid "%s must be a function or an expression containing %s"
 msgstr ""
 
-msgid "'h' must be a function or an expression containing 'x' and 'y'"
+msgid "x"
 msgstr ""
 
-msgid "'premium.rate' must be a function when using reinsurance"
+msgid "mgf.wait"
 msgstr ""
 
-msgid "'mgf.claim' must be a function or an expression containing 'x' and 'y'"
+msgid "%s must be a function or an expression containing %s and %s"
 msgstr ""
 
-msgid "'premium.rate' must be a function or an expression containing 'y'"
+msgid "y"
 msgstr ""
 
-msgid "'moments' must supply the mean and variance of the distribution"
+msgid "%s must be a function when using reinsurance"
 msgstr ""
 
-msgid "'moments' must supply the mean, variance and skewness of the distribution"
+msgid "premium.rate"
 msgstr ""
 
-msgid "'nb.simul' must supply the number of simulations"
+msgid "%s must supply the mean and variance of the distribution"
 msgstr ""
 
-msgid "expressions in 'model.freq' and 'model.sev' must be named"
+msgid "moments"
 msgstr ""
 
-msgid "'model.sev' must be a vector of probabilities"
+msgid "%s must supply the mean, variance and skewness of the distribution"
+msgstr ""
+
+msgid "%s must supply the number of simulations"
+msgstr ""
+
+msgid "nb.simul"
+msgstr ""
+
+msgid "expressions in %s and %s must be named"
+msgstr ""
+
+msgid "model.freq"
+msgstr ""
+
+msgid "model.sev"
+msgstr ""
+
+msgid "%s must be a vector of probabilities"
 msgstr ""
 
 msgid "frequency distribution must be supplied as a character string"
-msgstr ""
-
-msgid "'model.freq' must be a vector of probabilities"
 msgstr ""
 
 msgid "internal error"
@@ -76,19 +91,37 @@ msgstr ""
 msgid "lower bound of the likelihood missing"
 msgstr ""
 
-msgid "one of the Gamma prior parameter \"shape\", \"rate\" or \"scale\" missing"
+msgid "one of the Gamma prior parameter %s, %s or %s missing"
 msgstr ""
 
-msgid "one of the Beta prior parameter \"shape1\" or \"scale2\" missing"
+msgid "shape"
 msgstr ""
 
-msgid "parameter \"size\" of the likelihood missing"
+msgid "rate"
 msgstr ""
 
-msgid "parameter \"shape.lik\" of the likelihood missing"
+msgid "scale"
 msgstr ""
 
-msgid "parameter \"sd.lik\" of the likelihood missing"
+msgid "one of the Beta prior parameter %s or %s missing"
+msgstr ""
+
+msgid "shape1"
+msgstr ""
+
+msgid "shape2"
+msgstr ""
+
+msgid "parameter %s of the likelihood missing"
+msgstr ""
+
+msgid "size"
+msgstr ""
+
+msgid "shape.lik"
+msgstr ""
+
+msgid "sd.lik"
 msgstr ""
 
 msgid "unsupported likelihood"
@@ -103,7 +136,13 @@ msgstr ""
 msgid "there must be more than one node"
 msgstr ""
 
-msgid "missing values are not in the same positions in 'weights' and in 'ratios'"
+msgid "missing values are not in the same positions in %s and in %s"
+msgstr ""
+
+msgid "weights"
+msgstr ""
+
+msgid "ratios"
 msgstr ""
 
 msgid "no available data to fit model"
@@ -112,7 +151,10 @@ msgstr ""
 msgid "maximum number of iterations reached before obtaining convergence"
 msgstr ""
 
-msgid "unsupported interactions in 'formula'"
+msgid "unsupported interactions in %s"
+msgstr ""
+
+msgid "formula"
 msgstr ""
 
 msgid "hierarchical regression models not supported"
@@ -136,34 +178,49 @@ msgstr ""
 msgid "coinsurance must be between 0 and 1"
 msgstr ""
 
-msgid "'cdf' must be supplied"
+msgid "%s must be supplied"
 msgstr ""
 
-msgid "'cdf' must be a function or an expression containing 'x'"
+msgid "cdf"
 msgstr ""
 
-msgid "'lev' required with method \"unbiased\""
+msgid "%s required with method %s"
 msgstr ""
 
-msgid "'lev' must be a function or an expression containing 'x'"
+msgid "lev"
 msgstr ""
 
-msgid "'order' must be positive"
+msgid "unbiased"
 msgstr ""
 
-msgid "'nclass' not used when 'breaks' is specified"
+msgid "%s must be positive"
 msgstr ""
 
-msgid "'group' ignored when 'breaks' is specified"
+msgid "order"
 msgstr ""
 
-msgid "'group' ignored when 'nclass' is specified"
+msgid "%s not used when %s is specified"
+msgstr ""
+
+msgid "nclass"
+msgstr ""
+
+msgid "breaks"
+msgstr ""
+
+msgid "%s ignored when %s is specified"
+msgstr ""
+
+msgid "group"
 msgstr ""
 
 msgid "invalid number of group boundaries and frequencies"
 msgstr ""
 
 msgid "missing frequencies replaced by zeros"
+msgstr ""
+
+msgid "missing values are not in the same positions in 'weights' and in 'ratios'"
 msgstr ""
 
 msgid "there must be at least two nodes at every level"
@@ -175,49 +232,73 @@ msgstr ""
 msgid "infinite group boundaries"
 msgstr ""
 
-msgid "'probability' is an alias for '!freq', however they differ."
+msgid "%s is an alias for %s, however they differ."
 msgstr ""
 
-msgid "'start' must be a named list"
+msgid "probability"
 msgstr ""
 
-msgid "'fun' must be supplied as a function"
+msgid "!freq"
 msgstr ""
 
-msgid "'x' must be a numeric vector or an object of class \"grouped.data\""
+msgid "%s must be a named list"
 msgstr ""
 
-msgid "'start' specifies names which are not arguments to 'fun'"
+msgid "start"
 msgstr ""
 
-msgid "\"chi-square\" measure requires an object of class \"grouped.data\""
+msgid "%s must be supplied as a function"
+msgstr ""
+
+msgid "fun"
+msgstr ""
+
+msgid "%s must be a numeric vector or an object of class %s"
+msgstr ""
+
+msgid "grouped.data"
+msgstr ""
+
+msgid "%s specifies names which are not arguments to %s"
+msgstr ""
+
+msgid "%s measure requires an object of class %s"
+msgstr ""
+
+msgid "chi-square"
 msgstr ""
 
 msgid "frequency must be larger than 0 in all groups"
 msgstr ""
 
-msgid "\"LAS\" measure requires an object of class \"grouped.data\""
+msgid "LAS"
 msgstr ""
 
 msgid "optimization failed"
 msgstr ""
 
-msgid "'p0' has many elements: only the first used"
+msgid "%s has many elements: only the first used"
 msgstr ""
 
-msgid "'p0' must be a valid probability (between 0 and 1)"
+msgid "p0"
 msgstr ""
 
-msgid "value of 'p0' ignored with a zero-truncated distribution"
+msgid "%s must be a valid probability (between 0 and 1)"
 msgstr ""
 
-msgid "value of 'lambda' missing"
+msgid "value of %s ignored with a zero-truncated distribution"
 msgstr ""
 
-msgid "value of 'prob' or 'size' missing"
+msgid "value of %s missing"
 msgstr ""
 
-msgid "value of 'prob' missing"
+msgid "lambda"
+msgstr ""
+
+msgid "value of %s or %s missing"
+msgstr ""
+
+msgid "prob"
 msgstr ""
 
 msgid "frequency distribution not in the (a, b, 0) or (a, b, 1) families"
@@ -226,67 +307,43 @@ msgstr ""
 msgid "Pr[S = 0] is numerically equal to 0; impossible to start the recursion"
 msgstr ""
 
-msgid "invalid first argument 'n'"
+msgid "invalid first argument %s"
+msgstr ""
+
+msgid "n"
+msgstr ""
+
+msgid "invalid values in %s"
 msgstr ""
 
 msgid "no positive probabilities"
 msgstr ""
 
-msgid "invalid third argument 'models'"
+msgid "invalid third argument %s"
 msgstr ""
 
-msgid "'par.claims' must be a named list"
+msgid "par.claims"
 msgstr ""
 
-msgid "'par.wait' must be a named list"
+msgid "par.wait"
 msgstr ""
 
-msgid "parameters %s missing in 'par.claims'"
+msgid "parameters %s missing in %s"
 msgstr ""
 
-msgid "parameter \"rate\" missing in 'par.claims'"
+msgid ","
 msgstr ""
 
-msgid "parameter \"weights\" missing in 'par.claims'"
+msgid "parameter %s missing in %s"
 msgstr ""
 
-msgid "parameter \"shape\" missing in 'par.claims'"
+msgid "parameter %s or %s missing in %s"
 msgstr ""
 
-msgid "parameter \"rate\" or \"scale\" missing in 'par.claims'"
+msgid "rates"
 msgstr ""
 
-msgid "parameter \"prob\" missing in 'par.claims'"
-msgstr ""
-
-msgid "parameter \"rates\" missing in 'par.claims'"
-msgstr ""
-
-msgid "invalid parameters in 'par.claims'"
-msgstr ""
-
-msgid "parameters %s missing in 'par.wait'"
-msgstr ""
-
-msgid "parameter \"rate\" missing in 'par.wait'"
-msgstr ""
-
-msgid "parameter \"weights\" missing in 'par.wait'"
-msgstr ""
-
-msgid "parameter \"shape\" missing in 'par.wait'"
-msgstr ""
-
-msgid "parameter \"rate\" or \"scale\" missing in 'par.wait'"
-msgstr ""
-
-msgid "parameter \"prob\" missing in 'par.wait'"
-msgstr ""
-
-msgid "parameter \"rates\" missing in 'par.wait'"
-msgstr ""
-
-msgid "invalid parameters in 'par.wait'"
+msgid "invalid parameters in %s"
 msgstr ""
 
 msgid "'nodes' must be a named list"
@@ -301,8 +358,11 @@ msgstr ""
 msgid "nothing to do"
 msgstr ""
 
-msgid "invalid 'by' specification"
+msgid "invalid %s specification"
 msgstr ""
 
-msgid "'x' must be a vector or a matrix"
+msgid "by"
+msgstr ""
+
+msgid "%s must be a vector or a matrix"
 msgstr ""

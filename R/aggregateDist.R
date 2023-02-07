@@ -27,7 +27,8 @@ aggregateDist <-
         ## responsability to list the moments in the correct order
         ## since the vector is not required to be named.
         if (missing(moments) || length(moments) < 2)
-            stop("'moments' must supply the mean and variance of the distribution")
+            stop(sprintf("%s must supply the mean and variance of the distribution",
+                         sQuote("moments")))
         FUN <- normal(moments[1], moments[2])
         comment(FUN) <- "Normal approximation"
     }
@@ -35,16 +36,19 @@ aggregateDist <-
     else if (method == "npower")
     {
         if (missing(moments) || length(moments) < 3)
-            stop("'moments' must supply the mean, variance and skewness of the distribution")
+            stop(sprintf("%s must supply the mean, variance and skewness of the distribution",
+                         sQuote("moments")))
         FUN <- npower(moments[1], moments[2], moments[3])
         comment(FUN) <- "Normal Power approximation"
     }
     else if (method == "simulation")
     {
         if (missing(nb.simul))
-            stop("'nb.simul' must supply the number of simulations")
+            stop(sprintf("%s must supply the number of simulations",
+                         sQuote("nb.simul")))
         if (is.null(names(model.freq)) && is.null(names(model.sev)))
-            stop("expressions in 'model.freq' and 'model.sev' must be named")
+            stop(sprintf("expressions in %s and %s must be named",
+                         sQuote("model.freq"), sQuote("model.sev")))
         FUN <- simS(nb.simul, model.freq = model.freq, model.sev = model.sev)
         comment(FUN) <- "Approximation by simulation"
     }
@@ -54,7 +58,8 @@ aggregateDist <-
         ## discrete distribution of claim amounts, that is a vector of
         ## probabilities in argument 'model.sev'.
         if (!is.numeric(model.sev))
-            stop("'model.sev' must be a vector of probabilities")
+            stop(sprintf("%s must be a vector of probabilities",
+                         sQuote("model.sev")))
 
         ## Recursive method uses a model for the frequency distribution.
         if (method == "recursive")
@@ -87,7 +92,8 @@ aggregateDist <-
         else if (method == "convolution")
         {
             if (!is.numeric(model.freq))
-                stop("'model.freq' must be a vector of probabilities")
+                stop(sprintf("%s must be a vector of probabilities",
+                             sQuote("model.freq")))
             FUN <- exact(fx = model.sev, pn = model.freq, x.scale = x.scale)
             comment(FUN) <- "Exact calculation (convolutions)"
         }

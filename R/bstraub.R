@@ -27,7 +27,8 @@ bstraub <- function(ratios, weights, method = c("unbiased", "iterative"),
     if (nrow(ratios) < 2L)
         stop("there must be more than one node")
     if (!identical(which(is.na(ratios)), which(is.na(weights))))
-        stop("missing values are not in the same positions in 'weights' and in 'ratios'")
+        stop(sprintf("missing values are not in the same positions in %s and in %s",
+                     sQuote("weights"), sQuote("ratios")))
     if (all(!weights, na.rm = TRUE))
         stop("no available data to fit model")
 

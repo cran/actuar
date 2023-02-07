@@ -19,12 +19,13 @@ mde <- function(x, fun, start, measure = c("CvM", "chi-square", "LAS"),
 
     ## Argument checking
     if (missing(start) || !is.list(start))
-        stop("'start' must be a named list")
+        stop(sprintf("%s must be a named list", sQuote("start")))
     if (missing(fun) || !(is.function(fun)))
-        stop("'fun' must be supplied as a function")
+        stop(sprintf("%s must be supplied as a function", sQuote("fun")))
     grouped <- inherits(x, "grouped.data")
     if (!(is.numeric(x) || grouped))
-        stop("'x' must be a numeric vector or an object of class \"grouped.data\"")
+        stop(sprintf("%s must be a numeric vector or an object of class %s",
+                     sQuote("x"), dQuote("grouped.data")))
 
     ## Make sure that any argument of 'fun' specified in '...' is held
     ## fixed.
@@ -38,7 +39,8 @@ mde <- function(x, fun, start, measure = c("CvM", "chi-square", "LAS"),
     args <- names(f)
     m <- match(nm, args)
     if (any(is.na(m)))
-        stop("'start' specifies names which are not arguments to 'fun'")
+        stop(sprintf("%s specifies names which are not arguments to %s",
+                     sQuote("start"), sQuote("fun")))
     formals(fun) <- c(f[c(1, m)], f[-c(1, m)]) # reorder arguments
     fn <- function(parm, x, ...) fun(x, parm, ...)
     if ((l <- length(nm)) > 1)
@@ -61,7 +63,8 @@ mde <- function(x, fun, start, measure = c("CvM", "chi-square", "LAS"),
     if (measure == "chi-square")
     {
         if (!grouped)
-            stop("\"chi-square\" measure requires an object of class \"grouped.data\"")
+            stop(sprintf("%s measure requires an object of class %s",
+                         dQuote("chi-square"), dQuote("grouped.data")))
         if (any((nj <- x[, 2]) == 0))
             stop("frequency must be larger than 0 in all groups")
         og <- ogive(x)
@@ -78,7 +81,8 @@ mde <- function(x, fun, start, measure = c("CvM", "chi-square", "LAS"),
     if (measure == "LAS")
     {
         if (!grouped)
-            stop("\"LAS\" measure requires an object of class \"grouped.data\"")
+            stop(sprintf("%s measure requires an object of class %s",
+                         dQuote("LAS"), dQuote("grouped.data")))
         e <- elev(x)
         x <- knots(e)
         G <- function(...) diff(fn(...))

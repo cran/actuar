@@ -35,7 +35,7 @@ rcomppois(n, lambda, model.sev, SIMPLIFY = TRUE)}
   \code{\link{rcomphierarc}}, but the calls need not be wrapped into
   \code{\link{expression}}. Either argument may also be the name of an
   object containing an expression, in which case the object will be
-  evaluated in the evaluation frame to retrieve the expression.
+  evaluated in the parent frame to retrieve the expression.
 
   The argument of the random number generation functions for the number
   of variates to simulate \strong{must} be named \code{n}.

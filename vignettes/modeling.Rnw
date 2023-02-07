@@ -1,16 +1,4 @@
-\documentclass[x11names,english]{article}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-  \usepackage{amsmath,amsthm}
-  \usepackage[round]{natbib}
-  \usepackage{babel}
-  \usepackage[autolanguage]{numprint}
-  \usepackage[scaled=0.9]{helvet}
-  \usepackage[sc]{mathpazo}
-  \usepackage{booktabs}
-  \usepackage[shortlabels]{enumitem}
-  \usepackage[noae,inconsolata]{Sweave}
-  \usepackage{framed}
+\input{share/preamble}
 
   %\VignetteIndexEntry{Loss distributions modeling}
   %\VignettePackage{actuar}
@@ -21,73 +9,6 @@
     Vincent Goulet \\ Université Laval \\[3ex]
     Mathieu Pigeon \\ Université du Québec à Montréal}
   \date{}
-
-  %% Colors
-  \usepackage{xcolor}
-  \definecolor{link}{rgb}{0,0.4,0.6}             % internal links
-  \definecolor{url}{rgb}{0.6,0,0}                % external links
-  \definecolor{citation}{rgb}{0,0.5,0}           % citations
-  \definecolor{codebg}{named}{LightYellow1}      % R code background
-
-  %% Hyperlinks
-  \usepackage{hyperref}
-  \hypersetup{%
-    pdfauthor={Vincent Goulet},
-    colorlinks = {true},
-    linktocpage = {true},
-    urlcolor = {url},
-    linkcolor = {link},
-    citecolor = {citation},
-    pdfpagemode = {UseOutlines},
-    pdfstartview = {Fit},
-    bookmarksopen = {true},
-    bookmarksnumbered = {true},
-    bookmarksdepth = {subsubsection}}
-
-  %% Help for \autoref
-  \def\exampleautorefname{example}
-
-  %% Sweave Sinput and Soutput environments reinitialized to remove
-  %% default configuration. Space between input and output blocks also
-  %% reduced.
-  \DefineVerbatimEnvironment{Sinput}{Verbatim}{}
-  \DefineVerbatimEnvironment{Soutput}{Verbatim}{}
-  \fvset{listparameters={\setlength{\topsep}{0pt}}}
-
-  %% Environment Schunk redefined as an hybrid of environments
-  %% snugshade* and leftbar of framed.sty.
-  \makeatletter
-  \renewenvironment{Schunk}{%
-    \setlength{\topsep}{1pt}
-    \def\FrameCommand##1{\hskip\@totalleftmargin
-       \vrule width 2pt\colorbox{codebg}{\hspace{3pt}##1}%
-      % There is no \@totalrightmargin, so:
-      \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
-    \MakeFramed {\advance\hsize-\width
-      \@totalleftmargin\z@ \linewidth\hsize
-      \advance\labelsep\fboxsep
-      \@setminipage}%
-  }{\par\unskip\@minipagefalse\endMakeFramed}
-  \makeatother
-
-  %% Flush left enumerate environment.
-  \setlist[enumerate]{leftmargin=*,align=left}
-
-  %% Example environment
-  \theoremstyle{definition}
-  \newtheorem{example}{Example}
-  \theoremstyle{remark}
-  \newtheorem{rem}{Remark}
-
-  %% Some new commands
-  \newcommand{\E}[1]{E[ #1 ]}
-  \newcommand{\VAR}[1]{\mathrm{Var} [ #1 ]}
-  \newcommand{\LAS}{\mathrm{LAS}}
-  \newcommand{\mat}[1]{\mathbold{#1}} % with mathpazo
-  \newcommand{\pkg}[1]{\textbf{#1}}
-  \newcommand{\code}[1]{\texttt{#1}}
-
-  \bibliographystyle{plainnat}
 
 <<echo=FALSE>>=
 library(actuar)
@@ -184,7 +105,8 @@ are contiguous.
   We can conveniently and unambiguously store this data set in
   R as follows:
 <<echo=TRUE>>=
-x <- grouped.data(Group = c(0, 25, 50, 100, 150, 250, 500),
+x <- grouped.data(Group = c(0, 25, 50, 100,
+                            150, 250, 500),
                   Line.1 = c(30, 31, 57, 42, 65, 84),
                   Line.2 = c(26, 33, 31, 19, 16, 11))
 @
@@ -221,8 +143,8 @@ x
 y <- c(  27,   82,  115,   126, 155, 161, 243,  294,
         340,  384,  457,   680, 855, 877, 974, 1193,
        1340, 1884, 2558, 15743)
-grouped.data(y)                         # automatic
-grouped.data(y, breaks = 5)             # suggested
+grouped.data(y)
+grouped.data(y, breaks = 5)
 @
 
   The above grouping methods use equi-spaced breaks. This is rarely
@@ -249,16 +171,16 @@ x <- grouped.data(Group = c(0, 25, 50, 100, 150, 250, 500),
 \begin{enumerate}[i)]
 \item Extraction of the vector of group boundaries (the first column):
 <<echo=TRUE>>=
-x[, 1]                             # group boundaries
+x[, 1]
 @
 \item Extraction of the vector or matrix of group frequencies (the
   second and third columns):
 <<echo=TRUE>>=
-x[, -1]                            # group frequencies
+x[, -1]
 @
 \item Extraction of a subset of the whole object (first three lines):
 <<echo=TRUE>>=
-x[1:3, ]                            # first 3 groups
+x[1:3, ]
 @
 \end{enumerate}
 Notice how extraction results in a simple vector or matrix if either
@@ -268,12 +190,12 @@ As for replacement operations, the package implements the following.
 \begin{enumerate}[i)]
 \item Replacement of one or more group frequencies:
 <<echo=TRUE>>=
-x[1, 2] <- 22; x                   # frequency replacement
-x[1, c(2, 3)] <- c(22, 19); x      # frequency replacement
+x[1, 2] <- 22; x
+x[1, c(2, 3)] <- c(22, 19); x
 @
 \item Replacement of the boundaries of one or more groups:
 <<echo=TRUE>>=
-x[1, 1] <- c(0, 20); x             # boundary replacement
+x[1, 1] <- c(0, 20); x
 x[c(3, 4), 1] <- c(55, 110, 160); x
 @
 \end{enumerate}
@@ -321,8 +243,8 @@ hist(x[, -3])
   \autoref{ex:grouped.data-2}, the following two expressions yield the
   same result:
 <<echo=TRUE, fig=FALSE>>=
-hist(y)               # histogram method for individual data
-hist(grouped.data(y)) # histogram method for grouped data
+hist(y)
+hist(grouped.data(y))
 @
 \end{rem}
 
@@ -366,9 +288,9 @@ exactly like \code{ecdf}.
   respectively, to obtain the knots $c_0, c_1, \dots, c_r$ of the
   ogive and to draw a graph (see \autoref{fig:ogive}):
 <<echo=TRUE, fig=FALSE>>=
-knots(Fnt)                         # group boundaries
-Fnt(knots(Fnt))                    # ogive at group boundaries
-plot(Fnt)                          # plot of the ogive
+knots(Fnt)
+Fnt(knots(Fnt))
+plot(Fnt)
 @
 \begin{figure}[t]
   \centering
@@ -425,10 +347,12 @@ data("gdental"); gdental
 
 The package provides two functions useful for estimation based on
 moments. First, function \code{emm} computes the $k$th empirical
-moment of a sample, whether in individual or grouped data form:
+moment of a sample, whether in individual or grouped data form. For
+example, the following expressions compute the first three moments for
+individual and grouped data sets:
 <<echo=TRUE>>=
-emm(dental, order = 1:3)           # first three moments
-emm(gdental, order = 1:3)          # idem
+emm(dental, order = 1:3)
+emm(gdental, order = 1:3)
 @
 
 Second, in the same spirit as \code{ecdf} and \code{ogive},
@@ -438,12 +362,12 @@ any limit. Again, there are methods for individual and grouped data
 (see \autoref{fig:elev} for the graphs):
 <<echo=TRUE, fig=FALSE>>=
 lev <- elev(dental)
-lev(knots(lev))                    # ELEV at data points
-plot(lev, type = "o", pch = 19)    # plot of the ELEV function
+lev(knots(lev))
+plot(lev, type = "o", pch = 19)
 
 lev <- elev(gdental)
-lev(knots(lev))                    # ELEV at data points
-plot(lev, type = "o", pch = 19)    # plot of the ELEV function
+lev(knots(lev))
+plot(lev, type = "o", pch = 19)
 @
 \begin{figure}[t]
   \centering
@@ -541,13 +465,14 @@ achieve as in \autoref{ex:mde}. For example, consider the problem of
 fitting a Pareto distribution to the same data set using the
 Cramér--von~Mises method:
 <<echo=TRUE, eval=FALSE>>=
-mde(gdental, ppareto, start = list(shape = 3, scale = 600),
-        measure = "CvM") # no convergence
+mde(gdental, ppareto,
+    start = list(shape = 3, scale = 600),
+    measure = "CvM")
 @
 <<echo=FALSE, eval=TRUE>>=
 out <- try(mde(gdental, ppareto, start = list(shape = 3, scale = 600),
         measure = "CvM"), silent = TRUE)
-cat(sub(", measure", ",\n             measure", out))
+cat(sub(", scale", ",\n             scale", out))
 @
 
 Working in the log of the parameters often solves the problem since
@@ -558,7 +483,8 @@ pparetolog <- function(x, logshape, logscale)
     ppareto(x, exp(logshape), exp(logscale))
 (p <- mde(gdental, pparetolog,
           start = list(logshape = log(3),
-                       logscale = log(600)), measure = "CvM"))
+                       logscale = log(600)),
+          measure = "CvM"))
 @
 The actual estimators of the parameters are obtained with
 <<echo=TRUE>>=

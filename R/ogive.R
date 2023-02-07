@@ -36,7 +36,8 @@ ogive.default <- function(x, y = NULL,
     if (!missing(breaks))
     {
         if (!missing(nclass))
-            warning("'nclass' not used when 'breaks' is specified")
+            warning(sprintf("%s not used when %s is specified",
+                            sQuote("nclass"), sQuote("breaks")))
     }
     else if (!is.null(nclass) && length(nclass) == 1L)
         breaks <- nclass

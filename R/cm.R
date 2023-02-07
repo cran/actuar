@@ -50,7 +50,8 @@ cm <- function(formula, data, ratios, weights, subset,
     ##    be ratios, so 'weights' should also be missing;
     ##
     if (any(duplicated(level.numbers)))
-        stop("unsupported interactions in 'formula'")
+        stop(sprintf("unsupported interactions in %s",
+                     sQuote("formula")))
     if (nlevels > 1 && !is.null(regformula))
         stop("hierarchical regression models not supported")
     if (missing(ratios) & !missing(weights))

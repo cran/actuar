@@ -1,16 +1,4 @@
-\documentclass[x11names,english]{article}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-  \usepackage{amsmath}
-  \usepackage[round]{natbib}
-  \usepackage{babel}
-  \usepackage{microtype}
-  \usepackage[scaled=0.92]{helvet}
-  \usepackage[sc]{mathpazo}
-  \usepackage[noae,inconsolata]{Sweave}
-  \usepackage{booktabs}
-  \usepackage[shortlabels]{enumitem}
-  \usepackage{framed}
+\input{share/preamble}
 
   %\VignetteIndexEntry{Additional continuous and discrete distributions}
   %\VignettePackage{actuar}
@@ -24,70 +12,8 @@
     Mathieu Pigeon \\ Université du Québec à Montréal}
   \date{}
 
-  %% Colors
-  \usepackage{xcolor}
-  \definecolor{link}{rgb}{0,0.4,0.6}             % internal links
-  \definecolor{url}{rgb}{0.6,0,0}                % external links
-  \definecolor{citation}{rgb}{0,0.5,0}           % citations
-  \definecolor{codebg}{named}{LightYellow1}      % R code background
-
-  %% Hyperlinks
-  \usepackage{hyperref}
-  \hypersetup{%
-    pdfauthor={Vincent Goulet},
-    colorlinks = {true},
-    linktocpage = {true},
-    urlcolor = {url},
-    linkcolor = {link},
-    citecolor = {citation},
-    pdfpagemode = {UseOutlines},
-    pdfstartview = {Fit},
-    bookmarksopen = {true},
-    bookmarksnumbered = {true},
-    bookmarksdepth = {subsubsection}}
-
   %% Compact, sans label itemize environment for the appendices.
   \setlist[itemize]{label={},leftmargin=0pt,align=left,nosep,midpenalty=10000}
-
-  %% Flush left enumerate environment.
-  \setlist[enumerate]{leftmargin=*,align=left}
-
-  %% Sweave Sinput and Soutput environments reinitialized to remove
-  %% default configuration. Space between input and output blocks also
-  %% reduced.
-  \DefineVerbatimEnvironment{Sinput}{Verbatim}{}
-  \DefineVerbatimEnvironment{Soutput}{Verbatim}{}
-  \fvset{listparameters={\setlength{\topsep}{0pt}}}
-
-  %% Environment Schunk redefined as an hybrid of environments
-  %% snugshade* and leftbar of framed.sty.
-  \makeatletter
-  \renewenvironment{Schunk}{%
-    \setlength{\topsep}{1pt}
-    \def\FrameCommand##1{\hskip\@totalleftmargin
-       \vrule width 2pt\colorbox{codebg}{\hspace{3pt}##1}%
-      % There is no \@totalrightmargin, so:
-      \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
-    \MakeFramed {\advance\hsize-\width
-      \@totalleftmargin\z@ \linewidth\hsize
-      \advance\labelsep\fboxsep
-      \@setminipage}%
-  }{\par\unskip\@minipagefalse\endMakeFramed}
-  \makeatother
-
-  %% Additional commands similar to those of RJournal.sty.
-  \newcommand{\pkg}[1]{\textbf{#1}}
-  \newcommand{\code}[1]{\texttt{#1}}
-  \newcommand{\samp}[1]{{`\normalfont\texttt{#1}'}}
-  \newcommand{\file}[1]{{`\normalfont\textsf{#1}'}}
-
-  %% Additional math commands.
-  \newcommand{\E}[1]{E[ #1 ]}
-  \newcommand{\VAR}[1]{\mathrm{Var} [ #1 ]}
-  \newcommand{\LAS}{\mathrm{LAS}}
-  \newcommand{\mat}[1]{\mathbold{#1}} % with mathpazo
-
-  \bibliographystyle{plainnat}
 
 \begin{document}
 
@@ -245,7 +171,7 @@ families.
     \put(13,7.3){\oval(3.4,1.2)}
 
     \put(7.2,7.9){\makebox(0,0.5)[l]{$\mu = 0$}}
-    \put(7,6.65){\makebox(0,0.5)[c]{Transformed Beta}}
+    \put(7,6.65){\makebox(0,0.5)[c]{Transformed beta}}
     \put(7,6.1){\makebox(0,0.5)[c]{$\alpha, \gamma, \tau, \theta$}}
     \put(7,6.6){\oval(5,1.2)}
 
@@ -255,7 +181,7 @@ families.
     \put(13.20,3.6){\oval(3.4,1.2)}
 
     \put(13.2,4.3){\makebox(0,0.5)[l]{$\gamma = \tau$}}
-    \put(13.20,5.80){\makebox(0,0.5)[c]{Inverse Paralogistic}}
+    \put(13.20,5.80){\makebox(0,0.5)[c]{Inverse paralogistic}}
     \put(13.20,5.25){\makebox(0,0.5)[c]{$\tau, \theta$}}
     \put(13.20,5.75){\oval(5.4,1.2)}
 
@@ -305,14 +231,14 @@ families.
     \small
 
     % Flèches
-    \put(4,4){\vector(2,-1){1.55}} % trgamma -> weibull
-    \put(5.55,2){\vector(-2,-1){1.55}}  % weibull -> exp
-    \put(1.55,2){\vector(2,-1){1.55}}    % gamma -> exp
-    \put(3,4){\vector(-2,-1){1.55}} % trgamma -> gamma
+    \put(4,4){\vector(2,-1){1.55}}     % trgamma -> weibull
+    \put(5.55,2){\vector(-2,-1){1.55}} % weibull -> exp
+    \put(1.55,2){\vector(2,-1){1.55}}  % gamma -> exp
+    \put(3,4){\vector(-2,-1){1.55}}    % trgamma -> gamma
 
     \put(3.5,4.65){\makebox(0,0.5)[c]{Transformed gamma}}
     \put(3.5,4.1){\makebox(0,0.5)[c]{$\alpha, \tau, \lambda$}}
-    \put(3.5,4.6){\oval(5,1.2)}
+    \put(3.5,4.6){\oval(5.5,1.2)}
 
     \put(5.4,3.45){\makebox(0,0.5)[l]{$\alpha = 1$}}
 
@@ -324,7 +250,7 @@ families.
 
     \put(3.5,0.65){\makebox(0,0.5)[c]{Exponential}}
     \put(3.5,0.1){\makebox(0,0.5)[c]{$\lambda$}}
-    \put(3.5,0.6){\oval(3,1.2)}
+    \put(3.5,0.6){\oval(3.5,1.2)}
 
     \put(1.6,1.35){\makebox(0,0.5)[r]{$\alpha = 1$}}
 
@@ -346,25 +272,25 @@ families.
 
     \put(3.5,4.65){\makebox(0,0.5)[c]{Inverse transformed gamma}}
     \put(3.5,4.1){\makebox(0,0.5)[c]{$\alpha, \tau, \lambda$}}
-    \put(3.5,4.6){\oval(6.5,1.2)}
+    \put(3.5,4.6){\oval(7,1.2)}
 
     \put(5.4,3.45){\makebox(0,0.5)[l]{$\alpha = 1$}}
 
     \put(6,2.65){\makebox(0,0.5)[c]{Inverse Weibull}}
     \put(6,2.1){\makebox(0,0.5)[c]{$\tau, \lambda$}}
-    \put(6,2.6){\oval(3.75,1.2)}
+    \put(6,2.6){\oval(4,1.2)}
 
     \put(5.4,1.35){\makebox(0,0.5)[l]{$\tau = 1$}}
 
     \put(3.5,0.65){\makebox(0,0.5)[c]{Inverse exponential}}
     \put(3.5,0.1){\makebox(0,0.5)[c]{$\lambda$}}
-    \put(3.5,0.6){\oval(4.75,1.2)}
+    \put(3.5,0.6){\oval(5,1.2)}
 
     \put(1.6,1.35){\makebox(0,0.5)[r]{$\alpha = 1$}}
 
     \put(1,2.65){\makebox(0,0.5)[c]{Inverse gamma}}
     \put(1,2.1){\makebox(0,0.5)[c]{$\alpha, \lambda$}}
-    \put(1,2.6){\oval(3.75,1.2)}
+    \put(1,2.6){\oval(4,1.2)}
 
     \put(1.6,3.45){\makebox(0,0.5)[r]{$\tau = 1$}}
   \end{picture}
@@ -395,9 +321,9 @@ R: beta, exponential, chi-square, gamma, lognormal, normal
 
 The \code{m} and \code{lev} functions are especially useful for
 estimation methods based on the matching of raw or limited moments;
-see the \samp{lossdist} vignette for their empirical counterparts.
+see the \code{lossdist} vignette for their empirical counterparts.
 The \code{mgf} functions come in handy to compute the adjustment
-coefficient in ruin theory; see the \samp{risk} vignette.
+coefficient in ruin theory; see the \code{risk} vignette.
 
 
 \section{Phase-type distributions}
@@ -450,7 +376,7 @@ The package provides \code{d}, \code{p}, \code{r}, \code{m} and
 \autoref{sec:app:phase-type}.
 
 For the package, function \code{pphtype} is central to the evaluation
-of the ruin probabilities; see \samp{?ruin} and the \samp{risk}
+of the ruin probabilities; see \code{?ruin} and the \code{risk}
 vignette.
 
 
@@ -637,8 +563,8 @@ continuous mixture between a Poisson distribution and an inverse
 Gaussian. That is, the Poisson-inverse Gaussian is the (marginal)
 distribution of the random variable $X$ when the conditional random
 variable $X|\Lambda = \lambda$ is Poisson with parameter $\lambda$ and
-the random variable $\Lambda$ is inverse Gaussian distribution with
-parameters $\mu$ and $\phi$.
+the random variable $\Lambda$ is inverse Gaussian with parameters
+$\mu$ and $\phi$.
 
 The literature proposes many different expressions for the pmf of the
 PIG
@@ -651,7 +577,7 @@ Using the parametrization for the inverse Gaussian found in
     p_x &= \sqrt{\frac{2}{\pi \phi}} \frac{e^{(\phi\mu)^{-1}}}{x!}
     \left(
       \sqrt{2\phi \left( 1 + \frac{1}{2\phi\mu^2} \right)}
-    \right)^{-(x - \frac{1}{2})} \\
+    \right)^{-\left( x - \frac{1}{2} \right)} \\
     &\phantom{=} \times K_{x - \frac{1}{2}} \left( \sqrt{\frac{2}{\phi}\left(1
           + \frac{1}{2\phi\mu^2}\right)} \right),
   \end{split}
@@ -856,7 +782,8 @@ arguments, but actual computation is done by routine
 \begin{Schunk}
 \begin{Sinput}
 double betaint(double x, double a, double b);
-double betaint_raw(double x, double a, double b, double x1m);
+double betaint_raw(double x, double a, double b,
+                   double x1m);
 \end{Sinput}
 \end{Schunk}
 
@@ -865,7 +792,7 @@ say \code{dpareto} --- in her code should proceed as follows.
 \begin{enumerate}
 \item Add \pkg{actuar} to the \code{Imports} and \code{LinkingTo}
   directives of the \file{DESCRIPTION}  file of \pkg{pkg};
-\item Add an entry \samp{import(actuar)} in the \file{NAMESPACE} file
+\item Add an entry \code{import(actuar)} in the \file{NAMESPACE} file
   of \pkg{pkg};
 \item Define the routine with a call to \code{R\_GetCCallable} in the
   initialization routine \code{R\_init\_pkg} of \pkg{pkg}
@@ -961,7 +888,7 @@ recursive equations \eqref{eq:pig:px:recursive}. Versions of
 the R API. However, the latter overflows for large values of $\nu$ and
 this caused \code{NaN} results for the value of
 \begin{equation*}
-  \frac{B^{-(x - \frac{1}{2})} K_{x - \frac{1}{2}}(B/\phi)}{x!}
+  \frac{B^{- \left(x - \frac{1}{2} \right)} K_{x - \frac{1}{2}}(B/\phi)}{x!}
 \end{equation*}
 and, therefore, for the  Poisson-inverse Gaussian pmf.
 
@@ -1945,7 +1872,7 @@ $1 - p_0^M$).
   \frac{e^{(\phi\mu)^{-1}}}{x!}
     \left(
       \sqrt{2\phi \left( 1 + \frac{1}{2\phi\mu^2} \right)}
-    \right)^{-(x - \frac{1}{2})} \\
+    \right)^{- \left( x - \frac{1}{2} \right)} \\
   &\phantom{=} \times
   K_{x - 1/2}
   \left(
@@ -1968,7 +1895,7 @@ Recursively:
 In the limiting case $\mu = \infty$, the pmf reduces to
 \begin{equation*}
   p_x = \sqrt{\frac{2}{\pi \phi}} \frac{1}{x!}
-  (\sqrt{2\phi})^{-(x - \frac{1}{2})} K_{x - \frac{1}{2}}
+  (\sqrt{2\phi})^{- \left( x - \frac{1}{2} \right)} K_{x - \frac{1}{2}}
   (\sqrt{2/\phi}),
   \quad x = 0, 1, \dots
 \end{equation*}

@@ -25,7 +25,8 @@ bayes <- function(x, likelihood =
         if (missing(min))
             stop("lower bound of the likelihood missing")
         if (missing(shape) || (missing(rate) && missing(scale)))
-            stop("one of the Gamma prior parameter \"shape\", \"rate\" or \"scale\" missing")
+            stop(sprintf("one of the Gamma prior parameter %s, %s or %s missing",
+                         dQuote("shape"), dQuote("rate"), dQuote("scale")))
         coll <- shape * scale
         vars <- c(NA, NA)                # not pertinent here
 
@@ -54,7 +55,8 @@ bayes <- function(x, likelihood =
         if (likelihood == "poisson")
         {
             if (missing(shape) || (missing(rate) && missing(scale)))
-                stop("one of the Gamma prior parameter \"shape\", \"rate\" or \"scale\" missing")
+                stop(sprintf("one of the Gamma prior parameter %s, %s or %s missing",
+                             dQuote("shape"), dQuote("rate"), dQuote("scale")))
             coll <- shape * scale
             vars <- c(coll * scale, coll)
             K <- 1/scale
@@ -62,7 +64,8 @@ bayes <- function(x, likelihood =
         else if (likelihood == "bernoulli")
         {
             if (missing(shape1) || missing(shape2))
-                stop("one of the Beta prior parameter \"shape1\" or \"scale2\" missing")
+                stop(sprintf("one of the Beta prior parameter %s or %s missing",
+                             dQuote("shape1"), dQuote("shape2")))
             K <- shape1 + shape2
             coll <- shape1/K
             vars <- (shape1 * shape2) * c(1, K)/(K^2 * (K + 1))
@@ -70,9 +73,11 @@ bayes <- function(x, likelihood =
         else if (likelihood == "binomial")
         {
             if (missing(shape1) || missing(shape2))
-                stop("one of the Beta prior parameter \"shape1\" or \"scale2\" missing")
+                stop(sprintf("one of the Beta prior parameter %s or %s missing",
+                             dQuote("shape1"), dQuote("shape2")))
             if (missing(size))
-                stop("parameter \"size\" of the likelihood missing")
+                stop(sprintf("parameter %s of the likelihood missing",
+                             dQuote("size")))
             K <- (shape1 + shape2)/size
             coll <- shape1/K
             vars <- (shape1 * shape2) * c(1, K)/(K^2 * (shape1 + shape2 + 1))
@@ -80,7 +85,8 @@ bayes <- function(x, likelihood =
         else if (likelihood == "geometric")
         {
             if (missing(shape1) || missing(shape2))
-                stop("one of the Beta prior parameter \"shape1\" or \"scale2\" missing")
+                stop(sprintf("one of the Beta prior parameter %s or %s missing",
+                             dQuote("shape1"), dQuote("shape2")))
             K <- shape1 - 1
             coll <- shape2/K
             vars <- shape2 * (shape1 + shape2 - 1)/(K * (K - 1))
@@ -89,9 +95,11 @@ bayes <- function(x, likelihood =
         else if (likelihood == "negative binomial")
         {
             if (missing(shape1) || missing(shape2))
-                stop("one of the Beta prior parameter \"shape1\" or \"scale2\" missing")
+                stop(sprintf("one of the Beta prior parameter %s or %s missing",
+                             dQuote("shape1"), dQuote("shape2")))
             if (missing(size))
-                stop("parameter \"size\" of the likelihood missing")
+                stop(sprintf("parameter %s of the likelihood missing",
+                             dQuote("size")))
             K <- (shape1 - 1)/size
             coll <- shape2/K
             vars <- shape2 * (shape1 + shape2 - 1)/(K * (shape1 - 2))
@@ -100,7 +108,8 @@ bayes <- function(x, likelihood =
         else if (likelihood == "exponential")
         {
             if (missing(shape) || (missing(rate) && missing(scale)))
-                stop("one of the Gamma prior parameter \"shape\", \"rate\" or \"scale\" missing")
+                stop(sprintf("one of the Gamma prior parameter %s, %s or %s missing",
+                             dQuote("shape"), dQuote("rate"), dQuote("scale")))
             K <- shape - 1
             coll <- 1/(K * scale)
             vars <- c(coll^2, coll/scale)/(shape - 2)
@@ -108,9 +117,11 @@ bayes <- function(x, likelihood =
         else if (likelihood == "gamma")
         {
             if (missing(shape) || (missing(rate) && missing(scale)))
-                stop("one of the Gamma prior parameter \"shape\", \"rate\" or \"scale\" missing")
+                stop(sprintf("one of the Gamma prior parameter %s, %s or %s missing",
+                             dQuote("shape"), dQuote("rate"), dQuote("scale")))
             if (missing(shape.lik))
-                stop("parameter \"shape.lik\" of the likelihood missing")
+                stop(sprintf("parameter %s of the likelihood missing",
+                             dQuote("shape.lik")))
             K <- (shape - 1)/shape.lik
             coll <- 1/(K * scale)
             vars <- c(coll^2, coll/scale)/(shape - 2)
@@ -118,7 +129,8 @@ bayes <- function(x, likelihood =
         else if (likelihood == "normal")
         {
             if (missing(sd.lik))
-                stop("parameter \"sd.lik\" of the likelihood missing")
+                stop(sprintf("parameter %s of the likelihood missing",
+                             dQuote("sd.lik")))
             coll <- mean
             vars <- c(sd, sd.lik)^2
             K <- vars[2L]/vars[1L]

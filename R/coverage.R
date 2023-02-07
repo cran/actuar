@@ -30,7 +30,7 @@ coverage <- function(pdf, cdf, deductible = 0, franchise = FALSE,
     if (coinsurance > 1)
         stop("coinsurance must be between 0 and 1")
     if (missing(cdf) & needs.cdf)
-        stop("'cdf' must be supplied")
+        stop(sprintf("%s must be supplied", sQuote("cdf")))
 
     ## Quantites often used. Leave as expressions for the output
     ## function to preserve accuracy.

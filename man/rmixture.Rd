@@ -22,7 +22,7 @@ rmixture(n, probs, models, shuffle = TRUE)
 }
 \details{
   \code{rmixture} generates variates from a discrete mixture, that is
-  random variable with a probability density function of the form
+  the random variable with a probability density function of the form
   \deqn{f(x) = p_1 f_1(x) + ... + p_n f_n(x),}
   where \eqn{f_1, \dots, f_n} are densities and \eqn{\sum_{i = 1}^n p_i
     = 1}{p_1 + \dots + p_n = 1}.
@@ -46,6 +46,12 @@ rmixture(n, probs, models, shuffle = TRUE)
   irrelevant, this cuts the time to generate the variates roughly in
   half.
 }
+\note{
+  Building the expressions in \code{models} from the arguments of
+  another function is delicate. The expressions must be such that
+  evaluation is possible in the frame of \code{rmixture} or its parent.
+  See the examples.  
+}
 \value{
   A vector of random variates from the mixture with density \eqn{f(x)}.
 }
@@ -67,5 +73,29 @@ rmixture(10, 42, expression(rexp(3), rexp(7))) # same
 rmixture(10, probs = c(0.55, 0.45),
          models = expression(rlnorm(3.6, 0.6),
                              rlnorm(4.6, 0.3)))
+
+## Building the model expressions in the following example
+## works as 'rate' is defined in the parent frame of
+## 'rmixture'.
+probs <- c(2, 5)
+g <- function(n, p, rate)
+    rmixture(n, p, expression(rexp(rate[1]), rexp(rate[2])))
+g(10, probs, c(3, 7))
+
+## The following example does not work: 'rate' does not exist
+## in the evaluation frame of 'rmixture'.
+f <- function(n, p, model) rmixture(n, p, model)
+h <- function(n, p, rate)
+    f(n, p, expression(rexp(rate[1]), rexp(rate[2])))
+\dontrun{h(10, probs, c(3, 7))}
+
+## Fix: substitute the values in the model expressions.
+h <- function(n, p, rate)
+{
+    models <- eval(substitute(expression(rexp(a[1]), rexp(a[2])),
+                              list(a = rate)))
+    f(n, p, models)
+}
+h(10, probs, c(3, 7))
 }
 \keyword{datagen}

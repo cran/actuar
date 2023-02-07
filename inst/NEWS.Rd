@@ -2,6 +2,24 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.3-2}{
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{\code{rcompound}, \code{rcomppois} and \code{rmixture}
+	evaluate their model arguments in the correct frame for a larger
+	sets of circumstances, notably when called inside another
+	function. \code{?rmixture} provides more information and
+	examples on this matter for that function.}
+    }
+  }
+  \subsection{OTHER CHANGES}{
+    \itemize{
+      \item{Package vignettes now use the STYX2 fonts for text and Fira
+	Mono for code.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.3-1}{
   \subsection{BUG FIXES}{
     \itemize{

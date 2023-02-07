@@ -23,7 +23,8 @@ discretize <- function (cdf, from, to, step = 1,
     else
     {
         if (!(is.call(scdf) && match("x", all.vars(scdf), nomatch = 0)))
-            stop("'cdf' must be a function or an expression containing 'x'")
+            stop(sprintf("%s must be a function or an expression containing %s",
+                         sQuote("cdf"), sQuote("x")))
         cdf <- scdf
     }
 
@@ -72,7 +73,8 @@ discretize <- function (cdf, from, to, step = 1,
         ## which should be provided in argument 'lev'. The latter is
         ## specified just like 'cdf'.
         if (missing(lev))
-            stop("'lev' required with method \"unbiased\"")
+            stop(sprintf("%s required with method %s",
+                         sQuote("lev"), dQuote("unbiased")))
 
         slev <- substitute(lev)
         if (is.name(slev))
@@ -83,7 +85,8 @@ discretize <- function (cdf, from, to, step = 1,
         else
         {
             if (!(is.call(slev) && match("x", all.vars(slev), nomatch = 0)))
-                stop("'lev' must be a function or an expression containing 'x'")
+            stop(sprintf("%s must be a function or an expression containing %s",
+                         sQuote("lev"), sQuote("x")))
             lev <- slev
         }
 

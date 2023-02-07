@@ -1,13 +1,4 @@
-\documentclass[x11names,english]{article}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-  \usepackage{amsmath}
-  \usepackage[round]{natbib}
-  \usepackage{babel}
-  \usepackage[scaled=0.9]{helvet}
-  \usepackage[sc]{mathpazo}
-  \usepackage[shortlabels]{enumitem}
-  \usepackage[noae]{Sweave}
+\input{share/preamble}
 
   %\VignetteIndexEntry{Complete formulas used by coverage}
   %\VignettePackage{actuar}
@@ -16,38 +7,6 @@
   \title{Complete formulas used by \code{coverage}}
   \author{Vincent Goulet \\ Université Laval}
   \date{}
-
-  %% Colors
-  \usepackage{xcolor}
-  \definecolor{link}{rgb}{0,0.4,0.6}             % internal links
-  \definecolor{url}{rgb}{0.6,0,0}                % external links
-  \definecolor{citation}{rgb}{0,0.5,0}           % citations
-  \definecolor{codebg}{named}{LightYellow1}      % R code background
-
-  %% Hyperlinks
-  \usepackage{hyperref}
-  \hypersetup{%
-    pdfauthor={Vincent Goulet},
-    colorlinks = {true},
-    linktocpage = {true},
-    urlcolor = {url},
-    linkcolor = {link},
-    citecolor = {citation},
-    pdfpagemode = {UseOutlines},
-    pdfstartview = {Fit},
-    bookmarksopen = {true},
-    bookmarksnumbered = {true},
-    bookmarksdepth = {subsubsection}}
-
-  %% Flush left enumerate environment.
-  \setlist[enumerate]{leftmargin=*,align=left}
-
-  %% Some new commands
-  \newcommand{\pkg}[1]{\textbf{#1}}
-  \newcommand{\code}[1]{\texttt{#1}}
-  \newcommand{\D}{\displaystyle}
-
-  \bibliographystyle{plainnat}
 
 <<echo=FALSE>>=
 library(actuar)

@@ -1,0 +1,109 @@
+\documentclass[11pt,x11names,english]{article}
+  \usepackage{amsmath,amsthm}
+  \usepackage[round]{natbib}
+  \usepackage{babel}
+  \usepackage[autolanguage]{numprint}
+  \usepackage[noae]{Sweave}
+  \usepackage{framed}
+  \usepackage{booktabs}
+  \usepackage[shortlabels]{enumitem}
+
+  %% Fonts
+  \usepackage{fontenc}
+  \usepackage{unicode-math}
+  \setmainfont{STIXTwoText}
+  [
+    Extension={.otf},
+    UprightFont={*-Regular},
+    BoldFont={*-Bold},
+    ItalicFont={*-Italic},
+    BoldItalicFont={*-BoldItalic},
+    Numbers=OldStyle
+  ]
+  \setmathfont{STIXTwoMath-Regular}
+  [
+    Extension={.otf},
+    Scale=1
+  ]
+  \setmonofont{FiraMono}
+  [
+    Extension={.otf},
+    UprightFont={*-Regular},
+    ItalicFont={*-Oblique},
+    BoldFont={*-Medium},
+    BoldItalicFont={*-MediumOblique},
+    Scale=0.92
+  ]
+  \usepackage{microtype}
+
+  %% Colors
+  \usepackage{xcolor}
+  \definecolor{link}{rgb}{0,0.4,0.6}             % internal links
+  \definecolor{url}{rgb}{0.6,0,0}                % external links
+  \definecolor{citation}{rgb}{0,0.5,0}           % citations
+  \definecolor{codebg}{named}{LightYellow1}      % R code background
+
+  %% Hyperlinks
+  \usepackage{hyperref}
+  \hypersetup{%
+    pdfauthor={Vincent Goulet},
+    colorlinks = {true},
+    linktocpage = {true},
+    urlcolor = {url},
+    linkcolor = {link},
+    citecolor = {citation},
+    pdfpagemode = {UseOutlines},
+    pdfstartview = {Fit},
+    bookmarksopen = {true},
+    bookmarksnumbered = {true},
+    bookmarksdepth = {subsubsection}}
+
+  %% Help for \autoref
+  \def\exampleautorefname{Example}
+
+  %% Sweave Sinput and Soutput environments reinitialized to remove
+  %% default configuration. Space between input and output blocks also
+  %% reduced.
+  \DefineVerbatimEnvironment{Sinput}{Verbatim}{}
+  \DefineVerbatimEnvironment{Soutput}{Verbatim}{}
+  \fvset{listparameters={\setlength{\topsep}{0pt}}}
+
+  %% Environment Schunk redefined as an hybrid of environments
+  %% snugshade* and leftbar of framed.sty.
+  \makeatletter
+  \renewenvironment{Schunk}{%
+    \setlength{\topsep}{1pt}
+    \def\FrameCommand##1{\hskip\@totalleftmargin
+       \vrule width 2pt\colorbox{codebg}{\hspace{3pt}##1}%
+      % There is no \@totalrightmargin, so:
+      \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+    \MakeFramed {\advance\hsize-\width
+      \@totalleftmargin\z@ \linewidth\hsize
+      \advance\labelsep\fboxsep
+      \@setminipage}%
+  }{\par\unskip\@minipagefalse\endMakeFramed}
+  \makeatother
+
+  %% Flush left enumerate environment.
+  \setlist[enumerate]{leftmargin=*,align=left}
+
+  %% Example environment
+  \theoremstyle{definition}
+  \newtheorem{example}{Example}
+  \theoremstyle{remark}
+  \newtheorem{rem}{Remark}
+
+  %% New math commands
+  \newcommand{\E}[1]{E[ #1 ]}
+  \newcommand{\VAR}[1]{\mathrm{Var} [ #1 ]}
+  \newcommand{\LAS}{\mathrm{LAS}}
+  \newcommand{\D}{\displaystyle}
+  \newcommand{\pt}{{\scriptscriptstyle \Sigma}}
+  \newcommand{\mat}[1]{\symbf{#1}}
+
+  %% New styling commands
+  \newcommand{\pkg}[1]{\textbf{#1}}
+  \newcommand{\code}[1]{\texttt{#1}}
+  \newcommand{\file}[1]{{`\normalfont\textsf{#1}'}}
+
+  \bibliographystyle{plainnat}

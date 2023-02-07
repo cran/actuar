@@ -18,7 +18,8 @@ adjCoef <- function(mgf.claim, mgf.wait = mgfexp, premium.rate, upper.bound,
 
     ## Sanity check
     if (missing(mgf.claim) && missing(h))
-        stop("one of 'mgf.claim' or 'h' is needed")
+        stop(sprintf("one of %s or %s is needed",
+                     sQuote("mgf.claim"), sQuote("h")))
 
     ## === NO REINSURANCE CASE ===
     ##
@@ -48,7 +49,8 @@ adjCoef <- function(mgf.claim, mgf.wait = mgfexp, premium.rate, upper.bound,
             else
             {
                 if (!(is.call(sh) && match("x", all.vars(sh), nomatch = 0L)))
-                    stop("'h' must be a function or an expression containing 'x'")
+                    stop(sprintf("%s must be a function or an expression containing %s",
+                                 sQuote("h"), sQuote("x")))
                 h1 <- function(x)
                     eval(sh,
                          envir = list(x = x),
@@ -66,7 +68,8 @@ adjCoef <- function(mgf.claim, mgf.wait = mgfexp, premium.rate, upper.bound,
             else
             {
                 if (!(is.call(smgfx) && match("x", all.vars(smgfx), nomatch = 0L)))
-                    stop("'mgf.claim' must be a function or an expression containing 'x'")
+                    stop(sprintf("%s must be a function or an expression containing %s",
+                                 sQuote("mgf.claim"), sQuote("x")))
                 mgfx <- smgfx
             }
             smgfw <- substitute(mgf.wait)
@@ -78,7 +81,8 @@ adjCoef <- function(mgf.claim, mgf.wait = mgfexp, premium.rate, upper.bound,
             else
             {
                 if (!(is.call(smgfw) && match("x", all.vars(smgfw), nomatch = 0L)))
-                    stop("'mgf.wait' must be a function or an expression containing 'x'")
+                    stop(sprintf("%s must be a function or an expression containing %s",
+                                 sQuote("mgf.wait"), sQuote("x")))
                 mgfw <- smgfw
             }
             h1 <- function(x)
@@ -117,7 +121,8 @@ adjCoef <- function(mgf.claim, mgf.wait = mgfexp, premium.rate, upper.bound,
         else
         {
             if (!(is.call(sh) && all(match(c("x", "y"), all.vars(sh), nomatch = 0L))))
-                stop("'h' must be a function or an expression containing 'x' and 'y'")
+                    stop(sprintf("%s must be a function or an expression containing %s and %s",
+                                 sQuote("h"), sQuote("x"), sQuote("y")))
             h2 <- function(x, y)
                 eval(sh,
                      envir = list(x = x, y = y),
@@ -127,7 +132,8 @@ adjCoef <- function(mgf.claim, mgf.wait = mgfexp, premium.rate, upper.bound,
     else
     {
         if (!is.function(premium.rate))
-            stop("'premium.rate' must be a function when using reinsurance")
+            stop(sprintf("%s must be a function when using reinsurance",
+                         sQuote("premium.rate")))
 
         smgfx <- substitute(mgf.claim)
         if (is.name(smgfx))
@@ -138,7 +144,8 @@ adjCoef <- function(mgf.claim, mgf.wait = mgfexp, premium.rate, upper.bound,
         else
         {
             if (!(is.call(smgfx) && all(match(c("x", "y"), all.vars(smgfx), nomatch = 0L))))
-                stop("'mgf.claim' must be a function or an expression containing 'x' and 'y'")
+                    stop(sprintf("%s must be a function or an expression containing %s and %s",
+                                 sQuote("mgf.claim"), sQuote("x"), sQuote("y")))
             mgfx <- smgfx
         }
         smgfw <- substitute(mgf.wait)
@@ -150,7 +157,8 @@ adjCoef <- function(mgf.claim, mgf.wait = mgfexp, premium.rate, upper.bound,
         else
         {
             if (!(is.call(smgfw) && match("x", all.vars(smgfw), nomatch = 0L)))
-                stop("'mgf.wait' must be a function or an expression containing 'x'")
+                    stop(sprintf("%s must be a function or an expression containing %s",
+                                 sQuote("mgf.wait"), sQuote("x")))
             mgfw <- smgfw
         }
         spremium <- substitute(premium.rate)
@@ -162,7 +170,8 @@ adjCoef <- function(mgf.claim, mgf.wait = mgfexp, premium.rate, upper.bound,
         else
         {
             if (!(is.call(spremium) && match("y", all.vars(spremium), nomatch = 0L)))
-                stop("'premium.rate' must be a function or an expression containing 'y'")
+                stop(sprintf("%s must be a function or an expression containing %s",
+                             sQuote("premium.rate"), sQuote("y")))
             premium.rate <- spremium
         }
 

@@ -1,14 +1,4 @@
-\documentclass[x11names,english]{article}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-  \usepackage{amsmath}
-  \usepackage[round]{natbib}
-  \usepackage[english]{babel}
-  \usepackage[scaled=0.9]{helvet}
-  \usepackage[sc]{mathpazo}
-  \usepackage[shortlabels]{enumitem}
-  \usepackage[noae,inconsolata]{Sweave}
-  \usepackage{framed}
+\input{share/preamble}
 
   %\VignetteIndexEntry{Risk and ruin theory}
   %\VignettePackage{actuar}
@@ -20,64 +10,9 @@
     Mathieu Pigeon \\ Université du Québec à Montréal}
   \date{}
 
-  %% Colors
-  \usepackage{xcolor}
-  \definecolor{link}{rgb}{0,0.4,0.6}             % internal links
-  \definecolor{url}{rgb}{0.6,0,0}                % external links
-  \definecolor{citation}{rgb}{0,0.5,0}           % citations
-  \definecolor{codebg}{named}{LightYellow1}      % R code background
-
-  %% Hyperlinks
-  \usepackage{hyperref}
-  \hypersetup{%
-    pdfauthor={Vincent Goulet},
-    colorlinks = {true},
-    linktocpage = {true},
-    urlcolor = {url},
-    linkcolor = {link},
-    citecolor = {citation},
-    pdfpagemode = {UseOutlines},
-    pdfstartview = {Fit},
-    bookmarksopen = {true},
-    bookmarksnumbered = {true},
-    bookmarksdepth = {subsubsection}}
-
-  %% Sweave Sinput and Soutput environments reinitialized to remove
-  %% default configuration. Space between input and output blocks also
-  %% reduced.
-  \DefineVerbatimEnvironment{Sinput}{Verbatim}{}
-  \DefineVerbatimEnvironment{Soutput}{Verbatim}{}
-  \fvset{listparameters={\setlength{\topsep}{0pt}}}
-
-  %% Environment Schunk redefined as an hybrid of environments
-  %% snugshade* and leftbar of framed.sty.
-  \makeatletter
-  \renewenvironment{Schunk}{%
-    \setlength{\topsep}{1pt}
-    \def\FrameCommand##1{\hskip\@totalleftmargin
-       \vrule width 2pt\colorbox{codebg}{\hspace{3pt}##1}%
-      % There is no \@totalrightmargin, so:
-      \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
-    \MakeFramed {\advance\hsize-\width
-      \@totalleftmargin\z@ \linewidth\hsize
-      \advance\labelsep\fboxsep
-      \@setminipage}%
-  }{\par\unskip\@minipagefalse\endMakeFramed}
-  \makeatother
-
-  %% Flush left enumerate environment.
-  \setlist[enumerate]{leftmargin=*,align=left}
-
-  %% Some new commands
-  \newcommand{\E}[1]{E[ #1 ]}
-  \newcommand{\VAR}[1]{\mathrm{Var} [ #1 ]}
+  %% Additional math commands
   \newcommand{\VaR}{\mathrm{VaR}}
   \newcommand{\CTE}{\mathrm{CTE}}
-  \newcommand{\mat}[1]{\mathbold{#1}} % with mathpazo
-  \newcommand{\pkg}[1]{\textbf{#1}}
-  \newcommand{\code}[1]{\texttt{#1}}
-
-  \bibliographystyle{plainnat}
 
 <<echo=FALSE>>=
 library(actuar)
@@ -227,7 +162,7 @@ fl <- discretize(plnorm(x), method = "lower", from = 0, to = 5)
 fr <- discretize(plnorm(x), method = "rounding", from = 0, to = 5)
 fb <- discretize(plnorm(x), method = "unbiased", from = 0, to = 5,
                  lev = levlnorm(x))
-par(mfrow = c(2, 2), c(5, 2, 4, 2))
+par(mfrow = c(2, 2), mar = c(5, 2, 4, 2))
 curve(plnorm(x), from = 0, to = 5, lwd = 2, main = "Upper", ylab = "F(x)")
 plot(stepfun(0:4, diffinv(fu)), pch = 20, add = TRUE)
 curve(plnorm(x), from = 0, to = 5, lwd = 2, main = "Lower", ylab = "F(x)")
@@ -391,26 +326,28 @@ fx <- discretize(pgamma(x, 2, 1), method = "unbiased",
                  from = 0, to = 22, step = 0.5,
                  lev = levgamma(x, 2, 1))
 Fs <- aggregateDist("recursive", model.freq = "poisson",
-                    model.sev = fx, lambda = 10, x.scale = 0.5)
-summary(Fs)                           # summary method
+                    model.sev = fx, lambda = 10,
+                    x.scale = 0.5)
+summary(Fs)
 @
 Although useless here, the following is essentially equivalent, except
 in the far right tail for numerical reasons:
 <<echo=TRUE>>=
 Fsc <- aggregateDist("recursive", model.freq = "poisson",
-                     model.sev = fx, lambda = 5, convolve = 1,
-                     x.scale = 0.5)
-summary(Fsc)                           # summary method
+                     model.sev = fx, lambda = 5,
+                     convolve = 1, x.scale = 0.5)
+summary(Fsc)
 @
 
 We return to object \code{Fs}. It contains an empirical cdf with support
 <<echo=TRUE>>=
-knots(Fs)                      # support of Fs.b (knots)
+knots(Fs)
 @
 A nice graph of this function is obtained with a method of \code{plot} (see
 \autoref{fig:Fs}):
 <<echo=TRUE, eval=FALSE>>=
-plot(Fs, do.points = FALSE, verticals = TRUE, xlim = c(0, 60))
+plot(Fs, do.points = FALSE, verticals = TRUE,
+     xlim = c(0, 60))
 @
 \begin{figure}[t]
   \centering
@@ -427,9 +364,9 @@ The package defines a few summary methods to extract information from
 \code{mean} and \code{quantile} to easily compute the mean and
 obtain the quantiles of the approximate distribution:
 <<echo=TRUE>>=
-mean(Fs)                              # empirical mean
-quantile(Fs)                          # quantiles
-quantile(Fs, 0.999)                   # quantiles
+mean(Fs)
+quantile(Fs)
+quantile(Fs, 0.999)
 @
 
 Second, a method of \texttt{diff} gives easy access to the underlying
@@ -580,10 +517,11 @@ generating functions $M_C(t)$ and $M_W(t)$ (thereby assuming
 independence) or else function $h(t)$; the premium rate $c$; the upper
 bound of the support of $M_C(t)$ or any other upper bound for $\rho$.
 
-For example, if $W$ and $C$ are independent, $W \sim
-\text{Exponential}(2)$, $C \sim \text{Exponential}(1)$ and the premium
-rate is $c = 2.4$ (for a safety loading of 20\% using the expected
-value premium principle), then the adjustment coefficient is
+For example, if $W$ and $C$ are independent and each follow an
+exponential distribution, $W$ with parameter $2$ and
+$C$ with parameter $1$, and the premium rate is $c = 2.4$ (for
+a safety loading of 20\% using the expected value premium principle),
+then the adjustment coefficient is
 <<echo=TRUE>>=
 adjCoef(mgf.claim = mgfexp(x), mgf.wait = mgfexp(x, 2),
         premium.rate = 2.4, upper = 1)
@@ -619,8 +557,9 @@ adjustment coefficient as a function of $\alpha \in [0, 1]$ is (see
 <<echo=TRUE, fig=FALSE>>=
 mgfx <- function(x, y) mgfexp(x * y)
 p <- function(x) 2.6 * x - 0.2
-rho <- adjCoef(mgfx, mgfexp(x, 2), premium = p, upper = 1,
-               reins = "prop", from = 0, to = 1)
+rho <- adjCoef(mgfx, mgfexp(x, 2), premium = p,
+               upper = 1, reins = "prop",
+               from = 0, to = 1)
 rho(c(0.75, 0.8, 0.9, 1))
 plot(rho)
 @

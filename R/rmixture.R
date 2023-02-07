@@ -13,11 +13,11 @@ rmixture <- function(n, probs, models, shuffle = TRUE)
     ## Validity checks (similar to other r<dist> functions and to
     ## rmultinom).
     if (any(is.na(n)) || any(n < 0))
-        stop("invalid first argument 'n'")
+        stop(sprintf("invalid first argument %s", sQuote("n")))
     if (all(probs <= 0))
         stop("no positive probabilities")
     if ((!is.expression(models)) || (length(models) == 0L))
-        stop("invalid third argument 'models'")
+        stop(sprintf("invalid third argument %s", sQuote("n")))
 
     ## Number of models in the mixture.
     m <- max(length(probs), length(models))
@@ -34,11 +34,12 @@ rmixture <- function(n, probs, models, shuffle = TRUE)
     nj <- rmultinom(1, size = n, prob = rep_len(probs, m))
 
     ## Auxiliary function to generate 'n' variates from the model
-    ## given in 'expr'.
+    ## given in 'expr'. The expressions end up being evaluated three
+    ## frames below the current one.
     f <- function(n, expr)
     {
         expr$n <- n
-        eval.parent(expr)
+        eval.parent(expr, n = 3)
     }
 
     ## Simulate from each model the appropriate number of times and

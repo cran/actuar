@@ -65,16 +65,19 @@ grouped.data <- function(..., breaks = "Sturges",
     if (use.br)
     {
         if (!missing(nclass))
-            warning("'nclass' not used when 'breaks' is specified")
+            warning(sprintf("%s not used when %s is specified",
+                    sQuote("nclass"), sQuote("breaks")))
         if (!(missing(group) || group))
-            warning("'group' ignored when 'breaks' is specified")
+            warning(sprintf("%s ignored when %s is specified",
+                    sQuote("group"), sQuote("breaks")))
         group <- TRUE
     }
     else if (!is.null(nclass) && length(nclass) == 1L)
     {
         breaks <- nclass
         if (!(missing(group) || group))
-            warning("'group' ignored when 'nclass' is specified")
+            warning(sprintf("%s ignored when %s is specified",
+                    sQuote("group"), sQuote("nclass")))
         group <- TRUE
     }
 

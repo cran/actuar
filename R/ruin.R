@@ -30,9 +30,9 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
 {
     ## Sanity checks
     if (missing(par.claims) || !is.list(par.claims))
-        stop("'par.claims' must be a named list")
+        stop(sprintf("%s must be a named list", sQuote("par.claims")))
     if (missing(par.wait) || !is.list(par.wait))
-        stop("'par.wait' must be a named list")
+        stop(sprintf("%s must be a named list", sQuote("par.wait")))
 
     claims <- match.arg(claims)
     wait <- match.arg(wait)
@@ -46,8 +46,9 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
                "phase-type" = c("prob", "rates"))
     i <- pmatch(names(par.claims), choices, nomatch = 0L, duplicates.ok = TRUE)
     if (all(i == 0L))
-        stop(gettextf("parameters %s missing in 'par.claims'",
-                      paste(dQuote(choices), collapse = ", ")))
+        stop(sprintf("parameters %s missing in %s",
+                     paste(dQuote(choices), collapse = ", "),
+                     sQuote("par.claims")))
     par.claims <- par.claims[i > 0L]    # keep relevant components
     p <- choices[i[i > 0L]]             # keep relevant names
     names(par.claims) <- p              # use full names
@@ -57,7 +58,8 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         if ("rate" %in% p)
             rate <- par.claims$rate
         else
-            stop("parameter \"rate\" missing in 'par.claims'")
+            stop(sprintf("parameter %s missing in %s",
+                         dQuote("rate"), sQuote("par.claims")))
         n <- length(rate)
 
         if ("weights" %in% p && n > 1L)
@@ -65,7 +67,8 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         else if (n == 1L)
             prob <- 1
         else
-            stop("parameter \"weights\" missing in 'par.claims'")
+            stop(sprintf("parameter %s missing in %s",
+                         dQuote("weights"), sQuote("par.claims")))
 
         rates <- diag(-rate, n)
     }
@@ -74,13 +77,15 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         if ("shape" %in% p)
             shape <- par.claims$shape
         else
-            stop("parameter \"shape\" missing in 'par.claims'")
+            stop(sprintf("parameter %s missing in %s",
+                         dQuote("shape"), sQuote("par.claims")))
         if ("rate" %in% p)
             rate <- par.claims$rate
         else if ("scale" %in% p)
             rate <- 1 / par.claims$scale
         else
-            stop("parameter \"rate\" or \"scale\" missing in 'par.claims'")
+            stop(sprintf("parameter %s or %s missing in %s",
+                         dQuote("rate"), dQuote("scale"), sQuote("par.claims")))
         if (length(shape) < length(rate))
             shape <- rep(shape, length.out = length(rate))
         else
@@ -95,7 +100,8 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         else if (length(shape) == 1L)
             prob <- c(1, rep(0, n - 1))
         else
-            stop("parameter \"weights\" missing in 'par.claims'")
+            stop(sprintf("parameter %s missing in %s",
+                         dQuote("weights"), sQuote("par.claims")))
 
         rates <- diag(rep(-rate, shape), n)
         if (n > 1 && shape > 1)
@@ -110,14 +116,16 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         if ("prob" %in% p)
             prob <- par.claims$prob
         else
-            stop("parameter \"prob\" missing in 'par.claims'")
+            stop(sprintf("parameter %s missing in %s",
+                         dQuote("prob"), sQuote("par.claims")))
         if ("rates" %in% p)
             rates <- par.claims$rates
         else
-            stop("parameter \"rates\" missing in 'par.claims'")
+            stop(sprintf("parameter %s missing in %s",
+                         dQuote("rates"), sQuote("par.claims")))
         n <- length(prob)
         if (!(is.matrix(rates) && nrow(rates) == n))
-            stop("invalid parameters in 'par.claims'")
+            stop(sprintf("invalid parameters in %s", sQuote("par.claims")))
     }
     ## ==============================================
 
@@ -130,8 +138,9 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
                "phase-type" = c("prob", "rates"))
     i <- pmatch(names(par.wait), choices, nomatch = 0L, duplicates.ok = TRUE)
     if (all(i == 0L))
-        stop(gettextf("parameters %s missing in 'par.wait'",
-                      paste(dQuote(choices), collapse = ", ")))
+        stop(sprintf("parameters %s missing in %s",
+                     paste(dQuote(choices), collapse = ", "),
+                     sQuote("par.wait")))
     par.wait <- par.wait[i > 0L]        # keep relevant components
     p <- choices[i[i > 0L]]             # keep relevant names
     names(par.wait) <- p                # use full names
@@ -141,7 +150,8 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         if ("rate" %in% p)
             rate <- par.wait$rate
         else
-            stop("parameter \"rate\" missing in 'par.wait'")
+            stop(sprintf("parameter %s missing in %s",
+                         dQuote("rate"), sQuote("par.wait")))
         m <- length(rate)
 
         if ("weights" %in% p && m > 1L)
@@ -149,7 +159,8 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         else if (m == 1L)
             prob.w <- 1
         else
-            stop("parameter \"weights\" missing in 'par.wait'")
+            stop(sprintf("parameter %s missing in %s",
+                         dQuote("weights"), sQuote("par.wait")))
 
         rates.w <- diag(-rate, m)
     }
@@ -158,13 +169,15 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         if ("shape" %in% p)
             shape <- par.wait$shape
         else
-            stop("parameter \"shape\" missing in 'par.wait'")
+            stop(sprintf("parameter %s missing in %s",
+                         dQuote("shape"), sQuote("par.wait")))
         if ("rate" %in% p)
             rate <- par.wait$rate
         else if ("scale" %in% p)
             rate <- 1 / par.wait$scale
         else
-            stop("parameter \"rate\" or \"scale\" missing in 'par.wait'")
+            stop(sprintf("parameter %s or %s missing in %s",
+                         dQuote("rate"), dQuote("scale"), sQuote("par.wait")))
         if (length(shape) < length(rate))
             shape <- rep(shape, length.out = length(rate))
         else
@@ -179,7 +192,8 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         else if (length(shape) == 1L)
             prob.w <- c(1, rep(0, m - 1))
         else
-            stop("parameter \"weights\" missing in 'par.wait'")
+            stop(sprintf("parameter %s missing in %s",
+                         dQuote("weights"), sQuote("par.wait")))
 
         rates.w <- diag(rep(-rate, shape), m)
         if (m > 1 && shape > 1)
@@ -194,14 +208,16 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         if ("prob" %in% p)
             prob.w <- par.wait$prob
         else
-            stop("parameter \"prob\" missing in 'par.wait'")
+            stop(sprintf("parameter %s missing in %s",
+                         dQuote("prob"), sQuote("par.wait")))
         if ("rates" %in% p)
             rates.w <- par.wait$rates
         else
-            stop("parameter \"rates\" missing in 'par.wait'")
+            stop(sprintf("parameter %s missing in %s",
+                         dQuote("rates"), sQuote("par.wait")))
         m <- length(prob.w)
         if (!(is.matrix(rates.w) && nrow(rates.w) == m))
-            stop("invalid parameters in 'par.wait'")
+            stop(sprintf("invalid parameters in %s", sQuote("par.wait")))
     }
     ## =================================================
 

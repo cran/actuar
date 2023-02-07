@@ -42,7 +42,8 @@ hist.grouped.data <-
                 else equidist
     }
     else if (!missing(probability) && any(probability == freq))
-        stop("'probability' is an alias for '!freq', however they differ.")
+        stop(sprintf("%s is an alias for %s, however they differ.",
+                     sQuote("probability"), sQuote("!freq")))
     mids <- 0.5 * (x[-1L] + x[-length(x)])
     r <- structure(list(breaks = x, counts = y, intensities = dens,
                         density = dens, mids = mids, xname = xname,

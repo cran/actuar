@@ -5,7 +5,7 @@ p4 <- person("Mathieu", "Pigeon", email = "pigeon.mathieu.2@uqam.ca")
 
 bibentry(bibtype = "Article",
          title = "actuar: An {R} Package for Actuarial Science",
-         author = personList(p1, p2, p4),
+         author = c(p1, p2, p4),
          journal = "Journal of Statistical Software",
 	 year = "2008",
 	 volume = "25",
@@ -16,7 +16,7 @@ bibentry(bibtype = "Article",
 
 bibentry(bibtype = "Article",
          title = "{F}eller-{P}areto and Related Distributions: Numerical Implementation and Actuarial Applications",
-         author = personList(p1, p2, p3),
+         author = c(p1, p2, p3),
          journal = "Journal of Statistical Software",
          year = "2022",
          volume = "103",

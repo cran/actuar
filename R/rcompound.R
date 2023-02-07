@@ -12,19 +12,25 @@
 
 rcompound <- function(n, model.freq, model.sev, SIMPLIFY = TRUE)
 {
+    ## Validity checks.
+    if (any(is.na(n)) || any(n < 0))
+        stop(sprintf("invalid first argument %s", sQuote("n")))
+
     ## Convert model expressions into language objects.
     cl.freq <- substitute(model.freq)
     cl.sev <- substitute(model.sev)
 
     ## If a model expression was actually an object containing the
-    ## model, we need to evaluate the object to retrieve the model.
+    ## model, we need to evaluate the object to retrieve the model,
+    ## yielding what has to be an expression object. Its first element
+    ## is the language object we are after.
     if (is.name(cl.freq))
-        cl.freq <- eval(cl.freq)
+        cl.freq <- eval.parent(cl.freq)[[1L]]
     if (is.name(cl.sev))
-        cl.sev <- eval(cl.sev)
+        cl.sev <- eval.parent(cl.sev)[[1L]]
 
     ## If a model expression is wrapped into 'expression' (as in
-    ## 'simul'), get rid of the call.
+    ## 'rcomphierarc'), get rid of the call.
     if (cl.freq[[1L]] == "expression")
         cl.freq <- cl.freq[[-1L]]
     if (cl.sev[[1L]] == "expression")
@@ -69,15 +75,29 @@ rcompound <- function(n, model.freq, model.sev, SIMPLIFY = TRUE)
 
 rcomppois <- function(n, lambda, model.sev, SIMPLIFY = TRUE)
 {
+    ## Validity checks.
+    if (any(is.na(n)) || any(n < 0))
+        stop(sprintf("invalid first argument %s", sQuote("n")))
+    if (any(lambda < 0))
+        stop(sprintf("invalid values in %s", sQuote("lambda")))
+
     ## Convert model expression into language object.
     cl.sev <- substitute(model.sev)
 
-    ## If model expression was actually an object containing the
+    ## If the model expression was actually an object containing the
     ## model, we need to evaluate the object to retrieve the model.
     if (is.name(cl.sev))
-        cl.sev <- eval(cl.sev)
+    {
+        cl.sev <- eval.parent(cl.sev)
 
-    ## Get rid of the eventual 'expression' call.
+        ## If the resulting object if an expression object, its first
+        ## element is the language object we are after.
+        if (is.expression(cl.sev))
+            cl.sev <- cl.sev[[1L]]
+    }
+
+    ## Get rid of the eventual 'expression' call in the language
+    ## object.
     if (cl.sev[[1L]] == "expression")
         cl.sev <- cl.sev[[-1L]]
 
