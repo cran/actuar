@@ -10,8 +10,8 @@ require(actuar)
 ## A simple Compound Poisson model: S_t = C_1 + ... + C_{N_t}, with
 ## N_t ~ Poisson(10), C ~ Lognormal(log(1500) - 1, 1). The names of
 ## the components serve no purpose here but are required.
-pf <- simul(list(y = 10), model.freq = expression(y = rpois(10)),
-            model.sev = expression(y = rlnorm(log(1500) - 1, 1)))
+pf <- rcomphierarc(list(y = 10), model.freq = expression(y = rpois(10)),
+                   model.sev = expression(y = rlnorm(log(1500) - 1, 1)))
 pf                                      # print method
 aggregate(pf)                           # aggregate claim amounts
 frequency(pf)                           # frequencies
@@ -21,13 +21,14 @@ severity(pf, splitcol = 10)             # last period separate
 
 ## Simple (continuous) mixture of models: S_t|Theta ~ Poisson(Theta),
 ## Theta ~ Gamma(2, 1). Any names can be used in the model.
-pf <- simul(list(Theta = 1, S = 10),
-            model.freq = expression(Theta = rgamma(2, 1), S = rpois(Theta)))
+pf <- rcomphierarc(list(Theta = 1, S = 10),
+                   model.freq = expression(Theta = rgamma(2, 1),
+                                           S = rpois(Theta)))
 aggregate(pf)                           # actual data
 frequency(pf)                           # same, here
 
 ## Model with with mixtures for both frequency and severity.
-pf <- simul(list(entity = 10, year = 5),
+pf <- rcomphierarc(list(entity = 10, year = 5),
             model.freq = expression(entity = rgamma(2, 1),
                 year = rpois(entity)),
             model.sev = expression(entity = rnorm(5, 1),
@@ -41,12 +42,12 @@ frequency(pf)
 ## wherever weights are to be used.
 wit <- runif(10, 2, 10)
 (wit <- runif(50, rep(0.5 * wit, each = 5), rep(1.5 * wit, each = 5)))
-(pf <- simul(list(entity = 10, year = 5),
-             model.freq = expression(entity = rgamma(2, 1),
-                 year = rpois(weights * entity)),
-             model.sev = expression(entity = rnorm(5, 1),
-                 year = rlnorm(entity, 1)),
-             weights = wit))
+(pf <- rcomphierarc(list(entity = 10, year = 5),
+                    model.freq = expression(entity = rgamma(2, 1),
+                                            year = rpois(weights * entity)),
+                    model.sev = expression(entity = rnorm(5, 1),
+                                           year = rlnorm(entity, 1)),
+                    weights = wit))
 weights(pf)                             # extraction of weights
 
 ## Three level hierarchical model (sector, unit, contract). Claim
@@ -64,6 +65,6 @@ ms <- expression(sector = rnorm(2, sqrt(0.1)),
                  year = rlnorm(unit, 1))
 wijkt <- runif(50, 2, 10)
 wijkt <- runif(300, rep(0.5 * wijkt, each = 6), rep(1.5 * wijkt, each = 6))
-pf <- simul(nodes, model.freq = mf, model.sev = ms, weights = wijkt)
+pf <- rcomphierarc(nodes, model.freq = mf, model.sev = ms, weights = wijkt)
 frequency(pf)
 weights(pf)

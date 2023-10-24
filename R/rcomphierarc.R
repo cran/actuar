@@ -11,7 +11,7 @@
 ### AUTHORS:  Vincent Goulet <vincent.goulet@act.ulaval.ca>,
 ### Sebastien Auclair and Louis-Philippe Pouliot
 
-simul <- function(nodes, model.freq = NULL, model.sev = NULL, weights = NULL)
+rcomphierarc <- function(nodes, model.freq = NULL, model.sev = NULL, weights = NULL)
 {
     ## Get level names. Each could be NULL.
     level.names <- names(nodes)
@@ -287,12 +287,8 @@ simul <- function(nodes, model.freq = NULL, model.sev = NULL, weights = NULL)
               class = "portfolio")
 }
 
-### Alias for backward compatibility (with actuar <= 0.9-4)
-simpf <- simul
-
-### Alias to fit within the usual naming scheme of random generation
-### functions (introduced in actuar 2.0-0)
-rcomphierarc <- simul
+### Alias for backward compatibility with actuar < 2.0-0.
+simul <- rcomphierarc
 
 ### 'print' method for 'portfolio' objects
 print.portfolio <- function(x, ...)

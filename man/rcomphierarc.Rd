@@ -1,7 +1,6 @@
-\name{simul}
-\alias{simul}
-\alias{simpf}
+\name{rcomphierarc}
 \alias{rcomphierarc}
+\alias{simul}
 \alias{print.portfolio}
 \title{Simulation from Compound Hierarchical Models}
 \description{
@@ -12,8 +11,6 @@
   \code{rcomphierarc} is an alias for \code{simul}.
 }
 \usage{
-simul(nodes, model.freq = NULL, model.sev = NULL, weights = NULL)
-
 rcomphierarc(nodes, model.freq = NULL, model.sev = NULL, weights = NULL)
 
 \method{print}{portfolio}(x, \dots)
@@ -104,9 +101,9 @@ rcomphierarc(nodes, model.freq = NULL, model.sev = NULL, weights = NULL)
   Sébastien Auclair and Louis-Philippe Pouliot
 }
 \seealso{
-  \code{\link{simul.summaries}} for the functions to create the
-  matrices of aggregate claim amounts, frequencies and individual
-  claim amounts.
+  \code{\link{rcomphierarc.summaries}} for the functions to create the
+  matrices of aggregate claim amounts, frequencies and individual claim
+  amounts.
 
   \code{\link{rcompound}} for a simpler and much faster way to generate
   variates from standard, non hierarchical, compound models.
@@ -115,11 +112,11 @@ rcomphierarc(nodes, model.freq = NULL, model.sev = NULL, weights = NULL)
 ## Two level (contracts and years) portfolio with frequency model
 ## Nit|Theta_i ~ Poisson(Theta_i), Theta_i ~ Gamma(2, 3) and severity
 ## model X ~ Lognormal(5, 1)
-simul(nodes = list(contract = 10, year = 5),
-      model.freq = expression(contract = rgamma(2, 3),
-                              year = rpois(contract)),
-      model.sev = expression(contract = NULL,
-                             year = rlnorm(5, 1)))
+rcomphierarc(nodes = list(contract = 10, year = 5),
+             model.freq = expression(contract = rgamma(2, 3),
+                                     year = rpois(contract)),
+             model.sev = expression(contract = NULL,
+                                    year = rlnorm(5, 1)))
 
 ## Model with weights and mixtures for both frequency and severity
 ## models
@@ -129,7 +126,7 @@ mf <- expression(entity = rgamma(2, 3),
 ms <- expression(entity = rnorm(5, 1),
                  year = rlnorm(entity, 1))
 wit <- sample(2:10, 35, replace = TRUE)
-pf <- simul(nodes, mf, ms, wit)
+pf <- rcomphierarc(nodes, mf, ms, wit)
 pf 				# print method
 weights(pf)			# extraction of weights
 aggregate(pf)[, -1]/weights(pf)[, -1] # ratios
@@ -141,7 +138,7 @@ mf <- expression(sector = rexp(1),
                  unit = rexp(sector),
                  employer = rgamma(unit, 1),
                  year = rpois(employer))
-pf <- simul(nodes, mf, NULL)
+pf <- rcomphierarc(nodes, mf, NULL)
 pf 				# print method
 aggregate(pf) 			# aggregate claim amounts
 frequency(pf)  			# frequencies
@@ -149,8 +146,8 @@ severity(pf)			# individual claim amounts
 
 ## Standard, non hierarchical, compound model with simplified
 ## syntax (function rcompound() is much faster for such cases)
-simul(10,
-      model.freq = expression(rpois(2)),
-      model.sev = expression(rgamma(2, 3)))
+rcomphierarc(10,
+             model.freq = expression(rpois(2)),
+             model.sev = expression(rgamma(2, 3)))
 }
 \keyword{datagen}

@@ -19,7 +19,7 @@ TVaR(x, \dots)
 \arguments{
   \item{x}{an \R object.}
   \item{conf.level}{numeric vector of probabilities with values
-    in \eqn{[0, 1)}}.
+    in \eqn{[0, 1)}.}
   \item{names}{logical; if true, the result has a \code{names}
     attribute.  Set to \code{FALSE} for speedup with many \code{probs}.}
   \item{\dots}{further arguments passed to or from other methods.}

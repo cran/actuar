@@ -1,5 +1,4 @@
-\name{simul.summaries}
-\alias{simul.summaries}
+\name{rcomphierarc.summaries}
 \alias{rcomphierarc.summaries}
 \alias{aggregate.portfolio}
 \alias{frequency.portfolio}
@@ -91,7 +90,7 @@
   Louis-Philippe Pouliot.
 }
 \seealso{
-  \code{\link{simul}}
+  \code{\link{rcomphierarc}}
 }
 \examples{
 nodes <- list(sector = 3, unit = c(3, 4),
@@ -104,7 +103,7 @@ model.sev <- expression(sector = rnorm(6, 0.1),
                         unit = rnorm(sector, 1),
                         employer = rnorm(unit, 1),
                         year = rlnorm(employer, 1))
-pf <- simul(nodes, model.freq, model.sev)
+pf <- rcomphierarc(nodes, model.freq, model.sev)
 
 aggregate(pf)            # aggregate claim amount by employer and year
 aggregate(pf, classification = FALSE) # same, without node identifiers

@@ -2,6 +2,28 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.3-3}{
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{The generics \code{elev} and \code{ogive} no longer rely on
+	local variables added to the environment in which the method is
+	evaluated by \code{UseMethod}. This \dQuote{feature} should be
+	removed from R in the next major release. Thanks to Luke
+	Thierney \email{luke-tierney@uiowa.edu} for the direct
+	notification and for the pointer to a fix.}
+    }
+  }
+  \subsection{USER VISIBLE CHANGES}{
+    \itemize{ 
+      \item{\code{rcomphierarc} is now the base name for the simulation
+	function of compound hierarchical models, whereas \code{simul}
+	is an alias retained for backward compatibility.}
+      \item{The alias \code{simpf} for \code{simul} (or
+	\code{rcomphierarc}) is extinct.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.3-2}{
   \subsection{BUG FIXES}{
     \itemize{
@@ -71,7 +93,7 @@
 	contributed by Walter Garcia-Fontes
 	\email{walter.garcia@upf.edu}.}
       \item{Examples for the new methods for grouped data objects in
-	\code{\dQuote{lossdist}} demonstration \R script.}
+	\code{lossdist} demonstration \R script.}
     }
   }
   \subsection{BUG FIXES}{

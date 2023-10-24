@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: actuar 2.0-0\n"
 "Report-Msgid-Bugs-To: bugs@r-project.org\n"
-"POT-Creation-Date: 2023-02-05 12:53\n"
+"POT-Creation-Date: 2023-10-24 12:31\n"
 "PO-Revision-Date: 2023-02-05 12:58-0500\n"
 "Last-Translator: Vincent Goulet <vincent.goulet@act.ulaval.ca>\n"
 "Language-Team: Vincent Goulet <vincent.goulet@act.ulaval.ca>\n"
@@ -148,7 +148,8 @@ msgid "there must be more than one node"
 msgstr "il doit y avoir plus d'un noeud"
 
 msgid "missing values are not in the same positions in %s and in %s"
-msgstr "les données manquantes ne sont pas aux mêmes positions dans %s et dans %s"
+msgstr ""
+"les données manquantes ne sont pas aux mêmes positions dans %s et dans %s"
 
 msgid "weights"
 msgstr "weights"
@@ -325,6 +326,24 @@ msgstr ""
 "valeur de Pr[S = 0] numériquement nulle; impossible de démarrer le calcul "
 "récursif"
 
+msgid "'nodes' must be a named list"
+msgstr "'nodes' doit être une liste nommée"
+
+msgid "level names different in 'nodes', 'model.freq' and 'model.sev'"
+msgstr "noms de niveaux différents dans 'nodes', 'model.freq' et 'model.sev'"
+
+msgid "one of 'model.freq' or 'model.sev' must be non-NULL"
+msgstr "un de 'model.freq' ou 'model.sev' doit être non NULL"
+
+msgid "nothing to do"
+msgstr "rien à faire"
+
+msgid "invalid %s specification"
+msgstr "valeur de %s incorrecte"
+
+msgid "by"
+msgstr "by"
+
 msgid "invalid first argument %s"
 msgstr "premier argument %s incorrect"
 
@@ -363,24 +382,6 @@ msgstr "rates"
 
 msgid "invalid parameters in %s"
 msgstr "paramètres incorrects dans %s"
-
-msgid "'nodes' must be a named list"
-msgstr "'nodes' doit être une liste nommée"
-
-msgid "level names different in 'nodes', 'model.freq' and 'model.sev'"
-msgstr "noms de niveaux différents dans 'nodes', 'model.freq' et 'model.sev'"
-
-msgid "one of 'model.freq' or 'model.sev' must be non-NULL"
-msgstr "un de 'model.freq' ou 'model.sev' doit être non NULL"
-
-msgid "nothing to do"
-msgstr "rien à faire"
-
-msgid "invalid %s specification"
-msgstr "valeur de %s incorrecte"
-
-msgid "by"
-msgstr "by"
 
 msgid "%s must be a vector or a matrix"
 msgstr "%s doit être un vecteur ou une matrice"

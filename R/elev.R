@@ -6,17 +6,14 @@
 ### AUTHORS: Vincent Goulet <vincent.goulet@act.ulaval.ca> and
 ###          Mathieu Pigeon
 
-elev <- function(x, ...)
-{
-    Call <- match.call()
-    UseMethod("elev")
-}
+elev <- function(x, ...) UseMethod("elev")
 
 elev.default <- function(x, ...)
 {
-    if (!exists("Call", inherits = FALSE))
-        Call <- match.call()
     chkDots(...)                        # method does not use '...'
+    Call <- match.call()
+    if (exists(".Generic", inherits = FALSE))
+        Call[[1]] <- as.name(.Generic)
     FUN <- function(limit)
         sapply(limit, function(x, y) mean(pmin(x, y)), x = x)
     environment(FUN) <- new.env()
@@ -37,9 +34,10 @@ if (getRversion() >= "2.15.1")  utils::globalVariables(c("cj", "nj"))
 ### values are identical for left-closed intervals.
 elev.grouped.data <- function(x, ...)
 {
-    if (!exists("Call", inherits = FALSE))
-        Call <- match.call()
     chkDots(...)                        # method does not use '...'
+    Call <- match.call()
+    if (exists(".Generic", inherits = FALSE))
+        Call[[1]] <- as.name(.Generic)
     FUN <- function(limit)
     {
         ## Explicitely get the data from the function environment.

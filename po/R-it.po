@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: actuar 2.0-0\n"
 "Report-Msgid-Bugs-To: bugs@r-project.org\n"
-"POT-Creation-Date: 2023-02-05 12:53\n"
+"POT-Creation-Date: 2023-10-24 12:31\n"
 "PO-Revision-Date: 2023-02-05 13:01-0500\n"
 "Last-Translator: Daniele Medri <dmedri@gmail.com>\n"
 "Language-Team: Daniele Medri <dmedri@gmail.com>\n"
@@ -321,6 +321,24 @@ msgid "Pr[S = 0] is numerically equal to 0; impossible to start the recursion"
 msgstr ""
 "Pr[S = 0] è numericamente uguale a 0; non è possibile avviare la ricorsione"
 
+msgid "'nodes' must be a named list"
+msgstr "'nodes' dev'essere una lista nominata"
+
+msgid "level names different in 'nodes', 'model.freq' and 'model.sev'"
+msgstr "nomi livello differenti in 'nodes', 'model.freq' e 'model.sev'"
+
+msgid "one of 'model.freq' or 'model.sev' must be non-NULL"
+msgstr "uno di 'model.freq' o 'model.sev' non dev'essere NULL"
+
+msgid "nothing to do"
+msgstr "niente da fare"
+
+msgid "invalid %s specification"
+msgstr "specificazione di %s non valida"
+
+msgid "by"
+msgstr "by"
+
 msgid "invalid first argument %s"
 msgstr "primo argomento %s non valido"
 
@@ -359,24 +377,6 @@ msgstr "rates"
 
 msgid "invalid parameters in %s"
 msgstr "parametri non validi in %s"
-
-msgid "'nodes' must be a named list"
-msgstr "'nodes' dev'essere una lista nominata"
-
-msgid "level names different in 'nodes', 'model.freq' and 'model.sev'"
-msgstr "nomi livello differenti in 'nodes', 'model.freq' e 'model.sev'"
-
-msgid "one of 'model.freq' or 'model.sev' must be non-NULL"
-msgstr "uno di 'model.freq' o 'model.sev' non dev'essere NULL"
-
-msgid "nothing to do"
-msgstr "niente da fare"
-
-msgid "invalid %s specification"
-msgstr "specificazione di %s non valida"
-
-msgid "by"
-msgstr "by"
 
 msgid "%s must be a vector or a matrix"
 msgstr "%s dev'essere un vettore numerico o una matrice"

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: actuar 3.3-2\n"
-"POT-Creation-Date: 2023-02-05 12:53\n"
+"Project-Id-Version: actuar 3.3-3\n"
+"POT-Creation-Date: 2023-10-24 12:31\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -307,6 +307,24 @@ msgstr ""
 msgid "Pr[S = 0] is numerically equal to 0; impossible to start the recursion"
 msgstr ""
 
+msgid "'nodes' must be a named list"
+msgstr ""
+
+msgid "level names different in 'nodes', 'model.freq' and 'model.sev'"
+msgstr ""
+
+msgid "one of 'model.freq' or 'model.sev' must be non-NULL"
+msgstr ""
+
+msgid "nothing to do"
+msgstr ""
+
+msgid "invalid %s specification"
+msgstr ""
+
+msgid "by"
+msgstr ""
+
 msgid "invalid first argument %s"
 msgstr ""
 
@@ -344,24 +362,6 @@ msgid "rates"
 msgstr ""
 
 msgid "invalid parameters in %s"
-msgstr ""
-
-msgid "'nodes' must be a named list"
-msgstr ""
-
-msgid "level names different in 'nodes', 'model.freq' and 'model.sev'"
-msgstr ""
-
-msgid "one of 'model.freq' or 'model.sev' must be non-NULL"
-msgstr ""
-
-msgid "nothing to do"
-msgstr ""
-
-msgid "invalid %s specification"
-msgstr ""
-
-msgid "by"
 msgstr ""
 
 msgid "%s must be a vector or a matrix"

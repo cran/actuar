@@ -32,10 +32,9 @@ these functions are:
 \item \code{rcompound} to simulate from compound models (and a
   simplified version, \code{rcompois} to simulate from the very common
   compound Poisson model);
-\item \code{rcomphierarc}\footnote{%
-    An alias for \code{simul} introduced in \pkg{actuar} 2.0-0.} %
-  to simulate from compound models where both the frequency and the
-  severity components can have a hierarchical structure.
+\item \code{rcomphierarc} to simulate from compound models where both
+  the frequency and the severity components can have a hierarchical
+  structure.
 \end{enumerate}
 
 

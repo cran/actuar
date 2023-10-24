@@ -2,10 +2,10 @@
 ###
 ### Ogive for grouped data.
 ###
-### A default method exists for either a vector of individual data or
+### A default method exists for either a vector of individual data, or
 ### two vectors of group boundaries and group frequencies. It first
-### creates a grouped data object using 'grouped.data' and then
-### dispatches to the main method to get the ogive.
+### creates a grouped data object using 'grouped.data' and then calls
+### a utility function to create the ogive.
 ###
 ### For the definition of the ogive, see Klugman, Panjer & Willmot,
 ### Loss Models, Wiley, 1998.
@@ -19,18 +19,15 @@
 ### CREDITS: Arguments, 'breaks', 'nclass' and their treatment taken
 ### from R function hist().
 
-ogive <- function(x, ...)
-{
-    Call <- match.call()
-    UseMethod("ogive")
-}
+ogive <- function(x, ...) UseMethod("ogive")
 
 ogive.default <- function(x, y = NULL,
                           breaks = "Sturges", nclass = NULL, ...)
 {
-    if (!exists("Call", inherits = FALSE))
-        Call <- match.call()
     chkDots(...)           # method does not use '...'
+    Call <- match.call()
+    if (exists(".Generic", inherits = FALSE))
+        Call[[1]] <- as.name(.Generic)
 
     ## Avoid using calling 'hist' with 'nclass' specified.
     if (!missing(breaks))
@@ -61,9 +58,10 @@ ogive.default <- function(x, y = NULL,
 
 ogive.grouped.data <- function(x, ...)
 {
-    if (!exists("Call", inherits = FALSE))
-        Call <- match.call()
     chkDots(...)                      # method does not use '...'
+    Call <- match.call()
+    if (exists(".Generic", inherits = FALSE))
+        Call[[1]] <- as.name(.Generic)
 
     ## We keep the first frequencies column only; group boundaries are
     ## in the environment of 'x'

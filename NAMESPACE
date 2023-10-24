@@ -12,7 +12,7 @@ export(
     cm,
     ## Simulation of insurance data
     rcompound, rcomppois, rmixture,
-    simul, simpf, rcomphierarc, severity, unroll,
+    rcomphierarc, simul, severity, unroll,
     ## Risk theory
     aggregateDist, CTE, TVaR, discretize, discretise, VaR, adjCoef, ruin,
     ## One parameter distributions
