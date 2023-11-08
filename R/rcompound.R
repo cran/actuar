@@ -1,12 +1,12 @@
 ### actuar: Actuarial Functions and Heavy Tailed Distributions
 ###
 ### Simulation of standard, non hierarchical, compound models. Uses a
-### simplified version of the syntax of simul() for model
+### simplified version of the syntax of 'rcomphierarc' for model
 ### specfification.
 ###
-### Where simul() was developed for flexibility, these ones are aimed
-### at execution speed. Various algorithms where tested. No argument
-### validity checks.
+### Where 'rcomphierarc' was developed for flexibility, the functions
+### therein aim at execution speed. Various algorithms were tested.
+### No argument validity checks.
 ###
 ### AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
 
@@ -21,13 +21,21 @@ rcompound <- function(n, model.freq, model.sev, SIMPLIFY = TRUE)
     cl.sev <- substitute(model.sev)
 
     ## If a model expression was actually an object containing the
-    ## model, we need to evaluate the object to retrieve the model,
-    ## yielding what has to be an expression object. Its first element
-    ## is the language object we are after.
+    ## model, we need to evaluate the object to retrieve the model.
+    ## If the resulting object is an expression object, its first
+    ## element is the language object we are after.
     if (is.name(cl.freq))
-        cl.freq <- eval.parent(cl.freq)[[1L]]
+    {
+        cl.freq <- eval.parent(cl.freq)
+        if (is.expression(cl.freq))
+            cl.freq <- cl.freq[[1L]]
+    }
     if (is.name(cl.sev))
-        cl.sev <- eval.parent(cl.sev)[[1L]]
+    {
+        cl.sev <- eval.parent(cl.sev)
+        if (is.expression(cl.sev))
+            cl.sev <- cl.sev[[1L]]
+    }
 
     ## If a model expression is wrapped into 'expression' (as in
     ## 'rcomphierarc'), get rid of the call.
@@ -86,12 +94,11 @@ rcomppois <- function(n, lambda, model.sev, SIMPLIFY = TRUE)
 
     ## If the model expression was actually an object containing the
     ## model, we need to evaluate the object to retrieve the model.
+    ## If the resulting object is an expression object, its first
+    ## element is the language object we are after.
     if (is.name(cl.sev))
     {
         cl.sev <- eval.parent(cl.sev)
-
-        ## If the resulting object if an expression object, its first
-        ## element is the language object we are after.
         if (is.expression(cl.sev))
             cl.sev <- cl.sev[[1L]]
     }

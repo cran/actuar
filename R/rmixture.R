@@ -17,7 +17,7 @@ rmixture <- function(n, probs, models, shuffle = TRUE)
     if (all(probs <= 0))
         stop("no positive probabilities")
     if ((!is.expression(models)) || (length(models) == 0L))
-        stop(sprintf("invalid third argument %s", sQuote("n")))
+        stop(sprintf("invalid third argument %s", sQuote("models")))
 
     ## Number of models in the mixture.
     m <- max(length(probs), length(models))

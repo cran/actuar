@@ -30,7 +30,7 @@ rcomphierarc <- function(nodes, model.freq = NULL, model.sev = NULL, weights = N
     else
     {
         if (!is.list(nodes) || is.null(level.names))
-            stop("'nodes' must be a named list")
+            stop(sprintf("%s must be a named list", sQuote("nodes")))
     }
 
     ## Determine if frequency and severity models are present. Keep
@@ -48,12 +48,18 @@ rcomphierarc <- function(nodes, model.freq = NULL, model.sev = NULL, weights = N
         {
             if (! (identical(level.names, freq.names) &&
                    identical(level.names, sev.names)))
-                stop("level names different in 'nodes', 'model.freq' and 'model.sev'")
+                stop(sprintf("level names different in %s, %s and %s",
+                             sQuote("nodes"),
+                             sQuote("model.freq"),
+                             sQuote("model.sev")))
         }
         else
         {
             if (!identical(level.names, freq.names))
-                stop("level names different in 'nodes', 'model.freq' and 'model.sev'")
+                stop(sprintf("level names different in %s, %s and %s",
+                             sQuote("nodes"),
+                             sQuote("model.freq"),
+                             sQuote("model.sev")))
         }
     }
     else
@@ -61,10 +67,14 @@ rcomphierarc <- function(nodes, model.freq = NULL, model.sev = NULL, weights = N
         if (has.sev)
         {
             if (!identical(level.names, sev.names))
-                stop("level names different in 'nodes', 'model.freq' and 'model.sev'")
+                stop(sprintf("level names different in %s, %s and %s",
+                             sQuote("nodes"),
+                             sQuote("model.freq"),
+                             sQuote("model.sev")))
         }
         else
-            stop("one of 'model.freq' or 'model.sev' must be non-NULL")
+            stop(sprintf("one of %s or %s must be non-NULL",
+                         sQuote("model.freq"), sQuote("model.sev")))
     }
 
     ## The function is written for models with at least two levels

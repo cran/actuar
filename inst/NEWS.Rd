@@ -2,6 +2,17 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.3-4}{
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{\code{rcompound} will now correctly retrieve the simulation
+	models passed down from other functions as expressions objects.}
+      \item{One error message in \code{rmixture} was quoting the wrong
+	argument.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.3-3}{
   \subsection{BUG FIXES}{
     \itemize{

@@ -75,7 +75,7 @@ h <- function(n, p, model)
 k <- function(n, p, m, q)
 {
     ## Pathological case where the models expression does not evaluate
-    ## in the frame of 'rmixture' as 'm' and 'q' will be not bound.
+    ## in the frame of 'rmixture' as 'm' and 'q' will not be bound.
     ## The fix is to substitute variables by their values.
     models <- substitute(expression(rexp(m[1]), rlnorm(m[2], q[2]), rpareto(m[3], q[3])),
                          list(m = m, q = q))

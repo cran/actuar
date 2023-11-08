@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: actuar 3.3-3\n"
-"POT-Creation-Date: 2023-10-24 12:31\n"
+"Project-Id-Version: actuar 3.3-4\n"
+"POT-Creation-Date: 2023-11-07 14:41\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -307,13 +307,13 @@ msgstr ""
 msgid "Pr[S = 0] is numerically equal to 0; impossible to start the recursion"
 msgstr ""
 
-msgid "'nodes' must be a named list"
+msgid "nodes"
 msgstr ""
 
-msgid "level names different in 'nodes', 'model.freq' and 'model.sev'"
+msgid "level names different in %s, %s and %s"
 msgstr ""
 
-msgid "one of 'model.freq' or 'model.sev' must be non-NULL"
+msgid "one of %s or %s must be non-NULL"
 msgstr ""
 
 msgid "nothing to do"
@@ -338,6 +338,9 @@ msgid "no positive probabilities"
 msgstr ""
 
 msgid "invalid third argument %s"
+msgstr ""
+
+msgid "models"
 msgstr ""
 
 msgid "par.claims"
