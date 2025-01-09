@@ -1015,7 +1015,7 @@ positive, and the functions are defined for $x > 0$.
 \subsubsection{Pareto II}
 
 \begin{itemize}
-\item Root: \code{pareto4}
+\item Root: \code{pareto2}
 \item Parameters: \code{min} ($-\infty < \mu < \infty$),
       \code{shape} ($\alpha$),
       \code{rate}  ($\lambda = 1/\theta$),
@@ -1187,7 +1187,7 @@ positive, and the functions are defined for $x > 0$.
 \subsubsection{Pareto}
 
 \begin{itemize}
-\item Root: \code{pareto}, \code{pareto2}
+\item Root: \code{pareto}
 \item Parameters: \code{shape} ($\alpha$),
       \code{scale}  ($\theta$)
 \end{itemize}

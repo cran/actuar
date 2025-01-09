@@ -4,7 +4,7 @@
 ### code chunk number 1: credibility.Rnw:14-16
 ###################################################
 library(actuar)
-options(width = 57, digits = 4)
+options(width = 57, digits = 4, deparse.cutoff = 30L)
 
 
 ###################################################

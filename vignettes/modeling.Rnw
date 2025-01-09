@@ -130,11 +130,11 @@ x
   \begin{center}
     \begin{tabular}{*{10}{r}}
        27 &  82 & 115 & 126 & 155 &  161 &  243 &  294 &  340 &   384 \\
-      457 & 680 & 855 & 877 & 974 & \numprint{1193}
-                                  & \numprint{1340}
-                                  & \numprint{1884}
-                                  & \numprint{2558}
-                                  & \numprint{15743}
+      457 & 680 & 855 & 877 & 974 & \np{1193}
+                                  & \np{1340}
+                                  & \np{1884}
+                                  & \np{2558}
+                                  & \np{15743}
     \end{tabular}
   \end{center}
   We can represent this data set as grouped data using either an automatic

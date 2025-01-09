@@ -84,7 +84,7 @@ rlogarithmic(n, prob)
   Statistical Society, Series C}, vol. 30, p. 249-253.
 
   Devroye, L. (1986), \emph{Non-Uniform Random Variate Generation},
-  Springer-Verlag. \url{http://luc.devroye.org/rnbookindex.html}
+  Springer-Verlag. \url{https://luc.devroye.org/rnbookindex.html}
 }
 \seealso{
   \code{\link{dztnbinom}} for the zero-truncated negative binomial

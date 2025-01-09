@@ -2,39 +2,34 @@
   \usepackage{amsmath,amsthm}
   \usepackage[round]{natbib}
   \usepackage{babel}
-  \usepackage[autolanguage]{numprint}
+  \usepackage[autolanguage,np]{numprint}
   \usepackage[noae]{Sweave}
   \usepackage{framed}
   \usepackage{booktabs}
   \usepackage[shortlabels]{enumitem}
 
   %% Fonts
+  \usepackage[babel=true]{microtype}
   \usepackage{fontenc}
   \usepackage{unicode-math}
   \setmainfont{STIXTwoText}
   [
-    Extension={.otf},
-    UprightFont={*-Regular},
-    BoldFont={*-Bold},
-    ItalicFont={*-Italic},
-    BoldItalicFont={*-BoldItalic},
-    Numbers=OldStyle
+    Extension = .otf,
+    UprightFont = *-Regular,
+    BoldFont = *-SemiBold,
+    ItalicFont = *-Italic,
+    BoldItalicFont = *-SemiBoldItalic,
+    Scale = 1,
+    Ligatures = TeX
   ]
   \setmathfont{STIXTwoMath-Regular}
   [
-    Extension={.otf},
-    Scale=1
+    Extension = .otf,
+    Scale = 1,
+    bold-style = TeX
   ]
-  \setmonofont{FiraMono}
-  [
-    Extension={.otf},
-    UprightFont={*-Regular},
-    ItalicFont={*-Oblique},
-    BoldFont={*-Medium},
-    BoldItalicFont={*-MediumOblique},
-    Scale=0.92
-  ]
-  \usepackage{microtype}
+  \usepackage[book,medium,proportional,lining,scale=0.92]{FiraSans}
+  \usepackage[medium,lining,scale=0.90]{FiraMono}
 
   %% Colors
   \usepackage{xcolor}

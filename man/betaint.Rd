@@ -2,10 +2,9 @@
 \alias{betaint}
 \title{The \dQuote{Beta Integral}}
 \description{
-  The \dQuote{beta integral} which is just a multiple of the non
-  regularized incomplete beta function. This function merely
-  provides an R interface to the C level routine. It is not exported
-  by the package.
+  The \dQuote{beta integral} is just a multiple of the non regularized
+  incomplete beta function. This function provides an R interface to the
+  C level routine. It is not exported by the package.
 }
 \usage{
 betaint(x, a, b)

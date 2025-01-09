@@ -107,6 +107,9 @@ cm(formula, data, ratios, weights, subset,
   Data does not have to be sorted by level. Nodes with no data (complete
   lines of \code{NA} except for the portfolio structure) are allowed,
   with the restriction mentioned above.
+
+  The \code{print} methods use the option \code{deparse.cutoff} to
+  control the printing of the call to \code{cm}.
 }
 \section{Hierarchical models}{
   The credibility premium at one level is a convex combination between

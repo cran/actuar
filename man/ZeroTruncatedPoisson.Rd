@@ -41,7 +41,7 @@ rztpois(n, lambda)
     P(x) = [F(x) - F(0)]/[1 - F(0)],}
   where \eqn{F(x)} is the distribution function of the standard Poisson.
 
-  The mean is \eqn{\lambda/(1 - e^{-\lambda})^2}{\lambda/(1 -
+  The mean is \eqn{\lambda/(1 - e^{-\lambda})}{\lambda/(1 -
     exp(-\lambda))} and the variance is
   \eqn{\lambda[1 - (\lambda+1)e^{-\lambda}]/(1 - e^{-\lambda})^2}{%
     \lambda[1 - (\lambda+1)exp(-\lambda)]/(1 - exp(-\lambda))^2}.

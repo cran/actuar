@@ -111,7 +111,7 @@ mgfinvgauss(t, mean, shape = 1, dispersion = 1/shape, log = FALSE)
     Distribution: Theory, Methodology and Applications}, Decker.
 
   Devroye, L. (1986), \emph{Non-Uniform Random Variate Generation},
-  Springer-Verlag. \url{http://luc.devroye.org/rnbookindex.html}
+  Springer-Verlag. \url{https://luc.devroye.org/rnbookindex.html}
 }
 \seealso{
   \code{\link{dinvgamma}} for the inverse gamma distribution.

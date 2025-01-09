@@ -210,7 +210,9 @@ print.cm <- function(x, ...)
     b <- if (is.null(x$iterative)) x$unbiased else x$iterative
 
     cat("Call:\n",
-        paste(deparse(attr(x, "call")), sep = "\n", collapse = "\n"),
+        paste(deparse(attr(x, "call"),
+                      width.cutoff = getOption("deparse.cutoff")),
+              sep = "\n", collapse = "\n"),
         "\n\n", sep = "")
 
     cat("Structure Parameters Estimators\n\n")

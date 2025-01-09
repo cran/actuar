@@ -2,11 +2,38 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.3-5}{
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{The \code{print} methods for objects of class \code{"cm"}
+	and \code{"summary.cm"} now use the option \code{deparse.cutoff}
+	to control the printing of the call to \code{cm}.}
+    }
+  }
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{Appendix A of the \dQuote{distributions} package vignette
+	still listed the root \code{pareto2} as an alias for
+	\code{pareto}. Moreoever, the root for the Pareto II
+	distribution was wrongly listed as \code{pareto4}.}
+      \item{The equation for the mean of the zero-truncated Poisson
+	distribution in the HTML version of the help page contained an
+	inappropriate power 2 in the denominator. Thanks to Brad
+	Biggerstaff \email{bkb5@cdc.gov} for the heads up.}
+    }
+  }
+  \subsection{OTHER CHANGES}{
+    \itemize{
+      \item{Package vignettes now use Fira Sans for sans serif text.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.3-4}{
   \subsection{BUG FIXES}{
     \itemize{
       \item{\code{rcompound} will now correctly retrieve the simulation
-	models passed down from other functions as expressions objects.}
+	models passed down from other functions as expression objects.}
       \item{One error message in \code{rmixture} was quoting the wrong
 	argument.}
     }
