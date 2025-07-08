@@ -13,9 +13,9 @@ sd <- function(x, ...) UseMethod("sd")
 
 ## Default methods are stats::var and stats:sd
 var.default <- function(x, y = NULL, na.rm = FALSE, use, ...)
-    stats::var(x, y = NULL, na.rm = FALSE, use)
+    stats::var(x, y = NULL, na.rm = na.rm, use)
 sd.default <- function(x, na.rm = FALSE, ...)
-    stats::sd(x, na.rm = FALSE)
+    stats::sd(x, na.rm = na.rm)
 
 ## Methods for grouped data
 var.grouped.data <- function(x, ...)
@@ -26,12 +26,17 @@ var.grouped.data <- function(x, ...)
     ## Compute group midpoints
     midpoints <- cj[-length(cj)] + diff(cj)/2
 
-    ## Compute midpoints minus mean and square it
-    midsquare <- (midpoints - mean(x))^2
-
     ## Extract frequencies columns by dropping the boundaries column;
     ## convert to matrix for use in crossprod()
     x <- as.matrix(x[-1L])
+
+    ## Compute mean per column (avoiding a call to
+    ## 'mean.grouped.data') that would redo most of the computations
+    ## above.
+    means <- drop(crossprod(x, midpoints))/colSums(x)
+
+    ## Compute midpoints minus mean and square it
+    midsquare <- (midpoints - means)^2
 
     ## Compute mean per column
     drop(crossprod(x, midsquare))/(colSums(x) - 1)

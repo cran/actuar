@@ -63,7 +63,7 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         n <- length(rate)
 
         if ("weights" %in% p && n > 1L)
-            prob <- rep(par.claims$weights, length.out = n)
+            prob <- rep_len(par.claims$weights, n)
         else if (n == 1L)
             prob <- 1
         else
@@ -82,14 +82,14 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         if ("rate" %in% p)
             rate <- par.claims$rate
         else if ("scale" %in% p)
-            rate <- 1 / par.claims$scale
+            rate <- 1/par.claims$scale
         else
             stop(sprintf("parameter %s or %s missing in %s",
                          dQuote("rate"), dQuote("scale"), sQuote("par.claims")))
         if (length(shape) < length(rate))
-            shape <- rep(shape, length.out = length(rate))
+            shape <- rep_len(shape, length(rate))
         else
-            rate <-  rep(rate, length.out = length(shape))
+            rate <-  rep_len(rate, length(shape))
         n <- sum(shape)
 
         if ("weights" %in% p && length(shape) > 1L)
@@ -98,13 +98,13 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
             prob[cumsum(c(1, head(shape, -1)))] <- par.claims$weights
         }
         else if (length(shape) == 1L)
-            prob <- c(1, rep(0, n - 1))
+            prob <- c(1, rep.int(0, n - 1))
         else
             stop(sprintf("parameter %s missing in %s",
                          dQuote("weights"), sQuote("par.claims")))
 
-        rates <- diag(rep(-rate, shape), n)
-        if (n > 1 && shape > 1)
+        rates <- diag(rep.int(-rate, shape), n)
+        if (n > 1 && any(shape > 1))
         {
             tmp <- -head(diag(rates), -1L)
             tmp[cumsum(head(shape, -1L))] <- 0 # insert 0s in "ll corners"
@@ -155,7 +155,7 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         m <- length(rate)
 
         if ("weights" %in% p && m > 1L)
-            prob.w <- rep(par.wait$weights, length.out = m)
+            prob.w <- rep_len(par.wait$weights, m)
         else if (m == 1L)
             prob.w <- 1
         else
@@ -174,14 +174,14 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         if ("rate" %in% p)
             rate <- par.wait$rate
         else if ("scale" %in% p)
-            rate <- 1 / par.wait$scale
+            rate <- 1/par.wait$scale
         else
             stop(sprintf("parameter %s or %s missing in %s",
                          dQuote("rate"), dQuote("scale"), sQuote("par.wait")))
         if (length(shape) < length(rate))
-            shape <- rep(shape, length.out = length(rate))
+            shape <- rep_len(shape, length(rate))
         else
-            rate <-  rep(rate, length.out = length(shape))
+            rate <-  rep_len(rate, length(shape))
         m <- sum(shape)
 
         if ("weights" %in% p && length(shape) > 1L)
@@ -190,13 +190,13 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
             prob.w[cumsum(c(1, head(shape, -1L)))] <- par.wait$weights
         }
         else if (length(shape) == 1L)
-            prob.w <- c(1, rep(0, m - 1))
+            prob.w <- c(1, rep.int(0, m - 1))
         else
             stop(sprintf("parameter %s missing in %s",
                          dQuote("weights"), sQuote("par.wait")))
 
-        rates.w <- diag(rep(-rate, shape), m)
-        if (m > 1 && shape > 1)
+        rates.w <- diag(rep.int(-rate, shape), m)
+        if (m > 1 && any(shape > 1))
         {
             tmp <- -head(diag(rates.w), -1L)
             tmp[cumsum(head(shape, -1L))] <- 0 # insert 0s in "ll corners"
@@ -230,7 +230,7 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         ## Special case with an explicit solution
         if (claims == "exponential" && n == 1L)
         {
-            lambda <- -drop(rates.w) / premium.rate
+            lambda <- -drop(rates.w)/premium.rate
             body(FUN) <- substitute({res <- a * exp(-(b) * u);
                                      if (lower.tail) res else 0.5 - res + 0.5},
                                     list(a = -lambda/drop(rates),
@@ -241,7 +241,7 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
         }
 
         ## Use phase-type representation for all other claim severity models.
-        pi <- drop(rates.w) * prob %*% solve(rates) / premium.rate
+        pi <- drop(rates.w) * prob %*% solve(rates)/premium.rate
         Q <- rates - rowSums(rates) %*% pi
     }
     ## Sparre Andersen model (interarrival times other than single exponential)
@@ -286,7 +286,7 @@ ruin <- function(claims = c("exponential", "Erlang", "phase-type"), par.claims,
             if (max(rowSums(abs(Q - Q1))) < tol)
                 break
         }
-        pi <- colSums(Q - rates) / (-sum(rates) * premium.rate)
+        pi <- colSums(Q - rates)/(-sum(rates) * premium.rate)
     }
 
     ## Compute the probability of ruin using the cdf of a phase-type

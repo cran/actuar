@@ -43,9 +43,8 @@ static SEXP dpqphtype2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI,
 			 double (*f)(double, double *, double *, int, int))
 {
     SEXP sy, bdims;
-    int i, j, ij, n, m, sxo = OBJECT(sx);
+    R_xlen_t i, j, ij, n, m;
     double tmp1, tmp2, *x, *a, *b, *y;
-    int i_1;
 
     /* Flags used in sanity check of arguments. Listed from highest to
      * lowest priority. */
@@ -56,11 +55,11 @@ static SEXP dpqphtype2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI,
     if (!isNumeric(sx) || !isNumeric(sa) || !isMatrix(sb))      \
         error(_("invalid arguments"));                          \
                                                                 \
-    n = LENGTH(sx);						\
+    n = XLENGTH(sx);						\
     if (n == 0)                                                 \
         return(allocVector(REALSXP, 0));                        \
                                                                 \
-    m = LENGTH(sa);                                             \
+    m = XLENGTH(sa);                                            \
     bdims = getAttrib(sb, R_DimSymbol);                         \
     if (INTEGER(bdims)[0] != INTEGER(bdims)[1] ||               \
         INTEGER(bdims)[0] != m)                                 \
@@ -106,7 +105,8 @@ static SEXP dpqphtype2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI,
 
     SETUP_DPQPHTYPE2;
 
-    i_1 = asInteger(sI);
+    int i_1 = asInteger(sI);
+
     for (i = 0; i < n; i++)
     {
         if_NA_dpqphtype2_set(y[i], x[i])
@@ -121,9 +121,7 @@ static SEXP dpqphtype2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI,
     if (naflag)                                         \
         warning(R_MSG_NA);                              \
                                                         \
-    SET_ATTRIB(sy, duplicate(ATTRIB(sx)));              \
-    SET_OBJECT(sy, sxo);                                \
-                                                        \
+    SHALLOW_DUPLICATE_ATTRIB(sy, sx);			\
     UNPROTECT(4)
 
     FINISH_DPQPHTYPE2;
@@ -135,9 +133,8 @@ static SEXP dpqphtype2_2(SEXP sx, SEXP sa, SEXP sb, SEXP sI, SEXP sJ,
 			 double (*f)(double, double *, double *, int, int, int))
 {
     SEXP sy, bdims;
-    int i, j, ij, n, m, sxo = OBJECT(sx);
+    R_xlen_t i, j, ij, n, m;
     double tmp1, tmp2, *x, *a, *b, *y;
-    int i_1, i_2;
 
     /* Flags used in sanity check of arguments. Listed from highest to
      * lowest priority. */
@@ -145,8 +142,9 @@ static SEXP dpqphtype2_2(SEXP sx, SEXP sa, SEXP sb, SEXP sI, SEXP sJ,
 
     SETUP_DPQPHTYPE2;
 
-    i_1 = asInteger(sI);
-    i_2 = asInteger(sJ);
+    int i_1 = asInteger(sI),
+	i_2 = asInteger(sJ);
+
     for (i = 0; i < n; i++)
     {
         if_NA_dpqphtype2_set(y[i], x[i])

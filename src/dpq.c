@@ -31,7 +31,8 @@
  *  dpq{1,2,3,4,5}_0() below.
  *
  *  Functions therein are essentially identical to those found in
- *  src/main/arithmetic.c of R sources with a different naming scheme.
+ *  src/main/arithmetic.c of R sources [at the time or writing] with a
+ *  different naming scheme.
  *
  *  To add a new distribution: write a {d,p,q,m,lev,mgf}dist()
  *  function, add an entry in names.c and in the definition of the
@@ -95,17 +96,16 @@ static SEXP dpq1_1(SEXP sx, SEXP sa, SEXP sI,
 		   double (*f)(double, double, int))
 {
     SEXP sy;
-    int i, ix, ia, n, nx, na, sxo = OBJECT(sx), sao = OBJECT(sa);
+    R_xlen_t i, ix, ia, n, nx, na;
     double xi, ai, *x, *a, *y;
-    int i_1;
     Rboolean naflag = FALSE;
 
 #define SETUP_DPQ1                              \
     if (!isNumeric(sx) || !isNumeric(sa))       \
         error(_("invalid arguments"));          \
                                                 \
-    nx = LENGTH(sx);                            \
-    na = LENGTH(sa);                            \
+    nx = XLENGTH(sx);                           \
+    na = XLENGTH(sa);                           \
     if ((nx == 0) || (na == 0))                 \
         return(allocVector(REALSXP, 0));        \
     n = (nx < na) ? na : nx;                    \
@@ -118,7 +118,7 @@ static SEXP dpq1_1(SEXP sx, SEXP sa, SEXP sI,
 
     SETUP_DPQ1;
 
-    i_1 = asInteger(sI);
+    int i_1 = asInteger(sI);
 
     mod_iterate1(nx, na, ix, ia)
     {
@@ -136,14 +136,10 @@ static SEXP dpq1_1(SEXP sx, SEXP sa, SEXP sI,
     if (naflag)                                 \
         warning(R_MSG_NA);                      \
                                                 \
-    if (n == nx) {                              \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sx)));  \
-        SET_OBJECT(sy, sxo);                    \
-    }                                           \
-    else if (n == na) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sa)));  \
-        SET_OBJECT(sy, sao);                    \
-    }                                           \
+    if (n == nx)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sx);	\
+    else if (n == na)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sa);	\
     UNPROTECT(3)
 
     FINISH_DPQ1;
@@ -155,15 +151,14 @@ static SEXP dpq1_2(SEXP sx, SEXP sa, SEXP sI, SEXP sJ,
 		   double (*f)(double, double, int, int))
 {
     SEXP sy;
-    int i, ix, ia, n, nx, na, sxo = OBJECT(sx), sao = OBJECT(sa);
+    R_xlen_t i, ix, ia, n, nx, na;
     double xi, ai, *x, *a, *y;
-    int i_1, i_2;
     Rboolean naflag = FALSE;
 
     SETUP_DPQ1;
 
-    i_1 = asInteger(sI);
-    i_2 = asInteger(sJ);
+    int i_1 = asInteger(sI),
+        i_2 = asInteger(sJ);
 
     mod_iterate1(nx, na, ix, ia)
     {
@@ -229,10 +224,8 @@ static SEXP dpq2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI,
 		   double (*f)(double, double, double, int))
 {
     SEXP sy;
-    int i, ix, ia, ib, n, nx, na, nb,
-        sxo = OBJECT(sx), sao = OBJECT(sa), sbo = OBJECT(sb);
+    R_xlen_t i, ix, ia, ib, n, nx, na, nb;
     double xi, ai, bi, *x, *a, *b, *y;
-    int i_1;
     Rboolean naflag = FALSE;
 
 
@@ -240,9 +233,9 @@ static SEXP dpq2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI,
     if (!isNumeric(sx) || !isNumeric(sa) || !isNumeric(sb))     \
         error(_("invalid arguments"));                          \
                                                                 \
-    nx = LENGTH(sx);                                            \
-    na = LENGTH(sa);                                            \
-    nb = LENGTH(sb);                                            \
+    nx = XLENGTH(sx);                                           \
+    na = XLENGTH(sa);                                           \
+    nb = XLENGTH(sb);                                           \
     if ((nx == 0) || (na == 0) || (nb == 0))                    \
         return(allocVector(REALSXP, 0));                        \
     n = nx;                                                     \
@@ -259,7 +252,7 @@ static SEXP dpq2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI,
 
     SETUP_DPQ2;
 
-    i_1 = asInteger(sI);
+    int i_1 = asInteger(sI);
 
     mod_iterate2(nx, na, nb, ix, ia, ib)
     {
@@ -278,18 +271,12 @@ static SEXP dpq2_1(SEXP sx, SEXP sa, SEXP sb, SEXP sI,
     if (naflag)                                 \
         warning(R_MSG_NA);                      \
                                                 \
-    if (n == nx) {                              \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sx)));  \
-        SET_OBJECT(sy, sxo);                    \
-    }                                           \
-    else if (n == na) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sa)));  \
-        SET_OBJECT(sy, sao);                    \
-    }                                           \
-    else if (n == nb) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sb)));  \
-        SET_OBJECT(sy, sbo);                    \
-    }                                           \
+    if (n == nx)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sx);	\
+    else if (n == na)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sa);	\
+    else if (n == nb)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sb);	\
     UNPROTECT(4)
 
     FINISH_DPQ2;
@@ -301,16 +288,14 @@ static SEXP dpq2_2(SEXP sx, SEXP sa, SEXP sb, SEXP sI, SEXP sJ,
 		   double (*f)(double, double, double, int, int))
 {
     SEXP sy;
-    int i, ix, ia, ib, n, nx, na, nb,
-        sxo = OBJECT(sx), sao = OBJECT(sa), sbo = OBJECT(sb);
+    R_xlen_t i, ix, ia, ib, n, nx, na, nb;
     double xi, ai, bi, *x, *a, *b, *y;
-    int i_1, i_2;
     Rboolean naflag = FALSE;
 
     SETUP_DPQ2;
 
-    i_1 = asInteger(sI);
-    i_2 = asInteger(sJ);
+    int i_1 = asInteger(sI),
+        i_2 = asInteger(sJ);
 
     mod_iterate2(nx, na, nb, ix, ia, ib)
     {
@@ -338,20 +323,17 @@ static SEXP dpq2_5(SEXP sx, SEXP sa, SEXP sb, SEXP sI, SEXP sJ,
 		   double (*f)(double, double, double, int, int, double, int, int))
 {
     SEXP sy;
-    int i, ix, ia, ib, n, nx, na, nb,
-        sxo = OBJECT(sx), sao = OBJECT(sa), sbo = OBJECT(sb);
+    R_xlen_t i, ix, ia, ib, n, nx, na, nb;
     double xi, ai, bi, *x, *a, *b, *y;
-    int i_1, i_2, i_4, i_5;
-    double d_3;
     Rboolean naflag = FALSE;
 
     SETUP_DPQ2;
 
-    i_1 = asInteger(sI);
-    i_2 = asInteger(sJ);
-    d_3 = asReal(sT);
-    i_4 = asInteger(sM);
-    i_5 = asInteger(sE);
+    int i_1 = asInteger(sI),
+	i_2 = asInteger(sJ),
+	i_4 = asInteger(sM),
+	i_5 = asInteger(sE);
+    double d_3 = asReal(sT);
 
     mod_iterate2(nx, na, nb, ix, ia, ib)
     {
@@ -485,10 +467,8 @@ static SEXP dpq3_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sI,
 		   double (*f)(double, double, double, double, int))
 {
     SEXP sy;
-    int i, ix, ia, ib, ic, n, nx, na, nb, nc,
-        sxo = OBJECT(sx), sao = OBJECT(sa), sbo = OBJECT(sb), sco = OBJECT(sc);
+    R_xlen_t i, ix, ia, ib, ic, n, nx, na, nb, nc;
     double xi, ai, bi, ci, *x, *a, *b, *c, *y;
-    int i_1;
     Rboolean naflag = FALSE;
 
 #define SETUP_DPQ3                                              \
@@ -496,10 +476,10 @@ static SEXP dpq3_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sI,
         !isNumeric(sb) || !isNumeric(sc))                       \
         error(_("invalid arguments"));                          \
                                                                 \
-    nx = LENGTH(sx);                                            \
-    na = LENGTH(sa);                                            \
-    nb = LENGTH(sb);                                            \
-    nc = LENGTH(sc);                                            \
+    nx = XLENGTH(sx);                                           \
+    na = XLENGTH(sa);                                           \
+    nb = XLENGTH(sb);                                           \
+    nc = XLENGTH(sc);                                           \
     if ((nx == 0) || (na == 0) || (nb == 0) || (nc == 0))       \
         return(allocVector(REALSXP, 0));                        \
     n = nx;                                                     \
@@ -519,7 +499,7 @@ static SEXP dpq3_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sI,
 
     SETUP_DPQ3;
 
-    i_1 = asInteger(sI);
+    int i_1 = asInteger(sI);
 
     mod_iterate3(nx, na, nb, nc, ix, ia, ib, ic)
     {
@@ -539,22 +519,14 @@ static SEXP dpq3_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sI,
     if (naflag)                                 \
         warning(R_MSG_NA);                      \
                                                 \
-    if (n == nx) {                              \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sx)));  \
-        SET_OBJECT(sy, sxo);                    \
-    }                                           \
-    else if (n == na) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sa)));  \
-        SET_OBJECT(sy, sao);                    \
-    }                                           \
-    else if (n == nb) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sb)));  \
-        SET_OBJECT(sy, sbo);                    \
-    }                                           \
-    else if (n == nc) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sc)));  \
-        SET_OBJECT(sy, sco);                    \
-    }                                           \
+    if (n == nx)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sx);	\
+    else if (n == na)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sa);	\
+    else if (n == nb)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sb);	\
+    else if (n == nc)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sc);	\
     UNPROTECT(5)
 
     FINISH_DPQ3;
@@ -566,17 +538,14 @@ static SEXP dpq3_2(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sI, SEXP sJ,
 		   double (*f)(double, double, double, double, int, int))
 {
     SEXP sy;
-    int i, ix, ia, ib, ic, n, nx, na, nb, nc,
-        sxo = OBJECT(sx), sao = OBJECT(sa),
-        sbo = OBJECT(sb), sco = OBJECT(sc);
+    R_xlen_t i, ix, ia, ib, ic, n, nx, na, nb, nc;
     double xi, ai, bi, ci, *x, *a, *b, *c, *y;
-    int i_1, i_2;
     Rboolean naflag = FALSE;
 
     SETUP_DPQ3;
 
-    i_1 = asInteger(sI);
-    i_2 = asInteger(sJ);
+    int i_1 = asInteger(sI),
+	i_2 = asInteger(sJ);
 
     mod_iterate3(nx, na, nb, nc, ix, ia, ib, ic)
     {
@@ -684,11 +653,8 @@ static SEXP dpq4_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP sI,
 		   double (*f)(double, double, double, double, double, int))
 {
     SEXP sy;
-    int i, ix, ia, ib, ic, id, n, nx, na, nb, nc, nd,
-        sxo = OBJECT(sx), sao = OBJECT(sa), sbo = OBJECT(sb),
-        sco = OBJECT(sc), sdo = OBJECT(sd);
+    R_xlen_t i, ix, ia, ib, ic, id, n, nx, na, nb, nc, nd;
     double xi, ai, bi, ci, di, *x, *a, *b, *c, *d, *y;
-    int i_1;
     Rboolean naflag = FALSE;
 
 #define SETUP_DPQ4                                              \
@@ -696,11 +662,11 @@ static SEXP dpq4_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP sI,
         !isNumeric(sc) || !isNumeric(sd))                       \
         error(_("invalid arguments"));                          \
                                                                 \
-    nx = LENGTH(sx);                                            \
-    na = LENGTH(sa);                                            \
-    nb = LENGTH(sb);                                            \
-    nc = LENGTH(sc);                                            \
-    nd = LENGTH(sd);                                            \
+    nx = XLENGTH(sx);                                           \
+    na = XLENGTH(sa);                                           \
+    nb = XLENGTH(sb);                                           \
+    nc = XLENGTH(sc);                                           \
+    nd = XLENGTH(sd);                                           \
     if ((nx == 0) || (na == 0) || (nb == 0) ||                  \
         (nc == 0) || (nd == 0))                                 \
         return(allocVector(REALSXP, 0));                        \
@@ -724,7 +690,7 @@ static SEXP dpq4_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP sI,
 
     SETUP_DPQ4;
 
-    i_1 = asInteger(sI);
+    int i_1 = asInteger(sI);
 
     mod_iterate4(nx, na, nb, nc, nd, ix, ia, ib, ic, id)
     {
@@ -745,26 +711,16 @@ static SEXP dpq4_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP sI,
     if (naflag)                                 \
         warning(R_MSG_NA);                      \
                                                 \
-    if (n == nx) {                              \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sx)));  \
-        SET_OBJECT(sy, sxo);                    \
-    }                                           \
-    else if (n == na) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sa)));  \
-        SET_OBJECT(sy, sao);                    \
-    }                                           \
-    else if (n == nb) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sb)));  \
-        SET_OBJECT(sy, sbo);                    \
-    }                                           \
-    else if (n == nc) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sc)));  \
-        SET_OBJECT(sy, sco);                    \
-    }                                           \
-    else if (n == nd) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sd)));  \
-        SET_OBJECT(sy, sdo);                    \
-    }                                           \
+    if (n == nx)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sx);	\
+    else if (n == na)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sa);	\
+    else if (n == nb)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sb);	\
+    else if (n == nc)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sc);	\
+    else if (n == nd)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sd);	\
     UNPROTECT(6)
 
     FINISH_DPQ4;
@@ -776,17 +732,14 @@ static SEXP dpq4_2(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP sI, SEXP sJ
 		   double (*f)(double, double, double, double, double, int, int))
 {
     SEXP sy;
-    int i, ix, ia, ib, ic, id, n, nx, na, nb, nc, nd,
-        sxo = OBJECT(sx), sao = OBJECT(sa), sbo = OBJECT(sb),
-        sco = OBJECT(sc), sdo = OBJECT(sd);
+    R_xlen_t i, ix, ia, ib, ic, id, n, nx, na, nb, nc, nd;
     double xi, ai, bi, ci, di, *x, *a, *b, *c, *d, *y;
-    int i_1, i_2;
     Rboolean naflag = FALSE;
 
     SETUP_DPQ4;
 
-    i_1 = asInteger(sI);
-    i_2 = asInteger(sJ);
+    int i_1 = asInteger(sI),
+	i_2 = asInteger(sJ);
 
     mod_iterate4(nx, na, nb, nc, nd, ix, ia, ib, ic, id)
     {
@@ -862,11 +815,8 @@ static SEXP dpq5_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sI
 		   double (*f)(double, double, double, double, double, double, int))
 {
     SEXP sy;
-    int i, ix, ia, ib, ic, id, ie, n, nx, na, nb, nc, nd, ne,
-        sxo = OBJECT(sx), sao = OBJECT(sa), sbo = OBJECT(sb),
-        sco = OBJECT(sc), sdo = OBJECT(sd), seo = OBJECT(se);
+    R_xlen_t i, ix, ia, ib, ic, id, ie, n, nx, na, nb, nc, nd, ne;
     double xi, ai, bi, ci, di, ei, *x, *a, *b, *c, *d, *e, *y;
-    int i_1;
     Rboolean naflag = FALSE;
 
 #define SETUP_DPQ5                                              \
@@ -874,12 +824,12 @@ static SEXP dpq5_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sI
         !isNumeric(sc) || !isNumeric(sd) || !isNumeric(se))     \
         error(_("invalid arguments"));                          \
                                                                 \
-    nx = LENGTH(sx);                                            \
-    na = LENGTH(sa);                                            \
-    nb = LENGTH(sb);                                            \
-    nc = LENGTH(sc);                                            \
-    nd = LENGTH(sd);                                            \
-    ne = LENGTH(se);                                            \
+    nx = XLENGTH(sx);                                           \
+    na = XLENGTH(sa);                                           \
+    nb = XLENGTH(sb);                                           \
+    nc = XLENGTH(sc);                                           \
+    nd = XLENGTH(sd);                                           \
+    ne = XLENGTH(se);                                           \
     if ((nx == 0) || (na == 0) || (nb == 0) ||                  \
         (nc == 0) || (nd == 0) || (ne == 0))                    \
         return(allocVector(REALSXP, 0));                        \
@@ -906,7 +856,7 @@ static SEXP dpq5_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sI
 
     SETUP_DPQ5;
 
-    i_1 = asInteger(sI);
+    int i_1 = asInteger(sI);
 
     mod_iterate5(nx, na, nb, nc, nd, ne, ix, ia, ib, ic, id, ie)
     {
@@ -928,30 +878,18 @@ static SEXP dpq5_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sI
     if (naflag)                                 \
         warning(R_MSG_NA);                      \
                                                 \
-    if (n == nx) {                              \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sx)));  \
-        SET_OBJECT(sy, sxo);                    \
-    }                                           \
-    else if (n == na) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sa)));  \
-        SET_OBJECT(sy, sao);                    \
-    }                                           \
-    else if (n == nb) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sb)));  \
-        SET_OBJECT(sy, sbo);                    \
-    }                                           \
-    else if (n == nc) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sc)));  \
-        SET_OBJECT(sy, sco);                    \
-    }                                           \
-    else if (n == nd) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sd)));  \
-        SET_OBJECT(sy, sdo);                    \
-    }                                           \
-    else if (n == ne) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(se)));  \
-        SET_OBJECT(sy, seo);                    \
-    }                                           \
+    if (n == nx)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sx);	\
+    else if (n == na)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sa);	\
+    else if (n == nb)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sb);	\
+    else if (n == nc)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sc);	\
+    else if (n == nd)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sd);	\
+    else if (n == ne)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, se);	\
     UNPROTECT(7)
 
     FINISH_DPQ5;
@@ -963,17 +901,14 @@ static SEXP dpq5_2(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sI
 		   double (*f)(double, double, double, double, double, double, int, int))
 {
     SEXP sy;
-    int i, ix, ia, ib, ic, id, ie, n, nx, na, nb, nc, nd, ne,
-        sxo = OBJECT(sx), sao = OBJECT(sa), sbo = OBJECT(sb),
-        sco = OBJECT(sc), sdo = OBJECT(sd), seo = OBJECT(sd);
+    R_xlen_t i, ix, ia, ib, ic, id, ie, n, nx, na, nb, nc, nd, ne;
     double xi, ai, bi, ci, di, ei, *x, *a, *b, *c, *d, *e, *y;
-    int i_1, i_2;
     Rboolean naflag = FALSE;
 
     SETUP_DPQ5;
 
-    i_1 = asInteger(sI);
-    i_2 = asInteger(sJ);
+    int i_1 = asInteger(sI),
+	i_2 = asInteger(sJ);
 
     mod_iterate5(nx, na, nb, nc, nd, ne, ix, ia, ib, ic, id, ie)
     {
@@ -1040,12 +975,8 @@ static SEXP dpq6_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sg
 {
     SEXP sy;
     /* skip argument "sf" because "if" is a C keyword. */
-    int i, ix, ia, ib, ic, id, ie, ig, n, nx, na, nb, nc, nd, ne, ng,
-        sxo = OBJECT(sx), sao = OBJECT(sa), sbo = OBJECT(sb),
-        sco = OBJECT(sc), sdo = OBJECT(sd), seo = OBJECT(se),
-        sgo = OBJECT(sg);
+    R_xlen_t i, ix, ia, ib, ic, id, ie, ig, n, nx, na, nb, nc, nd, ne, ng;
     double xi, ai, bi, ci, di, ei, gi, *x, *a, *b, *c, *d, *e, *g, *y;
-    int i_1;
     Rboolean naflag = FALSE;
 
 #define SETUP_DPQ6                                              \
@@ -1054,13 +985,13 @@ static SEXP dpq6_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sg
         !isNumeric(sg))                                         \
         error(_("invalid arguments"));                          \
                                                                 \
-    nx = LENGTH(sx);                                            \
-    na = LENGTH(sa);                                            \
-    nb = LENGTH(sb);                                            \
-    nc = LENGTH(sc);                                            \
-    nd = LENGTH(sd);                                            \
-    ne = LENGTH(se);                                            \
-    ng = LENGTH(sg);                                            \
+    nx = XLENGTH(sx);                                           \
+    na = XLENGTH(sa);                                           \
+    nb = XLENGTH(sb);                                           \
+    nc = XLENGTH(sc);                                           \
+    nd = XLENGTH(sd);                                           \
+    ne = XLENGTH(se);                                           \
+    ng = XLENGTH(sg);                                           \
     if ((nx == 0) || (na == 0) || (nb == 0) ||                  \
         (nc == 0) || (nd == 0) || (ne == 0) ||                  \
         (ng == 0))                                              \
@@ -1091,7 +1022,7 @@ static SEXP dpq6_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sg
 
     SETUP_DPQ6;
 
-    i_1 = asInteger(sI);
+    int i_1 = asInteger(sI);
 
     mod_iterate6(nx, na, nb, nc, nd, ne, ng, ix, ia, ib, ic, id, ie, ig)
     {
@@ -1114,34 +1045,20 @@ static SEXP dpq6_1(SEXP sx, SEXP sa, SEXP sb, SEXP sc, SEXP sd, SEXP se, SEXP sg
     if (naflag)                                 \
         warning(R_MSG_NA);                      \
                                                 \
-    if (n == nx) {                              \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sx)));  \
-        SET_OBJECT(sy, sxo);                    \
-    }                                           \
-    else if (n == na) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sa)));  \
-        SET_OBJECT(sy, sao);                    \
-    }                                           \
-    else if (n == nb) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sb)));  \
-        SET_OBJECT(sy, sbo);                    \
-    }                                           \
-    else if (n == nc) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sc)));  \
-        SET_OBJECT(sy, sco);                    \
-    }                                           \
-    else if (n == nd) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sd)));  \
-        SET_OBJECT(sy, sdo);                    \
-    }                                           \
-    else if (n == ne) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(se)));  \
-        SET_OBJECT(sy, seo);                    \
-    }                                           \
-    else if (n == ng) {                         \
-        SET_ATTRIB(sy, duplicate(ATTRIB(sg)));  \
-        SET_OBJECT(sy, sgo);                    \
-    }                                           \
+    if (n == nx)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sx);	\
+    else if (n == na)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sa);	\
+    else if (n == nb)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sb);	\
+    else if (n == nc)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sc);	\
+    else if (n == nd)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sd);	\
+    else if (n == ne)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, se);	\
+    else if (n == ng)				\
+	SHALLOW_DUPLICATE_ATTRIB(sy, sg);	\
     UNPROTECT(8)
 
     FINISH_DPQ6;

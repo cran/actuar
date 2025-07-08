@@ -2,6 +2,40 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.3-6}{
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{\code{?ruin} gains an example of mixtures of Erlang
+	distributions for claims and interarrival times.}
+    }
+  }
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{\code{ruin} now works correctly for mixtures of Erlang
+	distributions. Thanks to Paula Rocha Rodriguez
+	\email{paula.rocharodriguez@alum.uca.es} for the report.}
+      \item{\code{var} and \code{sd} for individual data now correctly
+	use the value of argument \code{na.rm} (closes issue #5). Thanks
+	to Ge Zhang for the report.}
+      \item{\code{pinvgauss} and \code{qinvgauss} now use a gamma
+	approximation when the coefficient of variation is very small
+	(ported from \pkg{statmod} v1.4.28).}
+      \item{\code{rinvgauss} now accurately handles large or infinite
+	values for the mean or dispersion (ported from \pkg{statmod}
+	v1.4.29).}
+      \item{\code{qinvgauss} no longer takes an initial value outside
+	the domain of convergence with the gamma approximation for small
+	right tail probabilities (ported from \pkg{statmod} v1.4.30).}
+    }
+  }
+  \subsection{OTHER CHANGES}{
+    \itemize{
+      \item{Replacement of a few API entry points for C API compliance
+	introduced in R 4.5.0.}
+    }
+  }
+}
+  
 \section{CHANGES IN \pkg{actuar} VERSION 3.3-5}{
   \subsection{NEW FEATURES}{
     \itemize{
@@ -74,7 +108,7 @@
   }
   \subsection{OTHER CHANGES}{
     \itemize{
-      \item{Package vignettes now use the STYX2 fonts for text and Fira
+      \item{Package vignettes now use the STIX2 fonts for text and Fira
 	Mono for code.}
     }
   }

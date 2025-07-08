@@ -9,6 +9,22 @@
 ###
 ### AUTHORS:  Mathieu Pigeon, Vincent Goulet <vincent.goulet@act.ulaval.ca>
 
+## TODO (2025-03-18): when 'coverage' is called with variables, say
+## 'foo' and 'bar', holding the names of the pdf and cdf, the function
+## returned contains calls to 'foo' and 'bar' instead of the names
+## actually therein. To solve this, replace Call$[pc]df by
+## eval(Call$[pc]df).
+##
+## TODO (2025-03-18): furthermore, the underlying pdf and cdf should
+## be put in the environment of the returned function, such that its
+## evaluation remains possible even if the pdf and cdf are not in the
+## current environment. Perhaps only one of these two changes is
+## necessary.
+##
+## TODO (2025-03-19): in the limit case where there is no deductible
+## and no limit, the values at 0 (for densities with the mode at 0)
+## and Inf (least likely) may be wrong.
+
 coverage <- function(pdf, cdf, deductible = 0, franchise = FALSE,
                      limit = Inf, coinsurance = 1, inflation = 0,
                      per.loss = FALSE)

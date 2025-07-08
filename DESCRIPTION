@@ -1,13 +1,15 @@
 Package: actuar
 Type: Package
 Title: Actuarial Functions and Heavy Tailed Distributions
-Version: 3.3-5
-Date: 2025-01-09
+Version: 3.3-6
+Date: 2025-07-08
 Authors@R: c(person("Vincent", "Goulet", role = c("cre", "aut"),
- 	            email = "vincent.goulet@act.ulaval.ca"),
+ 	            email = "vincent.goulet@act.ulaval.ca",
+		    comment = c(ORCID = "0000-0002-9315-5719")),
 	     person("Sébastien", "Auclair", role = "ctb"),
 	     person("Christophe", "Dutang", role = "aut",
-	            email = "dutang@ceremade.dauphine.fr"),
+	            email = "dutang@ceremade.dauphine.fr",
+                    comment = c(ORCID = "0000-0001-6732-1501")),
 	     person("Walter", "Garcia-Fontes", role = "ctb",
 	            email = "walter.garcia@upf.edu"),
 	     person("Nicholas", "Langevin", role = "ctb"),
@@ -24,9 +26,9 @@ Authors@R: c(person("Vincent", "Goulet", role = c("cre", "aut"),
 	            comment = "Parts of the R to C interface"),
 	     person("Ross", "Ihaka", role = "aut",
 	            comment = "Parts of the R to C interface"),
-	     person(family = "R Core Team", role = "aut",
+	     person(given = "R Core Team", role = "aut",
 	            comment = "Parts of the R to C interface"),
-	     person(family = "R Foundation", role = "aut",
+	     person(given = "R Foundation", role = "aut",
 	            comment = "Parts of the R to C interface"))
 Description: Functions and data sets for actuarial science:
   modeling of loss distributions; risk theory and ruin theory;
@@ -51,10 +53,12 @@ Encoding: UTF-8
 LazyData: yes
 Classification/MSC-2010: 62P05, 91B30, 62G32
 NeedsCompilation: yes
-Packaged: 2025-01-09 15:09:32 UTC; vincent
-Author: Vincent Goulet [cre, aut],
+Packaged: 2025-07-08 16:10:49 UTC; vincent
+Author: Vincent Goulet [cre, aut] (ORCID:
+    <https://orcid.org/0000-0002-9315-5719>),
   Sébastien Auclair [ctb],
-  Christophe Dutang [aut],
+  Christophe Dutang [aut] (ORCID:
+    <https://orcid.org/0000-0001-6732-1501>),
   Walter Garcia-Fontes [ctb],
   Nicholas Langevin [ctb],
   Xavier Milhaud [ctb],
@@ -69,4 +73,4 @@ Author: Vincent Goulet [cre, aut],
   R Foundation [aut] (Parts of the R to C interface)
 Maintainer: Vincent Goulet <vincent.goulet@act.ulaval.ca>
 Repository: CRAN
-Date/Publication: 2025-01-09 16:50:02 UTC
+Date/Publication: 2025-07-08 17:00:02 UTC

@@ -41,7 +41,7 @@ ruin(claims = c("exponential", "Erlang", "phase-type"), par.claims,
 }
 \details{
   The names of the parameters in \code{par.claims} and \code{par.wait}
-  must the same as in \code{\link[stats]{dexp}},
+  must be the same as in \code{\link[stats]{dexp}},
   \code{\link[stats]{dgamma}} or \code{\link{dphtype}}, as appropriate.
   A model will be a mixture of exponential or Erlang distributions (but
   not phase-type) when the parameters are vectors of length \eqn{> 1}
@@ -96,19 +96,33 @@ ruin(claims = c("exponential", "Erlang", "phase-type"), par.claims,
 \examples{
 ## Case with an explicit formula: exponential claims and exponential
 ## interarrival times.
-psi <- ruin(claims = "e", par.claims = list(rate = 5),
-            wait   = "e", par.wait   = list(rate = 3))
+psi <- ruin(claims = "exponential", par.claims = list(rate = 5),
+            wait   = "exponential", par.wait   = list(rate = 3))
 psi
 psi(0:10)
 plot(psi, from = 0, to = 10)
 
 ## Mixture of two exponentials for claims, exponential interarrival
 ## times (Gerber 1979)
-psi <- ruin(claims = "e", par.claims = list(rate = c(3, 7), w = 0.5),
-            wait   = "e", par.wait   = list(rate = 3), pre = 1)
+psi <- ruin(claims = "exponential",
+            par.claims = list(rate = c(3, 7), w = 0.5),
+            wait   = "exponential",
+            par.wait   = list(rate = 3), pre = 1)
 u <- 0:10
 psi(u)
 (24 * exp(-u) + exp(-6 * u))/35	# same
+
+## Mixtures of Erlang distributions for claims and interarrival times.
+psi <- ruin(claims = 'Erlang',
+            par.claims = list(shape = c(1, 2, 3),
+                              scale = c(3, 2, 1),
+                              weights = c(3, 4, 1)/8),
+            wait = 'Erlang',
+            par.wait = list(shape = c(6, 4, 4),
+                            scale= c(3, 2, 2),
+                            weights = c(3, 4, 1)/8),
+            premium.rate = 0.6)
+psi(0:10)
 
 ## Phase-type claims, exponential interarrival times (Asmussen and
 ## Rolski 1991)

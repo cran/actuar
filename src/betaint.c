@@ -133,7 +133,7 @@ double betaint(double x, double a, double b)
 SEXP actuar_do_betaint(SEXP args)
 {
     SEXP sx, sa, sb, sy;
-    int i, ix, ia, ib, n, nx, na, nb;
+    R_xlen_t i, ix, ia, ib, n, nx, na, nb;
     double xi, ai, bi, *x, *a, *b, *y;
     Rboolean naflag = FALSE;
 
@@ -142,9 +142,9 @@ SEXP actuar_do_betaint(SEXP args)
     if (!isNumeric(CAR(args))|| !isNumeric(CADR(args)) || !isNumeric(CADDR(args)))
         error(_("invalid arguments"));
 
-    nx = LENGTH(CAR(args));
-    na = LENGTH(CADR(args));
-    nb = LENGTH(CADDR(args));
+    nx = XLENGTH(CAR(args));
+    na = XLENGTH(CADR(args));
+    nb = XLENGTH(CADDR(args));
     if ((nx == 0) || (na == 0) || (nb == 0))
         return(allocVector(REALSXP, 0));
 
@@ -181,20 +181,11 @@ SEXP actuar_do_betaint(SEXP args)
         warning(R_MSG_NA);
 
     if (n == nx)
-    {
-        SET_ATTRIB(sy, duplicate(ATTRIB(sx)));
-        SET_OBJECT(sy, OBJECT(sx));
-    }
+	SHALLOW_DUPLICATE_ATTRIB(sy, sx);
     else if (n == na)
-    {
-        SET_ATTRIB(sy, duplicate(ATTRIB(sa)));
-        SET_OBJECT(sy, OBJECT(sa));
-    }
+	SHALLOW_DUPLICATE_ATTRIB(sy, sa);
     else if (n == nb)
-    {
-        SET_ATTRIB(sy, duplicate(ATTRIB(sb)));
-        SET_OBJECT(sy, OBJECT(sb));
-    }
+	SHALLOW_DUPLICATE_ATTRIB(sy, sb);
 
     UNPROTECT(4);
 

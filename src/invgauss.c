@@ -63,6 +63,11 @@ double dinvgauss(double x, double mu, double phi, int give_log)
 		     - M_LN_SQRT_2PI - log(mu));
 }
 
+/* This is used in pinvgauss() for limit cases. */
+#define PSMALLCV2 1e-14
+#define RIGHTLARGEQUANTILE 1e6
+#define RIGHTLARGEQUANTILEMOD 5e5
+
 double pinvgauss(double q, double mu, double phi, int lower_tail, int log_p)
 {
 #ifdef IEEE_754
@@ -96,11 +101,16 @@ double pinvgauss(double q, double mu, double phi, int lower_tail, int log_p)
     double qm = q/mu;
     double phim = phi * mu;
 
+    /* gamma approximation when the coefficient of variation phi * mu
+       is very small */
+    if (phim < PSMALLCV2)
+	return ACT_D_exp(pgamma(q, 1/phim, phim * mu, /* l._t. */1, /* log_p */1));
+
     /* approximation for (survival) probabilities in the far right tail */
-    if (!lower_tail && qm > 1e6)
+    if (!lower_tail && qm > RIGHTLARGEQUANTILE)
     {
 	double r = qm/2/phim;
-	if (r > 5e5)
+	if (r > RIGHTLARGEQUANTILEMOD)
 	    return ACT_D_exp(1/phim - M_LN_SQRT_PI - log(2*phim) - 1.5 * log1p(r) - r);
     }
 
@@ -124,6 +134,12 @@ double nrstep(double x, double p, double logp, double phi, int lower_tail)
     return ACT_S_val(((fabs(dlogp) < 1e-5) ? dlogp * exp(logp + log1p(-dlogp/2)) :
 		      p - exp(logF)) / dinvgauss(x, 1, phi, 0));
 }
+
+/* This is used in qinvgauss() for limit cases. */
+#define QSMALLCV2 1e-8
+#define LARGEKAPPA 1e3
+#define LEFTSMALLPROBLOG -11.51
+#define RIGHTSMALLPROBLOG -1e-5
 
 double qinvgauss(double p, double mu, double phi, int lower_tail, int log_p,
 		 double tol, int maxit, int echo)
@@ -164,9 +180,14 @@ double qinvgauss(double p, double mu, double phi, int lower_tail, int log_p,
     /* convert to mean = 1 */
     phi *= mu;
 
+    /* gamma approximation when the coefficient of variation phi * mu
+       is very small; here we have mean = 1 */
+    if (phi < QSMALLCV2)
+	return mu * qgamma(logp, 1/phi, phi, /* l._t. */1, /* log_p */1);
+
     /* mode */
     kappa = 1.5 * phi;
-    if (kappa <= 1e3)
+    if (kappa <= LARGEKAPPA)
 	mode = sqrt(1 + kappa * kappa) - kappa;
     else			/* Taylor series correction */
     {
@@ -176,12 +197,12 @@ double qinvgauss(double p, double mu, double phi, int lower_tail, int log_p,
 
     /* starting value: inverse chi squared for small left tail prob;
      * qgamma for small right tail prob; mode otherwise */
-    if (logp < -11.51)
+    if (logp < LEFTSMALLPROBLOG)
 	x = lower_tail ? 1/phi/R_pow_di(qnorm(logp, 0, 1, lower_tail, 1), 2)
-	    : qgamma(logp, 1/phi, phi, lower_tail, 1);
-    else if (logp > -1e-5)
+	    : fmax2(mode, qgamma(logp, 1/phi, phi, lower_tail, 1));
+    else if (logp > RIGHTSMALLPROBLOG)
 	x = lower_tail ? qgamma(logp, 1/phi, phi, lower_tail, 1)
-	    : 1/phi/R_pow_di(qnorm(logp, 0, 1, lower_tail, 1), 2);
+	    : fmax2(mode, 1/phi/R_pow_di(qnorm(logp, 0, 1, lower_tail, 1), 2));
     else
 	x = mode;
 
@@ -226,6 +247,10 @@ double qinvgauss(double p, double mu, double phi, int lower_tail, int log_p,
     return x * mu;
 }
 
+/* This is used in rinvgauss() as the threshold for a "large" value of
+ * y * phi. */
+#define YPHILARGE 5e5
+
 double rinvgauss(double mu, double phi)
 {
     if (mu <= 0.0 || phi <= 0.0)
@@ -239,11 +264,15 @@ double rinvgauss(double mu, double phi)
     if (!R_FINITE(mu))
 	return 1/phi/rchisq(1);
 
-    /* convert to mean = 1 */
-    phi *= mu;
+    /* generate y and convert to mean = 1 */
+    double yphi = R_pow_di(rnorm(0, 1), 2) * phi * mu;
 
-    double y = R_pow_di(rnorm(0, 1), 2);
-    double x = 1 + phi/2 * (y - sqrt(4 * y/phi + R_pow_di(y, 2)));
+    /* Taylor series is more accurate when y * phi is large */
+    double x;
+    if (yphi > YPHILARGE)
+	x = 1/yphi;
+    else
+        x = 1 + yphi/2 * (1 - sqrt(1 + 4/yphi));
 
     return mu * ((unif_rand() <= 1/(1 + x)) ? x : 1/x);
 }

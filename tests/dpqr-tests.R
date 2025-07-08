@@ -1200,6 +1200,7 @@ for (i in seq_along(shpar))
 ## LOGGAMMA
 
 ## Tests on the density.
+set.seed(123)                   # reset the seed
 stopifnot(exprs = {
     dlgamma(c(42, Inf), shapelog = 2, ratelog = 0) == c(0, 0)
 })
@@ -1207,10 +1208,10 @@ assertWarning(stopifnot(exprs = {
     is.nan(dlgamma(c(0, 42, Inf), shapelog = 2, ratelog = Inf))
 }))
 x <- rlgamma(100, shapelog = 2, ratelog = 1)
-for(a in round(rlnorm(30), 2))
+for (a in round(rlnorm(30), 2))
 {
     Ga <- gamma(a)
-    for(r in round(rlnorm(30), 2))
+    for (r in round(rlnorm(30), 2))
 	stopifnot(exprs = {
             All.eq(dlgamma(x, shapelog = a, ratelog = r),
                    r^a * (log(x))^(a - 1)/(Ga * x^(r + 1)))
@@ -1232,11 +1233,12 @@ stopifnot(exprs = {
 
 ## Tests for first three positive moments and first two negative
 ## moments.
+set.seed(123)                   # reset the seed
 k <- c(-2, -1, 1, 2, 3)         # orders
-for(a in round(rlnorm(30), 2))
+for (a in round(rlnorm(30), 2))
 {
     Ga <- gamma(a)
-    for(r in 3 + round(rlnorm(30), 2))
+    for (r in 3 + round(rlnorm(30), 2))
 	stopifnot(exprs = {
             All.eq(mlgamma(k, shapelog = a, ratelog = r),
                    (1 - k/r)^(-a))
@@ -1247,10 +1249,10 @@ for(a in round(rlnorm(30), 2))
 ## negative limited moments.
 order <- c(-2, -1, 1, 2, 3)             # orders
 q <- c(0.25, 0.50, 0.75, 0.9, 0.95)     # quantiles
-for(a in round(rlnorm(30), 2))
+for (a in round(rlnorm(30), 2))
 {
     Ga <- gamma(a)
-    for(r in 3 + round(rlnorm(30), 2))
+    for (r in 3 + round(rlnorm(30), 2))
     {
         limit <- qlgamma(q, shapelog = a, ratelog = r)
         for (k in order)
@@ -1268,6 +1270,7 @@ for(a in round(rlnorm(30), 2))
 ## GUMBEL
 
 ## Tests on the density.
+set.seed(123)                   # reset the seed
 stopifnot(exprs = {
     dgumbel(c(1, 3, Inf), alpha = 2,   scale = Inf) == c(0, 0, 0)
     dgumbel(c(1, 2, 3),   alpha = 2,   scale = 0) == c(0, Inf, 0)
@@ -1282,10 +1285,10 @@ assertWarning(stopifnot(exprs = {
     is.nan(dgumbel(1,    alpha = Inf,  scale = -1))
 }))
 x <- rgumbel(100, alpha = 2, scale = 5)
-for(a in round(rlnorm(30), 2))
+for (a in round(rlnorm(30), 2))
 {
     Ga <- gamma(a)
-    for(s in round(rlnorm(30), 2))
+    for (s in round(rlnorm(30), 2))
     {
         u <- (x - a)/s
 	stopifnot(exprs = {
@@ -1325,6 +1328,7 @@ stopifnot(exprs = {
 ## INVERSE GAUSSIAN
 
 ## Tests on the density.
+set.seed(123)                   # reset the seed
 stopifnot(exprs = {
     dinvgauss(c(1, 3, Inf),  mean = 2,   dispersion = Inf) == c(0, 0, 0)
     dinvgauss(c(0, 42, Inf), mean = 2,   dispersion = 0) == c(Inf, 0, 0)
@@ -1338,9 +1342,9 @@ assertWarning(stopifnot(exprs = {
     is.nan(dinvgauss(1,    mean = Inf, dispersion = -1))
 }))
 x <- rinvgauss(100, mean = 2, dispersion = 5)
-for(mu in round(rlnorm(30), 2))
+for (mu in round(rlnorm(30), 2))
 {
-    for(phi in round(rlnorm(30), 2))
+    for (phi in round(rlnorm(30), 2))
 	stopifnot(exprs = {
             All.eq(dinvgauss(x, mean = mu, dispersion = phi),
                    1/sqrt(2*pi*phi*x^3) * exp(-((x/mu - 1)^2)/(2*phi*x)))
@@ -1362,20 +1366,80 @@ stopifnot(exprs = {
               log(pnorm(sqx - 1/sqx) + exp(2) * pnorm(-sqx - 1/sqx)))
 })
 
+## Tests on pinvgauss for a small (<1e-14) coefficient of variation
+## squared (equal to mean * dispersion) where a gamma approximation is
+## used (ported from statmod v1.4.29).
+mu <- 1.5
+phi <- 6e-15
+cv2 <- mu * phi
+q <- mu + seq.int(from = -10, to = 10, length.out = 11) * 1e-8
+stopifnot(exprs = {
+    identical(pinvgauss(q, mean = mu, dispersion = phi),
+              exp(pgamma(q, shape = 1/cv2, scale = cv2 * mu, log.p = TRUE)))
+    ## test commented out for CRAN
+    ## identical(pinvgauss(q, mean = mu, dispersion = phi),
+    ##           statmod::pinvgauss(q, mean = mu, dispersion = phi))
+})
+
+## Tests on qinvgauss for a small (<1e-8) coefficient of variation
+## squared (equal to mean * dispersion) where a gamma approximation is
+## used (ported from statmod v1.4.29).
+mu <- 1.5
+phi <- 6e-9
+cv2 <- phi * mu
+p <- seq.int(from = 0.05, to = 0.95, by = 0.1)
+stopifnot(exprs = {
+    identical(qinvgauss(p, mean = mu, dispersion = phi),
+              mu * qgamma(log(p), shape = 1/cv2, scale = cv2, log.p = TRUE))
+    ## test commented out for CRAN ('All.eq' instead of 'identical'
+    ## here because the order of computations is slightly different
+    ## from statmod)
+    ## All.eq(qinvgauss(p, mean = mu, dispersion = phi),
+    ##           statmod::qinvgauss(p, mean = mu, dispersion = phi))
+})
+
 ## Tests for small value of 'shape'. Added for the patch in 4294e9c.
 q <- runif(100)
 stopifnot(exprs = {
-    all.equal(q,
-              pinvgauss(qinvgauss(q, 0.1, 1e-2), 0.1, 1e-2))
-    all.equal(q,
-              pinvgauss(qinvgauss(q, 0.1, 1e-6), 0.1, 1e-6))
+    All.eq(q,
+           pinvgauss(qinvgauss(q, 0.1, 1e-2), 0.1, 1e-2))
+    All.eq(q,
+           pinvgauss(qinvgauss(q, 0.1, 1e-6), 0.1, 1e-6))
+})
+
+## Tests for the random number generator after patches for large
+## values of phi (or mu) in 7b22ec7 (ported from statmod v1.4.29).
+## First, check that the new generator returns the same values as the
+## old one for "safe" values.
+n <- 1000
+mu <- round(rlnorm(n), 2)
+phi <- round(rlnorm(n), 2)
+xold <- xnew <- numeric(n)
+for (i in seq_len(n))
+{
+    set.seed(1)
+    phi0 <- phi[i] * mu[i]
+    y <- rnorm(1)^2
+    x <- 1 + phi0/2 * (y - sqrt(4 * y/phi0 + y^2))
+    xold[i] <- mu[i] * ifelse(runif(1) <= 1/(1 + x), x, 1/x)
+    set.seed(1)
+    xnew[i] <- rinvgauss(1, mean = mu[i], dispersion = phi[i])
+}
+stopifnot(All.eq(xold, xnew))
+
+## Next, check that the new generator returns only positive values.
+stopifnot(exprs = {
+    all(rinvgauss(1000, mean = 5e8, dispersion = 1) >= 0)
+    all(rinvgauss(1000, mean = 1, dispersion = 5e8) >= 0)
+    all(rinvgauss(1000, mean = 5e5, dispersion = 5e3) >= 0)
 })
 
 ## Tests for first three positive, integer moments.
+set.seed(123)                   # reset the seed
 k <- 1:3
-for(mu in round(rlnorm(30), 2))
+for (mu in round(rlnorm(30), 2))
 {
-    for(phi in round(rlnorm(30), 2))
+    for (phi in round(rlnorm(30), 2))
 	stopifnot(exprs = {
             All.eq(minvgauss(k, mean = mu, dispersion = phi),
                    c(mu,
@@ -1386,9 +1450,9 @@ for(mu in round(rlnorm(30), 2))
 
 ## Tests for limited expected value.
 q <- c(0.25, 0.50, 0.75, 0.9, 0.95)     # quantiles
-for(mu in round(rlnorm(30), 2))
+for (mu in round(rlnorm(30), 2))
 {
-    for(phi in round(rlnorm(30), 2))
+    for (phi in round(rlnorm(30), 2))
     {
         limit <- qinvgauss(q, mean = mu, dispersion = phi)
         stopifnot(exprs = {
@@ -1401,6 +1465,7 @@ for(mu in round(rlnorm(30), 2))
 }
 
 ## GENERALIZED BETA
+set.seed(123)                   # reset the seed
 stopifnot(exprs = {
     dgenbeta(c(0, 2.5, 5), shape1 = 0,   shape2 = 0,   shape3 = 3,   scale = 5) == c(Inf, 0, Inf)
     dgenbeta(c(0, 2.5, 5), shape1 = 0,   shape2 = 0,   shape3 = 0,   scale = 5) == c(Inf, 0, Inf)
