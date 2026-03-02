@@ -2,6 +2,32 @@
 \title{\pkg{actuar} News}
 \encoding{UTF-8}
 
+\section{CHANGES IN \pkg{actuar} VERSION 3.3-7}{
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item{Appendix C of the \dQuote{distributions} package vignette
+	now provides the formulas for the first three cumulants (hence
+	the mean, variance and skewness) of the zero-truncated and
+	zero-modified distributions. They are not used in the package
+	code, but we developed the formulas at some point and opted to
+	record them in the vignette for posterity.}
+    }
+  }
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item{The quantile functions for the zero-modified distributions
+	now correctly handle the case \code{p <= p0}. Thanks to Philippe
+	Leblanc for the report and pointers.}
+      \item{The quantile functions for the zero-modified distributions
+	now correctly handle the following corner cases:
+	\code{p0 = 1};
+	limit values of the parameters with \code{lower.tail = FALSE} or
+	\code{p0 = 0}; 
+	\code{p = 0} with \code{p0 = 0}.}
+    }
+  }
+}
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.3-6}{
   \subsection{NEW FEATURES}{
     \itemize{
@@ -12,8 +38,9 @@
   \subsection{BUG FIXES}{
     \itemize{
       \item{\code{ruin} now works correctly for mixtures of Erlang
-	distributions. Thanks to Paula Rocha Rodriguez
-	\email{paula.rocharodriguez@alum.uca.es} for the report.}
+	distributions. Closes issue #4. Thanks also to Jorge Yslas and
+	Paula Rocha Rodriguez \email{paula.rocharodriguez@alum.uca.es}
+	for the report.}
       \item{\code{var} and \code{sd} for individual data now correctly
 	use the value of argument \code{na.rm} (closes issue #5). Thanks
 	to Ge Zhang for the report.}
@@ -35,7 +62,7 @@
     }
   }
 }
-  
+
 \section{CHANGES IN \pkg{actuar} VERSION 3.3-5}{
   \subsection{NEW FEATURES}{
     \itemize{
@@ -86,7 +113,7 @@
     }
   }
   \subsection{USER VISIBLE CHANGES}{
-    \itemize{ 
+    \itemize{
       \item{\code{rcomphierarc} is now the base name for the simulation
 	function of compound hierarchical models, whereas \code{simul}
 	is an alias retained for backward compatibility.}
@@ -208,7 +235,7 @@
   \subsection{BUG FIXES}{
     \itemize{
       \item{\code{qinvgauss} now returns a finite value when
-	\eqn{1.5/\code{shape} > 1000}. Thanks to Bettina Grün
+	\code{1.5/shape > 1000}. Thanks to Bettina Grün
 	\email{bettina.gruen@wu.ac.at} for the fix.}
       \item{A protection against rounding errors now ensures that
 	\code{qzmlogarithmic(1 - pzmlogarithmic(x), lower.tail = FALSE)

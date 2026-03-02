@@ -46,6 +46,9 @@ static double DO_SEARCH_FUN(_dist_PARS_DECL_)
     if(left) {	// (lower_tail, *z >= p)  or  (upper tail, *z < p): search to the __left__
 	for(int iter = 0; ; iter++) {
 	    double newz = -1.; // -Wall
+#ifndef MATHLIB_STANDALONE
+	    if(iter % 10000 == 0) R_CheckUserInterrupt();// have seen inf.loops
+#endif
 	    if(y > 0)
 		newz = P_DIST(y - incr, _dist_PARS_);
 	    else if(y < 0)
@@ -60,6 +63,9 @@ static double DO_SEARCH_FUN(_dist_PARS_DECL_)
     }
     else { // (lower_tail, *z < p)  or  (upper tail, *z >= p): search to the __right__
 	for(int iter = 0; ; iter++) {
+#ifndef MATHLIB_STANDALONE
+	    if(iter % 10000 == 0) R_CheckUserInterrupt();
+#endif
 	    y += incr;
 	    *z = P_DIST(y, _dist_PARS_);
 

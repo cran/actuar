@@ -5,34 +5,25 @@
  *  zero-modified Poisson distribution. See ../R/ZeroModifiedPoisson.R
  *  for details.
  *
- *  Zero-modified distributions are discrete mixtures between a
- *  degenerate distribution at zero and the corresponding,
- *  non-modified, distribution. As a mixture, they have density
+ *  Let X ~ Poisson(lambda). The probability mass function of the
+ *  zero-modified Poisson random variable Z is
  *
- *      Pr[Z = x] = [1 - (1 - p0m)/(1 - p0)] 1(x)
- *                  + [(1 - p0m)/(1 - p0)] Pr[X = 0],
+ *    Pr[Z = 0] = p0m
+ *    Pr[Z = x] = (1 - p0m) * Pr[X = x]/(1 - exp(-lambda)), x = 1, 2, ...
  *
- *  where p0 = Pr[X = 0]. The density can also be expressed as
- *  Pr[Z = 0] = p0m and
+ *  The distribution function is, for all x = 0, 1, 2, ...,
  *
- *      Pr[Z = x] = (1 - p0m) * Pr[X = x]/(1 - Pr[X = 0]),
+ *    Pr[Z <= x] = 1 - (1 - p0m) * (1 - Pr[X <= x])/(1 - exp(-lambda)).
  *
- *  for x = 1, 2, ... The distribution function is, for all x,
+ *  Limiting case: lambda == 0 has mass (1 - p0m) at x = 1.
  *
- *      Pr[Z <= x] = 1 - (1 - p0m) * (1 - Pr[X <= x])/(1 - p0).
- *
- *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
+ *  AUTHOR: Jérémy Déraspe and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
 #include <R.h>
 #include <Rmath.h>
 #include "locale.h"
 #include "dpq.h"
-
-/* The Poisson distribution has p0 = exp(-lambda).
- *
- * Limiting case: lambda == 0 has mass (1 - p0m) at x = 1.
- */
 
 double dzmpois(double x, double lambda, double p0m, int give_log)
 {
@@ -49,11 +40,11 @@ double dzmpois(double x, double lambda, double p0m, int give_log)
     /* simple case for all x > 0 */
     if (p0m == 1) return ACT_D__0; /* for all x > 0 */
 
-    /* limiting case as lambda approaches zero is mass (1-p0m) at one */
+    /* limiting case as lambda -> 0 is mass (1 - p0m) at one */
     if (lambda == 0) return (x == 1) ? ACT_D_Clog(p0m) : ACT_D__0;
 
     return ACT_D_exp(dpois(x, lambda, /*give_log*/1)
-		     + log1p(-p0m) - ACT_Log1_Exp(-lambda));
+		     + log1p(-p0m) - log1mexp(lambda));
 }
 
 double pzmpois(double x, double lambda, double p0m, int lower_tail, int log_p)
@@ -72,7 +63,7 @@ double pzmpois(double x, double lambda, double p0m, int lower_tail, int log_p)
     /* simple case for all x >= 1 */
     if (p0m == 1) return ACT_DT_1;
 
-    /* limiting case as lambda approaches zero is mass (1-p0m) at one */
+    /* limiting case as lambda -> 0 is mass (1 - p0m) at one */
     if (lambda == 0) return ACT_DT_1;
 
     /* working in log scale improves accuracy */
@@ -81,38 +72,28 @@ double pzmpois(double x, double lambda, double p0m, int lower_tail, int log_p)
 			- log1mexp(lambda));
 }
 
-double qzmpois(double x, double lambda, double p0m, int lower_tail, int log_p)
+double qzmpois(double p, double lambda, double p0m, int lower_tail, int log_p)
 {
 #ifdef IEEE_754
-    if (ISNAN(x) || ISNAN(lambda) || ISNAN(p0m))
-	return x + lambda + p0m;
+    if (ISNAN(p) || ISNAN(lambda) || ISNAN(p0m))
+	return p + lambda + p0m;
 #endif
     if (lambda < 0 || !R_FINITE(lambda) || p0m < 0 || p0m > 1) return R_NaN;
-
-    /* limiting case as lambda approaches zero is mass (1-p0m) at one */
+    ACT_Q_P01_check(p);
+    if (p0m == 1) return 0.0;
+    /* limiting case as lambda -> 0 is mass (1 - p0m) at one */
     if (lambda == 0)
-    {
-	/* simplified ACT_Q_P01_boundaries macro */
-	if (log_p)
-	{
-	    if (x > 0)
-		return R_NaN;
-	    return (x <= log(p0m)) ? 0.0 : 1.0;
-	}
-	else /* !log_p */
-	{
-	    if (x < 0 || x > 1)
-		return R_NaN;
-	    return (x <= p0m) ? 0.0 : 1.0;
-	}
-    }
+	return (ACT_DT_qIv(p) <= p0m) ? ACT_Q_p0lim(p0m) : 1.0;
+    if (p == ACT_DT_0) return ACT_Q_p0lim(p0m);
+    if (p == ACT_DT_1) return R_PosInf;
 
-    ACT_Q_P01_boundaries(x, 0, R_PosInf);
-    x = ACT_DT_qIv(x);
+    p = ACT_DT_qIv(p);
 
+    /* at this point 0 < p < 1, so p0m = 0 is not an issue */
     /* working in log scale improves accuracy */
-    return qpois(-expm1(log1mexp(lambda) - log1p(-p0m) + log1p(-x)),
-		 lambda, /*l._t.*/1, /*log_p*/0);
+    return (p <= p0m) ? 0.0 :
+	qpois(-expm1(log1mexp(lambda) - log1p(-p0m) + log1p(-p)),
+	      lambda, /*l._t.*/1, /*log_p*/0);
 }
 
 /* ALGORITHM FOR GENERATION OF RANDOM VARIATES
@@ -137,7 +118,7 @@ double rzmpois(double lambda, double p0m)
 {
     if (lambda < 0 || !R_FINITE(lambda) || p0m < 0 || p0m > 1) return R_NaN;
 
-    /* limiting case as lambda approaches zero is mass (1-p0m) at one */
+    /* limiting case as lambda -> 0 is mass (1 - p0m) at one */
     if (lambda == 0) return (unif_rand() <= p0m) ? 0.0 : 1.0;
 
     double x, p0 = exp(-lambda);

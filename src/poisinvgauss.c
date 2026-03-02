@@ -180,8 +180,6 @@ double qpoisinvgauss(double p, double mu, double phi, int lower_tail, int log_p)
 	sigma = sqrt(sigma2),
 	gamma = (3 * phim2 * sigma2 + mu)/sigma2/sigma;
 
-    /* q_DISCRETE_01_CHECKS(); */
-
     /* limiting case mu = Inf -> inverse chi-square as starting point*/
     /* other cases -> Cornish-Fisher as usual */
     double z, y;

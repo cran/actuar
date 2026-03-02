@@ -30,7 +30,7 @@ double dlogarithmic(double x, double prob, int give_log)
 
     if (!R_FINITE(x) || x < 1) return ACT_D__0;
 
-    /* limiting case as prob approaches zero is point mass at one */
+    /* limiting case as prob -> 0 is point mass at one */
     if (prob == 0) return (x == 1) ? ACT_D__1 : ACT_D__0;
 
     x = ACT_forceint(x);
@@ -60,7 +60,7 @@ double plogarithmic(double q, double prob, int lower_tail, int log_p)
     if (q < 1) return ACT_DT_0;
     if (!R_FINITE(q)) return ACT_DT_1;
 
-    /* limiting case as prob approaches zero is point mass at one. */
+    /* limiting case as prob -> 0 is point mass at one. */
     if (prob == 0) return (q >= 1) ? ACT_DT_1 : ACT_DT_0;
 
     int k;
@@ -105,26 +105,11 @@ double qlogarithmic(double p, double prob, int lower_tail, int log_p)
 	return p + prob;
 #endif
     if (prob < 0 || prob >= 1) return R_NaN;
-
-    /* limiting case as prob approaches zero is point mass at one */
-    if (prob == 0)
-    {
-	/* simplified ACT_Q_P01_boundaries macro */
-	if (log_p)
-	{
-	    if (p > 0)
-		return R_NaN;
-	    return 1.0;
-	}
-	else /* !log_p */
-	{
-	    if (p < 0 || p > 1)
-		return R_NaN;
-	    return 1.0;
-	}
-    }
-
-    ACT_Q_P01_boundaries(p, 1.0, R_PosInf);
+    ACT_Q_P01_check(p);
+    /* limiting case as prob -> 0 is point mass at one */
+    if (prob == 0) return 1.0;
+    if (p == ACT_DT_0) return 1.0;
+    if (p == ACT_DT_1) return R_PosInf;
 
     double
 	a = -1.0/log1p(-prob),
@@ -134,7 +119,6 @@ double qlogarithmic(double p, double prob, int lower_tail, int log_p)
 	sigma = sqrt(mu * (Q - mu)),
 	gamma = (P * (1 + prob - P*(3 + 2*P)) * R_pow_di(Q, 3))/R_pow_di(sigma, 3);
 
-    /* q_DISCRETE_01_CHECKS(); */
     q_DISCRETE_DECL;
     q_DISCRETE_BODY();
 }
@@ -154,7 +138,7 @@ double rlogarithmic(double prob)
 {
     if (prob < 0 || prob > 1) return R_NaN;
 
-    /* limiting case as prob approaches zero is point mass at one. */
+    /* limiting case as prob -> 0 is point mass at one. */
     if (prob == 0) return 1.0;
 
     /* Automatic selection between the LS and LK algorithms */

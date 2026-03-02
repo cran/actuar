@@ -119,7 +119,7 @@ double pinvgauss(double q, double mu, double phi, int lower_tail, int log_p)
     double a = pnorm((qm - 1)/r, 0, 1, lower_tail, /* log_p */1);
     double b = 2/phim + pnorm(-(qm + 1)/r, 0, 1, /* l._t. */1, /* log_p */1);
 
-    return ACT_D_exp(a + (lower_tail ? log1p(exp(b - a)) : ACT_Log1_Exp(b - a)));
+    return ACT_D_exp(a + (lower_tail ? log1p(exp(b - a)) : log1mexp(a - b)));
 }
 
 /* This is used in nrstep() to return either dx or -dx. */
@@ -346,8 +346,8 @@ double levinvgauss(double limit, double mu, double phi, double order,
     double ap = pnorm(x, 0, 1, /*l._t.*/0, /* log_p */1);
     double b = 2/phim + pnorm(-(xm + 1)/r, 0, 1, /* l._t. */1, /* log_p */1);
 
-    return mu * exp(a + ACT_Log1_Exp(b - a))
-	+ limit * exp(ap + ACT_Log1_Exp(b - ap));
+    return mu * exp(a + log1mexp(a - b))
+	+ limit * exp(ap + log1mexp(ap - b));
 }
 
 double mgfinvgauss(double t, double mu, double phi, int give_log)

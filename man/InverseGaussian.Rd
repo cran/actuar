@@ -103,9 +103,8 @@ mgfinvgauss(t, mean, shape = 1, dispersion = 1/shape, log = FALSE)
 }
 \references{
   Giner, G. and Smyth, G. K. (2016), \dQuote{\pkg{statmod}: Probability
-    Calculations for the Inverse Gaussian Distribution}, \emph{R
-    Journal}, vol. 8, no 1, p. 339-351.
-  \url{https://journal.r-project.org/archive/2016-1/giner-smyth.pdf}
+    Calculations for the Inverse Gaussian Distribution}, \emph{The R
+    Journal}, vol. 8, no 1, p. 339-351. \doi{10.32614/RJ-2016-024}
 
   Chhikara, R. S. and Folk, T. L. (1989), \emph{The Inverse Gaussian
     Distribution: Theory, Methodology and Applications}, Decker.

@@ -5,23 +5,22 @@
  *  zero-modified binomial distribution. See
  *  ../R/ZeroModifiedBinomial.R for details.
  *
- *  Zero-modified distributions are discrete mixtures between a
- *  degenerate distribution at zero and the corresponding,
- *  non-modified, distribution. As a mixture, they have density
+ *  Let X ~ Binomial(size, prob). The probability mass function of the
+ *  zero-modified Binomial random variable Z is
  *
- *      Pr[Z = x] = [1 - (1 - p0m)/(1 - p0)] 1(x)
- *                  + [(1 - p0m)/(1 - p0)] Pr[X = 0],
+ *    Pr[Z = 0] = p0m
+ *    Pr[Z = x] = (1 - p0m) * Pr[X = x]/(1 - (1 - prob)^size), x = 1, 2, ...
  *
- *  where p0 = Pr[X = 0]. The density can also be expressed as
- *  Pr[Z = 0] = p0m and
+ *  The distribution function is, for all x = 0, 1, 2, ...,
  *
- *      Pr[Z = x] = (1 - p0m) * Pr[X = x]/(1 - Pr[X = 0]),
+ *    Pr[Z <= x] = 1 - (1 - p0m) * (1 - Pr[X <= x])/(1 - (1 - prob)^size).
  *
- *  for x = 1, 2, ... The distribution function is, for all x,
+ *  Limiting cases:
  *
- *      Pr[Z <= x] = 1 - (1 - p0m) * (1 - Pr[X <= x])/(1 - p0).
+ *    1. size == 0 has mass (1 - p0m) at x = 1;
+ *    2. prob == 0 has mass (1 - p0m) at x = 1.
  *
- *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
+ *  AUTHOR: Jérémy Déraspe and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
 #include <R.h>
@@ -29,14 +28,6 @@
 #include "locale.h"
 #include "dpq.h"
 #include "actuar.h"
-
-/* The binomial distribution has p0 = (1 - prob)^size.
- *
- * Limiting cases:
- *
- * 1. size == 0 is mass (1-p0m) at x = 1;
- * 2. prob == 0 is mass (1-p0m) at x = 1.
- */
 
 double dzmbinom(double x, double size, double prob, double p0m, int give_log)
 {
@@ -88,38 +79,27 @@ double pzmbinom(double x, double size, double prob, double p0m, int lower_tail, 
 			- log1mexp(-lp0));
 }
 
-double qzmbinom(double x, double size, double prob, double p0m, int lower_tail, int log_p)
+double qzmbinom(double p, double size, double prob, double p0m, int lower_tail, int log_p)
 {
 #ifdef IEEE_754
-    if (ISNAN(x) || ISNAN(size) || ISNAN(prob) || ISNAN(p0m))
-	return x + size + prob + p0m;
+    if (ISNAN(p) || ISNAN(size) || ISNAN(prob) || ISNAN(p0m))
+	return p + size + prob + p0m;
 #endif
     if (prob < 0 || prob > 1 || size < 0 || p0m < 0 || p0m > 1) return R_NaN;
-
+    ACT_Q_P01_check(p);
+    if (p0m == 1) return 0.0;
     /* limiting cases as size -> 1 or prob -> 0 are mass (1-p0m) at one */
     if (size == 1 || prob == 0)
-    {
-	/* simplified ACT_Q_P01_boundaries macro */
-	if (log_p)
-	{
-	    if (x > 0)
-		return R_NaN;
-	    return (x <= log(p0m)) ? 0.0 : 1.0;
-	}
-	else /* !log_p */
-	{
-	    if (x < 0 || x > 1)
-		return R_NaN;
-	    return (x <= p0m) ? 0.0 : 1.0;
-	}
-    }
+        return (ACT_DT_qIv(p) <= p0m) ? ACT_Q_p0lim(p0m) : 1.0;
+    if (p == ACT_DT_0) return ACT_Q_p0lim(p0m);
+    if (p == ACT_DT_1) return R_PosInf;
 
-    ACT_Q_P01_boundaries(x, 1, size);
-    x = ACT_DT_qIv(x);
+    p = ACT_DT_qIv(p);
 
+    /* at this point 0 < p < 1, so p0m = 0 is not an issue */
     /* working in log scale improves accuracy */
     double lp0 = dbinom_raw(0, size, prob, 1 - prob, /*give_log*/1);
-    return qbinom(-expm1(log1mexp(-lp0) - log1p(-p0m) + log1p(-x)),
+    return qbinom(-expm1(log1mexp(-lp0) - log1p(-p0m) + log1p(-p)),
 		  size, prob, /*l._t.*/1, /*log_p*/0);
 }
 

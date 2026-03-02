@@ -221,8 +221,8 @@ stopifnot(exprs = {
                     shape1 = 3, shape2 = rep(c(1, 2), each = length(scLrg)),
                     scale = scLrg, log = TRUE))
     all.equal(y,
-              c(log(1 - c(1/3, 1/2, 2/3)^3),
-                log(1 - c(1/5, 1/2, 4/5)^3)))
+              c(log1p(-c(1/3, 1/2, 2/3)^3),
+                log1p(-c(1/5, 1/2, 4/5)^3)))
 })
 stopifnot(exprs = {
     ppareto3(Inf,         min = 10,   3, scale = xMax) == 1
@@ -251,7 +251,7 @@ stopifnot(exprs = {
                        shape = 3,
                        scale = scLrg, log = TRUE))
     all.equal(y,
-              c(log(1 - c(1/3, 1/2, 2/3)^3)))
+              c(log1p(-c(1/3, 1/2, 2/3)^3)))
 })
 
 ## Also check that distribution functions return 0 when scale = Inf.
@@ -680,8 +680,8 @@ stopifnot(exprs = {
     all.equal(pburr(1e300,
                     shape1 = 3, shape2 = rep(c(1, 2), each = length(scLrg)),
                     scale = scLrg, log = TRUE),
-              c(log(1 - c(1/3, 1/2, 2/3)^3),
-                log(1 - c(1/5, 1/2, 4/5)^3)))
+              c(log1p(-c(1/3, 1/2, 2/3)^3),
+                log1p(-c(1/5, 1/2, 4/5)^3)))
 })
 stopifnot(exprs = {
     pllogis(Inf,  3, scale = xMax) == 1
@@ -700,8 +700,8 @@ stopifnot(exprs = {
     all.equal(pparalogis(1e300,
                          shape = rep(c(2, 3), each = length(scLrg)),
                          scale = scLrg, log = TRUE),
-              c(log(1 - c(1/5, 1/2, 4/5)^2),
-                log(1 - c(1/9, 1/2, 8/9)^3)))
+              c(log1p(-c(1/5, 1/2, 4/5)^2),
+                log1p(-c(1/9, 1/2, 8/9)^3)))
 })
 stopifnot(exprs = {
     pgenpareto(Inf,  1, 3, scale = xMax) == 1
@@ -720,7 +720,7 @@ stopifnot(exprs = {
     all.equal(ppareto(1e300,
                       shape = 3,
                       scale = scLrg, log = TRUE),
-              c(log(1 - c(1/3, 1/2, 2/3)^3)))
+              c(log1p(-c(1/3, 1/2, 2/3)^3)))
 })
 stopifnot(exprs = {
     ppareto1(Inf,  3, min = xMax) == 1
@@ -729,7 +729,7 @@ stopifnot(exprs = {
     all.equal(ppareto1(1e300,
                       shape = 3,
                       min = 1e300 * c(0.001, 0.1, 0.5), log = TRUE),
-              c(log(1 - c(0.001, 0.1, 0.5)^3)))
+              c(log1p(-c(0.001, 0.1, 0.5)^3)))
 })
 stopifnot(exprs = {
     pinvburr(Inf,  1, 3, scale = xMax) == 1
@@ -1788,10 +1788,13 @@ dab1 <- function(x, a, b, p1)
 ##
 ## 1. probability is 0 at x = 0;
 ## 2. pmf satisfies the recursive relation
+## 3. limiting cases have mass 1 at x = 1
+## 4. logarithmic is a special case of ztnbinom
 lambda <- rlnorm(30, 2)                 # Poisson parameters
 r <- lambda                             # size for negative binomial
 prob <- runif(30)                       # probs
 size <- round(lambda)                   # size for binomial
+x <- sapply(size, sample, size = 1)
 stopifnot(exprs = {
     dztpois(0, lambda) == 0
     dztnbinom(0, r, prob) == 0
@@ -1799,8 +1802,6 @@ stopifnot(exprs = {
     dztbinom(0, size, prob) == 0
     dlogarithmic(0, prob) == 0
 })
-
-x <- sapply(size, sample, size = 1)
 stopifnot(exprs = {
     All.eq(dztpois(x, lambda),
            mapply(dab1, x,
@@ -1828,8 +1829,24 @@ stopifnot(exprs = {
                   b = -prob,
                   p1 = -prob/log1p(-prob)))
 })
+p01 <- as.numeric(x == 1)
+stopifnot(exprs = {
+    dztpois(x, 0)           == p01
+    dztnbinom(x, r, 1)      == p01
+    dztgeom(x, 1)           == p01
+    dztbinom(x, 1,    prob) == p01
+    dztbinom(x, size, 0)    == p01
+    dlogarithmic(x, 0)      == p01
+})
+stopifnot(exprs = {
+    dztnbinom(x, 0, prob) == dlogarithmic(x, 1 - prob)
+})
 
-## Tests on cumulative distribution function.
+## Tests on the cumulative distribution function.
+##
+## 1. cdf is equal to cumulative sum of pdf
+## 2. limiting cases have mass 1 at x = 1
+## 3. logarithmic is a special case of ztnbinom
 for (l in lambda)
     stopifnot(exprs = {
         all.equal(cumsum(dztpois(0:20, l)),
@@ -1860,27 +1877,105 @@ for (p in prob)
                   plogarithmic(0:20, p),
                   tolerance = 1e-8)
     })
+p01 <- as.numeric(x >= 1)
+stopifnot(exprs = {
+    pztpois(x, 0)           == p01
+    pztnbinom(x, r, 1)      == p01
+    pztgeom(x, 1)           == p01
+    pztbinom(x, 1,    prob) == p01
+    pztbinom(x, size, 0)    == p01
+    plogarithmic(x, 0)      == p01
+})
+stopifnot(exprs = {
+    All.eq(pztnbinom(x, 0, prob),
+           plogarithmic(x, 1 - prob))
+})
+
+## Tests on the limiting cases of the quantile function.
+p <- c(0, runif(20), 1)
+prob <- 0.2
+stopifnot(exprs = {
+    qztpois(p,      lambda = 0, TRUE,  FALSE) == 1
+    qztpois(p,      lambda = 0, FALSE, FALSE) == 1
+    qztpois(log(p), lambda = 0, TRUE,  TRUE)  == 1
+    qztpois(log(p), lambda = 0, FALSE, TRUE)  == 1
+
+    qztnbinom(p,      5, prob = 1, TRUE,  FALSE) == 1
+    qztnbinom(p,      5, prob = 1, FALSE, FALSE) == 1
+    qztnbinom(log(p), 5, prob = 1, TRUE,  TRUE)  == 1
+    qztnbinom(log(p), 5, prob = 1, FALSE, TRUE)  == 1
+    qztnbinom(p,      size = 0, prob,     TRUE,  FALSE) ==
+        qlogarithmic(p,         1 - prob, TRUE,  FALSE)
+    qztnbinom(p,      size = 0, prob,     FALSE, FALSE) ==
+        qlogarithmic(p,         1 - prob, FALSE, FALSE)
+    qztnbinom(log(p), size = 0, prob,     TRUE,  TRUE)  ==
+        qlogarithmic(log(p),    1 - prob, TRUE,  TRUE)
+    qztnbinom(log(p), size = 0, prob,     FALSE, TRUE)  ==
+        qlogarithmic(log(p),    1 - prob, FALSE, TRUE)
+
+    qztgeom(p,      prob = 1, TRUE,  FALSE) == 1
+    qztgeom(p,      prob = 1, FALSE, FALSE) == 1
+    qztgeom(log(p), prob = 1, TRUE,  TRUE)  == 1
+    qztgeom(log(p), prob = 1, FALSE, TRUE)  == 1
+
+    qztbinom(p,      size = 1, 0.5, TRUE,  FALSE) == 1
+    qztbinom(p,      size = 1, 0.5, FALSE, FALSE) == 1
+    qztbinom(log(p), size = 1, 0.5, TRUE,  TRUE)  == 1
+    qztbinom(log(p), size = 1, 0.5, FALSE, TRUE)  == 1
+    qztbinom(p,      5, prob = 0, TRUE,  FALSE) == 1
+    qztbinom(p,      5, prob = 0, FALSE, FALSE) == 1
+    qztbinom(log(p), 5, prob = 0, TRUE,  TRUE)  == 1
+    qztbinom(log(p), 5, prob = 0, FALSE, TRUE)  == 1
+
+    qlogarithmic(p,      prob = 0, TRUE,  FALSE) == 1
+    qlogarithmic(p,      prob = 0, FALSE, FALSE) == 1
+    qlogarithmic(log(p), prob = 0, TRUE,  TRUE)  == 1
+    qlogarithmic(log(p), prob = 0, FALSE, TRUE)  == 1
+})
+
+## Tests at the extremes of the quantile function.
+p <- c(0, 1)
+q <- c(1, Inf)
+lower <- rep(c(TRUE, FALSE), each = 2)
+stopifnot(exprs = {
+    qztpois(p,      1, lower, FALSE) == q
+    qztpois(log(p), 1, lower, TRUE)  == q
+
+    qztnbinom(p,      5, 0.5, lower, FALSE) == q
+    qztnbinom(log(p), 5, 0.5, lower, TRUE)  == q
+
+    qztgeom(p,      0.5, lower, FALSE) == q
+    qztgeom(log(p), 0.5, lower, TRUE)  == q
+
+    qztbinom(p,      5, 0.5, lower, FALSE) == q
+    qztbinom(log(p), 5, 0.5, lower, TRUE)  == q
+
+    qlogarithmic(p,      0.5, lower, FALSE) == q
+    qlogarithmic(log(p), 0.5, lower, TRUE)  == q
+})
 
 ## ZERO-MODIFIED (a, b, 1) CLASS
 
 ## Tests on the probability mass function:
 ##
-## 1. probability is p0 at x = 0 (trivial, but...);
+## 1. probability is p0 at x = 0
 ## 2. pmf satisfies the recursive relation
+## 3. limiting cases have mass 1 at x = 1
+## 4. zmlogarithmic is a special case of zmnbinom
+## 5. zm* with p0 = 0 is equal to zt*
 lambda <- rlnorm(30, 2)                 # Poisson parameters
 r <- lambda                             # size for negative binomial
 prob <- runif(30)                       # probs
 size <- round(lambda)                   # size for binomial
-p0 <- runif(30)                         # probs at 0
+p0 <- c(0, runif(28), 1)                # probs at 0
+x <- sapply(size, sample, size = 1)
 stopifnot(exprs = {
-    dzmpois(0, lambda, p0) == p0
-    dzmnbinom(0, r, prob, p0) == p0
-    dzmgeom(0, prob, p0) == p0
+    dzmpois(0, lambda, p0)      == p0
+    dzmnbinom(0, r, prob, p0)   == p0
+    dzmgeom(0, prob, p0)        == p0
     dzmbinom(0, size, prob, p0) == p0
     dzmlogarithmic(0, prob, p0) == p0
 })
-
-x <- sapply(size, sample, size = 1)
 stopifnot(exprs = {
     All.eq(dzmpois(x, lambda, p0),
            mapply(dab1, x,
@@ -1908,8 +2003,32 @@ stopifnot(exprs = {
                   b = -prob,
                   p1 = -(1 - p0) * prob/log1p(-prob)))
 })
+p01 <- p0 * (x == 0) + (1 - p0) * (x == 1)
+stopifnot(exprs = {
+    dzmpois(x, 0, p0)           == p01
+    dzmnbinom(x, r, 1, p0)      == p01
+    dzmgeom(x, 1, p0)           == p01
+    dzmbinom(x, 1,    prob, p0) == p01
+    dzmbinom(x, size, 0,    p0) == p01
+    dzmlogarithmic(x, 0, p0)    == p01
+})
+stopifnot(exprs = {
+    dzmnbinom(x, 0, prob, p0) == dzmlogarithmic(x, 1 - prob, p0)
+})
+stopifnot(exprs = {
+    dzmpois(x, lambda, 0)      == dztpois(x, lambda)
+    dzmnbinom(x, r, prob, 0)   == dztnbinom(x, r, prob)
+    dzmgeom(x, prob, 0)        == dztgeom(x, prob)
+    dzmbinom(x, size, prob, 0) == dztbinom(x, size, prob)
+    dzmlogarithmic(x, prob, 0) == dlogarithmic(x, prob)
+})
 
 ## Tests on cumulative distribution function.
+##
+## 1. cdf is equal to cumulative sum of pdf
+## 2. limiting cases have mass 1 at x = 1
+## 3. zmlogarithmic is a special case of zmnbinom
+## 4. zm* with p0 = 0 is equal to zt*
 for (i in seq_along(lambda))
     stopifnot(exprs = {
         all.equal(cumsum(dzmpois(0:20, lambda[i], p0 = p0[i])),
@@ -1940,6 +2059,131 @@ for (i in seq_along(prob))
                   pzmlogarithmic(0:20, prob[i], p0[i]),
                   tolerance = 1e-8)
     })
+p01 <- p0 * (x < 1) + (x >= 1)
+stopifnot(exprs = {
+    pzmpois(x, 0, p0)           == p01
+    pzmnbinom(x, r, 1, p0)      == p01
+    pzmgeom(x, 1, p0)           == p01
+    pzmbinom(x, 1,    prob, p0) == p01
+    pzmbinom(x, size, 0,    p0) == p01
+    pzmlogarithmic(x, 0, p0)    == p01
+})
+stopifnot(exprs = {
+    All.eq(pzmnbinom(x, 0, prob, p0),
+           pzmlogarithmic(x, 1 - prob, p0))
+})
+stopifnot(exprs = {
+    All.eq(pzmpois(x, lambda, 0),
+           pztpois(x, lambda))
+    All.eq(pzmnbinom(x, r, prob, 0),
+           pztnbinom(x, r, prob))
+    All.eq(pzmgeom(x, prob, 0),
+           pztgeom(x, prob))
+    All.eq(pzmbinom(x, size, prob, 0),
+           pztbinom(x, size, prob))
+    All.eq(pzmlogarithmic(0, prob, 0),
+           plogarithmic(0,   prob))
+})
+
+## Tests on the limiting cases of the quantile function.
+p <- c(0, runif(20), 1)
+p0m <- 0.2
+stopifnot(exprs = {
+    qzmpois(p,      lambda = 0, p0m, TRUE,  FALSE) == 1 - (p <= p0m)
+    qzmpois(p,      lambda = 0, p0m, FALSE, FALSE) == 1 - (1 - p <= p0m)
+    qzmpois(log(p), lambda = 0, p0m, TRUE,  TRUE)  == 1 - (p <= p0m)
+    qzmpois(log(p), lambda = 0, p0m, FALSE, TRUE)  == 1 - (1 - p <= p0m)
+
+    qzmnbinom(p,      size = 5, 1, p0m, TRUE,  FALSE) == 1 - (p <= p0m)
+    qzmnbinom(p,      size = 5, 1, p0m, FALSE, FALSE) == 1 - (1 - p <= p0m)
+    qzmnbinom(log(p), size = 5, 1, p0m, TRUE,  TRUE)  == 1 - (p <= p0m)
+    qzmnbinom(log(p), size = 5, 1, p0m, FALSE, TRUE)  == 1 - (1 - p <= p0m)
+    qzmnbinom(p,      size = 0, prob,     p0m, TRUE,  FALSE) ==
+        qzmlogarithmic(p,       1 - prob, p0m, TRUE,  FALSE)
+    qzmnbinom(p,      size = 0, prob,     p0m, FALSE, FALSE) ==
+        qzmlogarithmic(p,       1 - prob, p0m, FALSE, FALSE)
+    qzmnbinom(log(p), size = 0, prob,     p0m, TRUE,  TRUE)  ==
+        qzmlogarithmic(log(p),  1 - prob, p0m, TRUE,  TRUE)
+    qzmnbinom(log(p), size = 0, prob,     p0m, FALSE, TRUE)  ==
+        qzmlogarithmic(log(p),  1 - prob, p0m, FALSE, TRUE)
+
+    qzmgeom(p,      1, p0m, TRUE,  FALSE) == 1 - (p <= p0m)
+    qzmgeom(p,      1, p0m, FALSE, FALSE) == 1 - (1 - p <= p0m)
+    qzmgeom(log(p), 1, p0m, TRUE,  TRUE)  == 1 - (p <= p0m)
+    qzmgeom(log(p), 1, p0m, FALSE, TRUE)  == 1 - (1 - p <= p0m)
+
+    qzmbinom(p,      size = 1, 0.5, p0m, TRUE,  FALSE) == 1 - (p <= p0m)
+    qzmbinom(p,      size = 1, 0.5, p0m, FALSE, FALSE) == 1 - (1 - p <= p0m)
+    qzmbinom(log(p), size = 1, 0.5, p0m, TRUE,  TRUE)  == 1 - (p <= p0m)
+    qzmbinom(log(p), size = 1, 0.5, p0m, FALSE, TRUE)  == 1 - (1 - p <= p0m)
+    qzmbinom(p,      5, prob = 0, p0m, TRUE,  FALSE) == 1 - (p <= p0m)
+    qzmbinom(p,      5, prob = 0, p0m, FALSE, FALSE) == 1 - (1 - p <= p0m)
+    qzmbinom(log(p), 5, prob = 0, p0m, TRUE,  TRUE)  == 1 - (p <= p0m)
+    qzmbinom(log(p), 5, prob = 0, p0m, FALSE, TRUE)  == 1 - (1 - p <= p0m)
+
+    qzmlogarithmic(p,      0, p0m, TRUE,  FALSE) == 1 - (p <= p0m)
+    qzmlogarithmic(p,      0, p0m, FALSE, FALSE) == 1 - (1 - p <= p0m)
+    qzmlogarithmic(log(p), 0, p0m, TRUE,  TRUE)  == 1 - (p <= p0m)
+    qzmlogarithmic(log(p), 0, p0m, FALSE, TRUE)  == 1 - (1 - p <= p0m)
+})
+
+## Tests with p0 = 0 at 0
+stopifnot(exprs = {
+    qzmpois(0,    2, p0 = 0, TRUE,  FALSE)  == 1
+    qzmpois(1,    2, p0 = 0, FALSE, FALSE)  == 1
+    qzmpois(-Inf, 2, p0 = 0, TRUE,  TRUE)   == 1
+    qzmpois(0,    2, p0 = 0, FALSE, TRUE)   == 1
+
+    qzmnbinom(0,    7, prob = 0.8, p0 = 0, TRUE,  FALSE) == 1
+    qzmnbinom(1,    7, prob = 0.8, p0 = 0, FALSE, FALSE) == 1
+    qzmnbinom(-Inf, 7, prob = 0.8, p0 = 0, TRUE,  TRUE)  == 1
+    qzmnbinom(0,    7, prob = 0.8, p0 = 0, FALSE, TRUE)  == 1
+
+    qzmgeom(0,    0.8, p0 = 0, TRUE,  FALSE) == 1
+    qzmgeom(1,    0.8, p0 = 0, FALSE, FALSE) == 1
+    qzmgeom(-Inf, 0.8, p0 = 0, TRUE,  TRUE)  == 1
+    qzmgeom(0,    0.8, p0 = 0, FALSE, TRUE)  == 1
+
+    qzmbinom(0,    5, 0.5, p0 = 0, TRUE,  FALSE) == 1
+    qzmbinom(1,    5, 0.5, p0 = 0, FALSE, FALSE) == 1
+    qzmbinom(-Inf, 5, 0.5, p0 = 0, TRUE,  TRUE)  == 1
+    qzmbinom(0,    5, 0.5, p0 = 0, FALSE, TRUE)  == 1
+
+    qzmlogarithmic(0,    0.9, p0 = 0, TRUE,  FALSE) == 1
+    qzmlogarithmic(1,    0.9, p0 = 0, FALSE, FALSE) == 1
+    qzmlogarithmic(-Inf, 0.9, p0 = 0, TRUE,  TRUE)  == 1
+    qzmlogarithmic(0,    0.9, p0 = 0, FALSE, TRUE)  == 1
+})
+
+## Tests with p0 = 1 ('lower.tail' and 'log.p' without effect)
+stopifnot(exprs = {
+    qzmpois       (p, 2,      p0 = 1) == 0
+    qzmnbinom     (p, 7, 0.8, p0 = 1) == 0
+    qzmgeom       (p, 0.8,    p0 = 1) == 0
+    qzmbinom      (p, 5, 0.5, p0 = 1) == 0
+    qzmlogarithmic(p, 0.9,    p0 = 1) == 0
+})
+
+## Tests at the extremes of the quantile function.
+p <- c(0, 1)
+q <- c(0, Inf)
+stopifnot(exprs = {
+    qzmpois(p,      lambda = 2, p0m, log.p = FALSE) == q
+    qzmpois(log(p), lambda = 2, p0m, log.p = TRUE)  == q
+
+    qzmbinom(p,      size = 5, prob = 0.5, p0m, log.p = FALSE) == q
+    qzmbinom(log(p), size = 5, prob = 0.5, p0m, log.p = TRUE)  == q
+
+    qzmgeom(p,      prob = 0.5, p0m, log.p = FALSE) == q
+    qzmgeom(log(p), prob = 0.5, p0m, log.p = TRUE)  == q
+
+    qzmnbinom(p,      size = 5, prob = 0.5, p0m, log.p = FALSE) == q
+    qzmnbinom(log(p), size = 5, prob = 0.5, p0m, log.p = TRUE)  == q
+
+    qzmlogarithmic(p,      prob = 0.5, p0m, log.p = FALSE) == q
+    qzmlogarithmic(log(p), prob = 0.5, p0m, log.p = TRUE)  == q
+})
+
 
 ## POISSON-INVERSE GAUSSIAN
 
@@ -2000,23 +2244,40 @@ n <- 20
 ## For zero-modified distributions, we simulate two sets of values:
 ## one with p0m < p0 (suffix 'p0lt') and one with p0m > p0 (suffix
 ## 'p0gt').
-Rztpois      <- rztpois     (n, lambda = 12)
-Rztnbinom    <- rztnbinom   (n, size = 7, prob = 0.01)
-Rztgeom      <- rztgeom     (n, prob = pi/16)
-Rztbinom     <- rztbinom    (n, size = 55, prob = pi/16)
-Rlogarithmic <- rlogarithmic(n, prob = 0.99)
-Rzmpoisp0lt        <- rzmpois       (n, lambda = 6, p0 = 0.001)
-Rzmpoisp0gt        <- rzmpois       (n, lambda = 6, p0 = 0.010)
-Rzmnbinomp0lt      <- rzmnbinom     (n, size = 7, prob = 0.8, p0 = 0.01)
-Rzmnbinomp0gt      <- rzmnbinom     (n, size = 7, prob = 0.8, p0 = 0.40)
-Rzmgeomp0lt        <- rzmgeom       (n, prob = pi/16, p0 = 0.01)
-Rzmgeomp0gt        <- rzmgeom       (n, prob = pi/16, p0 = 0.40)
-Rzmbinomp0lt       <- rzmbinom      (n, size = 12, prob = pi/16, p0 = 0.01)
-Rzmbinomp0gt       <- rzmbinom      (n, size = 12, prob = pi/16, p0 = 0.12)
-Rzmlogarithmicp0lt <- rzmlogarithmic(n, prob = 0.99, p0 = 0.05)
-Rzmlogarithmicp0gt <- rzmlogarithmic(n, prob = 0.99, p0 = 0.55)
-Rpoisinvgauss    <- rpoisinvgauss(n, mean = 12,  dispersion = 0.1)
-RpoisinvgaussInf <- rpoisinvgauss(n, mean = Inf, dispersion = 1.1)
+Rztpois      <- sort(unique(
+                rztpois(n, lambda = 12)))
+Rztnbinom    <- sort(unique(
+                rztnbinom(n, size = 7, prob = 0.01)))
+Rztgeom      <- sort(unique(
+                rztgeom(n, prob = pi/16)))
+Rztbinom     <- sort(unique(
+                rztbinom(n, size = 55, prob = pi/16)))
+Rlogarithmic <- sort(unique(
+                rlogarithmic(n, prob = 0.99)))
+Rzmpoisp0lt        <- sort(unique(
+                      rzmpois(n, lambda = 6, p0 = 0.001)))
+Rzmpoisp0gt        <- sort(unique(
+                      rzmpois(n, lambda = 6, p0 = 0.010)))
+Rzmnbinomp0lt      <- sort(unique(
+                      rzmnbinom(n, size = 7, prob = 0.8, p0 = 0.01)))
+Rzmnbinomp0gt      <- sort(unique(
+                      rzmnbinom(n, size = 7, prob = 0.8, p0 = 0.40)))
+Rzmgeomp0lt        <- sort(unique(
+                      rzmgeom(n, prob = pi/16, p0 = 0.01)))
+Rzmgeomp0gt        <- sort(unique(
+                      rzmgeom(n, prob = pi/16, p0 = 0.40)))
+Rzmbinomp0lt       <- sort(unique(
+                      rzmbinom(n, size = 12, prob = pi/16, p0 = 0.01)))
+Rzmbinomp0gt       <- sort(unique(
+                      rzmbinom(n, size = 12, prob = pi/16, p0 = 0.12)))
+Rzmlogarithmicp0lt <- sort(unique(
+                      rzmlogarithmic(n, prob = 0.99, p0 = 0.05)))
+Rzmlogarithmicp0gt <- sort(unique(
+                      rzmlogarithmic(n, prob = 0.99, p0 = 0.55)))
+Rpoisinvgauss    <- sort(unique(
+                    rpoisinvgauss(n, mean = 12,  dispersion = 0.1)))
+RpoisinvgaussInf <- sort(unique(
+                    rpoisinvgauss(n, mean = Inf, dispersion = 1.1)))
 
 ## Compute quantiles
 Pztpois      <- pztpois     (Rztpois,      lambda = 12)
@@ -2057,12 +2318,14 @@ Dpoisinvgauss    <- dpoisinvgauss(Rpoisinvgauss,    mean = 12,  dispersion = 0.1
 DpoisinvgaussInf <- dpoisinvgauss(RpoisinvgaussInf, mean = Inf, dispersion = 1.1)
 
 ## Check q<dist>(p<dist>(.)) identity
+ep <- 1e-7
+f1 <- 1 - ep # = 0.9999999
 stopifnot(exprs = {
-    Rztpois      == qztpois     (Pztpois,      lambda = 12)
-    Rztnbinom    == qztnbinom   (Pztnbinom,    size = 7, prob = 0.01)
-    Rztgeom      == qztgeom     (Pztgeom,      prob = pi/16)
-    Rztbinom     == qztbinom    (Pztbinom,     size = 55, prob = pi/16)
-    Rlogarithmic == qlogarithmic(Plogarithmic, prob = 0.99)
+    Rztpois      == qztpois     (f1 * Pztpois,      lambda = 12)
+    Rztnbinom    == qztnbinom   (f1 * Pztnbinom,    size = 7, prob = 0.01)
+    Rztgeom      == qztgeom     (f1 * Pztgeom,      prob = pi/16)
+    Rztbinom     == qztbinom    (f1 * Pztbinom,     size = 55, prob = pi/16)
+    Rlogarithmic == qlogarithmic(f1 * Plogarithmic, prob = 0.99)
     Rzmpoisp0lt        == qzmpois       (Pzmpoisp0lt,        lambda = 6, p0 = 0.001)
     Rzmpoisp0gt        == qzmpois       (Pzmpoisp0gt,        lambda = 6, p0 = 0.010)
     Rzmnbinomp0lt      == qzmnbinom     (Pzmnbinomp0lt,      size = 7, prob = 0.8, p0 = 0.01)
@@ -2078,12 +2341,13 @@ stopifnot(exprs = {
 })
 
 ## Check q<dist>(p<dist>(.)) identity with upper tail
+p1 <- 1 + ep # 1.0000001
 stopifnot(exprs = {
-    Rztpois      == qztpois     (1 - Pztpois,      lambda = 12, lower = FALSE)
-    Rztnbinom    == qztnbinom   (1 - Pztnbinom,    size = 7, prob = 0.01, lower = FALSE)
-    Rztgeom      == qztgeom     (1 - Pztgeom,      prob = pi/16, lower = FALSE)
-    Rztbinom     == qztbinom    (1 - Pztbinom,     size = 55, prob = pi/16, lower = FALSE)
-    Rlogarithmic == qlogarithmic(1 - Plogarithmic, prob = 0.99, lower = FALSE)
+    Rztpois      == qztpois     (p1 - Pztpois,      lambda = 12, lower = FALSE)
+    Rztnbinom    == qztnbinom   (p1 - Pztnbinom,    size = 7, prob = 0.01, lower = FALSE)
+    Rztgeom      == qztgeom     (p1 - Pztgeom,      prob = pi/16, lower = FALSE)
+    Rztbinom     == qztbinom    (p1 - Pztbinom,     size = 55, prob = pi/16, lower = FALSE)
+    Rlogarithmic == qlogarithmic(p1 - Plogarithmic, prob = 0.99, lower = FALSE)
     Rzmpoisp0lt        == qzmpois       (1 - Pzmpoisp0lt,        lambda = 6, p0 = 0.001, lower = FALSE)
     Rzmpoisp0gt        == qzmpois       (1 - Pzmpoisp0gt,        lambda = 6, p0 = 0.010, lower = FALSE)
     Rzmnbinomp0lt      == qzmnbinom     (1 - Pzmnbinomp0lt,      size = 7, prob = 0.8, p0 = 0.01, lower = FALSE)
@@ -2100,11 +2364,11 @@ stopifnot(exprs = {
 
 ## Check q<dist>(p<dist>(., log), log) identity
 stopifnot(exprs = {
-    Rztpois      == qztpois     (log(Pztpois),      lambda = 12, log = TRUE)
-    Rztnbinom    == qztnbinom   (log(Pztnbinom),    size = 7, prob = 0.01, log = TRUE)
-    Rztgeom      == qztgeom     (log(Pztgeom),      prob = pi/16, log = TRUE)
-    Rztbinom     == qztbinom    (log(Pztbinom),     size = 55, prob = pi/16, log = TRUE)
-    Rlogarithmic == qlogarithmic(log(Plogarithmic), prob = 0.99, log = TRUE)
+    Rztpois      == qztpois     (log(Pztpois) - ep,      lambda = 12, log = TRUE)
+    Rztnbinom    == qztnbinom   (log(Pztnbinom) - ep,    size = 7, prob = 0.01, log = TRUE)
+    Rztgeom      == qztgeom     (log(Pztgeom) - ep,      prob = pi/16, log = TRUE)
+    Rztbinom     == qztbinom    (log(Pztbinom) - ep,     size = 55, prob = pi/16, log = TRUE)
+    Rlogarithmic == qlogarithmic(log(Plogarithmic) - ep, prob = 0.99, log = TRUE)
     Rzmpoisp0lt        == qzmpois       (log(Pzmpoisp0lt),        lambda = 6, p0 = 0.001, log = TRUE)
     Rzmpoisp0gt        == qzmpois       (log(Pzmpoisp0gt),        lambda = 6, p0 = 0.010, log = TRUE)
     Rzmnbinomp0lt      == qzmnbinom     (log(Pzmnbinomp0lt),      size = 7, prob = 0.8, p0 = 0.01, log = TRUE)
@@ -2121,11 +2385,11 @@ stopifnot(exprs = {
 
 ## Check q<dist>(p<dist>(., log), log) identity with upper tail
 stopifnot(exprs = {
-    Rztpois      == qztpois     (log1p(-Pztpois),      lambda = 12, lower = FALSE, log = TRUE)
-    Rztnbinom    == qztnbinom   (log1p(-Pztnbinom),    size = 7, prob = 0.01, lower = FALSE, log = TRUE)
-    Rztgeom      == qztgeom     (log1p(-Pztgeom),      prob = pi/16, lower = FALSE, log = TRUE)
-    Rztbinom     == qztbinom    (log1p(-Pztbinom),     size = 55, prob = pi/16, lower = FALSE, log = TRUE)
-    Rlogarithmic == qlogarithmic(log1p(-Plogarithmic), prob = 0.99, lower = FALSE, log = TRUE)
+    Rztpois      == qztpois     (ep + log1p(-Pztpois),      lambda = 12, lower = FALSE, log = TRUE)
+    Rztnbinom    == qztnbinom   (ep + log1p(-Pztnbinom),    size = 7, prob = 0.01, lower = FALSE, log = TRUE)
+    Rztgeom      == qztgeom     (ep + log1p(-Pztgeom),      prob = pi/16, lower = FALSE, log = TRUE)
+    Rztbinom     == qztbinom    (ep + log1p(-Pztbinom),     size = 55, prob = pi/16, lower = FALSE, log = TRUE)
+    Rlogarithmic == qlogarithmic(ep + log1p(-Plogarithmic), prob = 0.99, lower = FALSE, log = TRUE)
     Rzmpoisp0lt        == qzmpois       (log1p(-Pzmpoisp0lt),        lambda = 6, p0 = 0.001, lower = FALSE, log = TRUE)
     Rzmpoisp0gt        == qzmpois       (log1p(-Pzmpoisp0gt),        lambda = 6, p0 = 0.010, lower = FALSE, log = TRUE)
     Rzmnbinomp0lt      == qzmnbinom     (log1p(-Pzmnbinomp0lt),      size = 7, prob = 0.8, p0 = 0.01, lower = FALSE, log = TRUE)
@@ -2138,4 +2402,20 @@ stopifnot(exprs = {
     Rzmlogarithmicp0gt == qzmlogarithmic(log1p(-Pzmlogarithmicp0gt), prob = 0.99, p0 = 0.55, lower = FALSE, log = TRUE)
     Rpoisinvgauss    == qpoisinvgauss(log1p(-Ppoisinvgauss),    mean = 12,  dispersion = 0.1, lower = FALSE, log = TRUE)
     RpoisinvgaussInf == qpoisinvgauss(log1p(-PpoisinvgaussInf), mean = Inf, dispersion = 1.1, lower = FALSE, log = TRUE)
+})
+
+## Check limiting cases
+stopifnot(exprs = {
+    rztpois     (1, lambda = 0)              == 1
+    rztnbinom   (1, size = 7, prob = 1)      == 1
+    rztgeom     (1, prob = 1)                == 1
+    rztbinom    (1, size = 1,  prob = pi/16) == 1
+    rztbinom    (1, size = 55, prob = 0)     == 1
+    rlogarithmic(1, prob = 0)                == 1
+    rzmpois       (1, lambda = 0,              0.5) %in% c(0, 1)
+    rzmnbinom     (1, size = 7, prob = 1,      0.5) %in% c(0, 1)
+    rzmgeom       (1, prob = 1,                0.5) %in% c(0, 1)
+    rzmbinom      (1, size = 1,  prob = pi/16, 0.5) %in% c(0, 1)
+    rzmbinom      (1, size = 55, prob = 0,     0.5) %in% c(0, 1)
+    rzmlogarithmic(1, prob = 0,                0.5) %in% c(0, 1)
 })

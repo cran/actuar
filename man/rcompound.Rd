@@ -23,7 +23,7 @@ rcomppois(n, lambda, model.sev, SIMPLIFY = TRUE)}
 }
 \details{
   \code{rcompound} generates variates from a random variable of the form
-  \deqn{S = X_1 + ... X_N,}
+  \deqn{S = X_1 + ... + X_N,}
   where \eqn{N} is the frequency random variable and \eqn{X_1, X_2,
     \dots} are the severity random variables. The latter are mutually
   independent, identically distributed and independent from \eqn{N}.

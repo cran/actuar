@@ -1,12 +1,13 @@
 Package: actuar
 Type: Package
 Title: Actuarial Functions and Heavy Tailed Distributions
-Version: 3.3-6
-Date: 2025-07-08
+Version: 3.3-7
+Date: 2026-03-02
 Authors@R: c(person("Vincent", "Goulet", role = c("cre", "aut"),
  	            email = "vincent.goulet@act.ulaval.ca",
 		    comment = c(ORCID = "0000-0002-9315-5719")),
 	     person("Sébastien", "Auclair", role = "ctb"),
+	     person("Jérémy", "Déraspe", role = "ctb"),
 	     person("Christophe", "Dutang", role = "aut",
 	            email = "dutang@ceremade.dauphine.fr",
                     comment = c(ORCID = "0000-0001-6732-1501")),
@@ -53,10 +54,11 @@ Encoding: UTF-8
 LazyData: yes
 Classification/MSC-2010: 62P05, 91B30, 62G32
 NeedsCompilation: yes
-Packaged: 2025-07-08 16:10:49 UTC; vincent
+Packaged: 2026-03-02 22:54:40 UTC; vincent
 Author: Vincent Goulet [cre, aut] (ORCID:
     <https://orcid.org/0000-0002-9315-5719>),
   Sébastien Auclair [ctb],
+  Jérémy Déraspe [ctb],
   Christophe Dutang [aut] (ORCID:
     <https://orcid.org/0000-0001-6732-1501>),
   Walter Garcia-Fontes [ctb],
@@ -73,4 +75,4 @@ Author: Vincent Goulet [cre, aut] (ORCID:
   R Foundation [aut] (Parts of the R to C interface)
 Maintainer: Vincent Goulet <vincent.goulet@act.ulaval.ca>
 Repository: CRAN
-Date/Publication: 2025-07-08 17:00:02 UTC
+Date/Publication: 2026-03-02 23:50:09 UTC

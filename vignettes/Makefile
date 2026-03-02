@@ -14,7 +14,7 @@ RM = rm -rf
 
 all: pdf
 
-%.pdf: %.tex
+%.pdf: %.tex share/preamble.tex actuar.bib
 	${TEXI2DVI} '$<'
 
 .PHONY: pdf

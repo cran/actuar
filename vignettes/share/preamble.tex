@@ -1,6 +1,7 @@
 \documentclass[11pt,x11names,english]{article}
   \usepackage{amsmath,amsthm}
   \usepackage[round]{natbib}
+  \usepackage{doi}
   \usepackage{babel}
   \usepackage[autolanguage,np]{numprint}
   \usepackage[noae]{Sweave}
@@ -54,7 +55,10 @@
     bookmarksdepth = {subsubsection}}
 
   %% Help for \autoref
-  \def\exampleautorefname{Example}
+  \addto\extrasenglish{%
+    \def\exampleautorefname{Example}%
+    \def\sectionautorefname{Section}%
+    \def\subsectionautorefname{Section}}
 
   %% Sweave Sinput and Soutput environments reinitialized to remove
   %% default configuration. Space between input and output blocks also

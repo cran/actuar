@@ -1,25 +1,23 @@
 /*  actuar: Actuarial Functions and Heavy Tailed Distributions
  *
- *  Functions to compute density, cumulative distribution and quantile
- *  functions, and to simulate random variates for the zero modified
- *  logarithmic discrete distribution. See
- *  ../R/ZeroModifiedLogarithmic.R for details.
+ *  Functions to compute probability function, cumulative distribution
+ *  and quantile functions, and to simulate random variates for the
+ *  zero-modified logarithmic distribution. See ../R/ZeroModifiedLogarithmic.R
+ *  for details.
  *
- *  The zero modified logarithmic is a discrete mixtures between a
- *  degenerate distribution at zero and a logarithmic distribution.
- *  The density is
+ *  Let X ~ Logarithmic(prob). The probability mass function of the
+ *  zero-modified Logarithmic random variable Z is
  *
- *      Pr[Z = x] = p0m 1(x) + (1 - p0m) Pr[X = x]
+ *    Pr[Z = 0] = p0m
+ *    Pr[Z = x] = (1 - p0m) * Pr[X = x], x = 1, 2, ...
  *
- *  or, alternatively, Pr[Z = 0] = p0m and
+ *  The distribution function is, for all x = 0, 1, 2, ...,
  *
- *      Pr[Z = x] = (1 - p0m) Pr[X = x],
+ *    Pr[Z <= x] = 1 - (1 - p0m) * (1 - Pr[X <= x]).
  *
- *  for x = 1, 2, ... The distribution function is, for all x,
+ *  Limiting case: prob == 0 has mass (1 - p0m) at x = 1.
  *
- *      Pr[Z <= x] = 1 - (1 - p0m) * (1 - Pr[X <= x]).
- *
- *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
+ *  AUTHOR: Jérémy Déraspe and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
 #include <R.h>
@@ -28,36 +26,36 @@
 #include "dpq.h"
 #include "actuar.h"
 
-double dzmlogarithmic(double x, double p, double p0m, int give_log)
+double dzmlogarithmic(double x, double prob, double p0m, int give_log)
 {
 #ifdef IEEE_754
-    if (ISNAN(x) || ISNAN(p) || ISNAN(p0m))
-	return x + p + p0m;
+    if (ISNAN(x) || ISNAN(prob) || ISNAN(p0m))
+	return x + prob + p0m;
 #endif
-    if (p < 0 || p >= 1 || p0m < 0 || p0m > 1) return R_NaN;
+    if (prob < 0 || prob >= 1 || p0m < 0 || p0m > 1) return R_NaN;
     ACT_D_nonint_check(x);
 
     if (!R_FINITE(x) || x < 0) return ACT_D__0;
     if (x == 0) return ACT_D_val(p0m);
     /* NOTE: from now on x > 0 */
 
-    /* limiting case as p approaches zero is mass (1-p0m) at one */
-    if (p == 0) return (x == 1) ? ACT_D_Clog(p0m) : ACT_D__0;
+    /* limiting case as prob -> 0 is mass (1 - p0m) at one */
+    if (prob == 0) return (x == 1) ? ACT_D_Clog(p0m) : ACT_D__0;
 
     x = ACT_forceint(x);
 
-    double a = -1.0/log1p(-p);
+    double a = -1.0/log1p(-prob);
 
-    return ACT_D_exp(log(a) + x * log(p) + log1p(-p0m) - log(x));
+    return ACT_D_exp(log(a) + x * log(prob) + log1p(-p0m) - log(x));
 }
 
-double pzmlogarithmic(double x, double p, double p0m, int lower_tail, int log_p)
+double pzmlogarithmic(double x, double prob, double p0m, int lower_tail, int log_p)
 {
 #ifdef IEEE_754
-    if (ISNAN(x) || ISNAN(p) || ISNAN(p0m))
-	return x + p + p0m;
+    if (ISNAN(x) || ISNAN(prob) || ISNAN(p0m))
+	return x + prob + p0m;
 #endif
-    if (p < 0 || p >= 1 || p0m < 0 || p0m > 1) return R_NaN;
+    if (prob < 0 || prob >= 1 || p0m < 0 || p0m > 1) return R_NaN;
 
     if (x < 0) return ACT_DT_0;
     if (!R_FINITE(x)) return ACT_DT_1;
@@ -67,50 +65,39 @@ double pzmlogarithmic(double x, double p, double p0m, int lower_tail, int log_p)
     /* simple case for all x >= 1 */
     if (p0m == 1) return ACT_DT_1;
 
-    /* limiting case as p approaches zero is mass (1-p0m) at one. */
-    if (p == 0) return ACT_DT_1;
+    /* limiting case as prob -> 0 is mass (1 - p0m) at one. */
+    if (prob == 0) return ACT_DT_1;
 
-    return ACT_DT_Cval((1 - p0m) * plogarithmic(x, p, /*l._t.*/0, /*log_p*/0));
+    return ACT_DT_Cval((1 - p0m) * plogarithmic(x, prob, /*l._t.*/0, /*log_p*/0));
 }
 
-double qzmlogarithmic(double x, double p, double p0m, int lower_tail, int log_p)
+double qzmlogarithmic(double p, double prob, double p0m, int lower_tail, int log_p)
 {
 #ifdef IEEE_754
-    if (ISNAN(x) || ISNAN(p) || ISNAN(p0m))
-	return x + p + p0m;
+    if (ISNAN(p) || ISNAN(prob) || ISNAN(p0m))
+	return p + prob + p0m;
 #endif
-    if (p < 0 || p >= 1 || p0m < 0 || p0m > 1) return R_NaN;
+    if (prob < 0 || prob >= 1 || p0m < 0 || p0m > 1) return R_NaN;
+    ACT_Q_P01_check(p);
+    if (p0m == 1) return 0.0;
+    /* limiting case as prob -> 0 is mass (1 - p0m) at one. */
+    if (prob == 0)
+        return (ACT_DT_qIv(p) <= p0m) ? ACT_Q_p0lim(p0m) : 1.0;
+    if (p == ACT_DT_0) return ACT_Q_p0lim(p0m);
+    if (p == ACT_DT_1) return R_PosInf;
 
-    /* limiting case as p approaches zero is mass (1-p0m) at one */
-    if (p == 0)
-    {
-	/* simplified ACT_Q_P01_boundaries macro */
-	if (log_p)
-	{
-	    if (x > 0)
-		return R_NaN;
-	    return (x <= log(p0m)) ? 0.0 : 1.0;
-	}
-	else /* !log_p */
-	{
-	    if (x < 0 || x > 1)
-		return R_NaN;
-	    return (x <= p0m) ? 0.0 : 1.0;
-	}
-    }
+    p = ACT_DT_qIv(p);
 
-    ACT_Q_P01_boundaries(x, 1.0, R_PosInf);
-    x = ACT_DT_qIv(x);
-
-    /* avoid rounding errors if x was given in log form */
+    /* avoid rounding errors if p was given in log form */
     if (log_p)
 	p0m = exp(log(p0m));
 
-    /* avoid rounding errors if x was given as upper tail */
+    /* avoid rounding errors if p was given as upper tail */
     if (!lower_tail)
 	p0m = 0.5 - (0.5 - p0m + 0.5) + 0.5;
 
-    return (x <= p0m) ? 0.0 : qlogarithmic((x - p0m)/(1 - p0m), p, /*l._t.*/1, /*log_p*/0);
+    /* at this point 0 < p < 1, so p0m = 0 is not an issue */
+    return (p <= p0m) ? 0.0 : qlogarithmic((p - p0m)/(1 - p0m), prob, /*l._t.*/1, /*log_p*/0);
 }
 
 /* ALGORITHM FOR GENERATION OF RANDOM VARIATES
@@ -118,9 +105,9 @@ double qzmlogarithmic(double x, double p, double p0m, int lower_tail, int log_p)
  * Just simulate variates from the discrete mixture.
  *
  */
-double rzmlogarithmic(double p, double p0m)
+double rzmlogarithmic(double prob, double p0m)
 {
-    if (p < 0 || p >= 1 || p0m < 0 || p0m > 1) return R_NaN;
+    if (prob < 0 || prob >= 1 || p0m < 0 || p0m > 1) return R_NaN;
 
-    return (unif_rand() < p0m) ? 0.0 : rlogarithmic(p);
+    return (unif_rand() < p0m) ? 0.0 : rlogarithmic(prob);
 }

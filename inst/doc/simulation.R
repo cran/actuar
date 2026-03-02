@@ -28,7 +28,7 @@ rcomppois(10, 1.5, rgamma(3, 2), SIMPLIFY = FALSE)
 
 
 ###################################################
-### code chunk number 5: simulation.Rnw:180-185
+### code chunk number 5: simulation.Rnw:183-188
 ###################################################
 x <- rcomppois(1e5, 3.5,
                rmixture(probs = c(2, 1, 0.5),
@@ -38,25 +38,25 @@ x <- rcomppois(1e5, 3.5,
 
 
 ###################################################
-### code chunk number 6: simulation.Rnw:191-192
+### code chunk number 6: simulation.Rnw:194-195
 ###################################################
 mean(x)
 
 
 ###################################################
-### code chunk number 7: simulation.Rnw:225-226 (eval = FALSE)
+### code chunk number 7: simulation.Rnw:228-229 (eval = FALSE)
 ###################################################
 ## rpois(n, rgamma(n, 3, rgamma(n, 2, 2)))
 
 
 ###################################################
-### code chunk number 8: simulation.Rnw:398-399
+### code chunk number 8: simulation.Rnw:401-402
 ###################################################
 set.seed(3)
 
 
 ###################################################
-### code chunk number 9: simulation.Rnw:401-414
+### code chunk number 9: simulation.Rnw:404-417
 ###################################################
 nodes <- list(cohort = 2,
               contract = c(4, 3),
@@ -74,7 +74,7 @@ pf <- rcomphierarc(nodes = nodes,
 
 
 ###################################################
-### code chunk number 10: simulation.Rnw:421-424
+### code chunk number 10: simulation.Rnw:424-427
 ###################################################
 class(pf)
 pf$data
@@ -82,59 +82,60 @@ pf$classification
 
 
 ###################################################
-### code chunk number 11: simulation.Rnw:436-437
+### code chunk number 11: simulation.Rnw:439-440
 ###################################################
 pf
 
 
 ###################################################
-### code chunk number 12: simulation.Rnw:445-447
+### code chunk number 12: simulation.Rnw:448-450
 ###################################################
 aggregate(pf)
 aggregate(pf, by = c("cohort", "year"), FUN = mean)
 
 
 ###################################################
-### code chunk number 13: simulation.Rnw:454-456
+### code chunk number 13: simulation.Rnw:457-459
 ###################################################
 frequency(pf)
 frequency(pf, by = "cohort")
 
 
 ###################################################
-### code chunk number 14: simulation.Rnw:472-474
+### code chunk number 14: simulation.Rnw:475-477
 ###################################################
 severity(pf)
 severity(pf, splitcol = 1)
 
 
 ###################################################
-### code chunk number 15: simulation.Rnw:479-480
+### code chunk number 15: simulation.Rnw:482-483
 ###################################################
 weights(pf)
 
 
 ###################################################
-### code chunk number 16: simulation.Rnw:485-486
+### code chunk number 16: simulation.Rnw:488-490
 ###################################################
-aggregate(pf, classif = FALSE) / weights(pf, classif = FALSE)
+aggregate(pf, classif = FALSE)/
+    weights(pf, classif = FALSE)
 
 
 ###################################################
-### code chunk number 17: simulation.Rnw:514-515
+### code chunk number 17: simulation.Rnw:518-519
 ###################################################
 set.seed(123)
 
 
 ###################################################
-### code chunk number 18: simulation.Rnw:517-519
+### code chunk number 18: simulation.Rnw:521-523
 ###################################################
 wit <- rgamma(15, rep(runif(3, 0, 100), each = 5),
               rep(runif(3, 0, 100), each = 5))
 
 
 ###################################################
-### code chunk number 19: simulation.Rnw:527-532
+### code chunk number 19: simulation.Rnw:531-536
 ###################################################
 frequency(rcomphierarc(list(entity = 3, year = 5),
             expression(entity = rgamma(rgamma(1, 5, 5),

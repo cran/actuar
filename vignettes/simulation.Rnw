@@ -157,11 +157,14 @@ rcomppois(10, 1.5, rgamma(3, 2), SIMPLIFY = FALSE)
   parameter equal to the sum of the Poisson parameters and severity
   distribution equal to the mixture of the severity models.
 
-  Let $S = S_1 + S_2 + S_3$, where $S_1$ is compound Poisson with
-  mean frequency $\lambda = 2$ and severity Gamma$(3, 1)$; $S_2$ is compound Poisson
-  with $\lambda = 1$ and severity Gamma$(5, 4)$; $S_3$ is compound
-  Poisson with $\lambda = 1/2$ and severity Lognormal$(2, 1)$. By the
-  aforementioned theorem, $S$ is compound Poisson with
+  Let $S = S_1 + S_2 + S_3$, where: %
+  $S_1$ is compound Poisson with mean frequency $\lambda = 2$ and
+  severity gamma with parameters $(3, 1)$; %
+  $S_2$ is compound Poisson with $\lambda = 1$ and severity Gamma with
+  parameters $(5, 4)$; %
+  $S_3$ is compound Poisson with $\lambda = 1/2$ and severity
+  Lognormal with parameters $(2, 1)$. %
+  By the aforementioned theorem, $S$ is compound Poisson with
   $\lambda = 2 + 1 + 1/2 = 7/2$ and severity density
   \begin{equation*}
     f(x) = \frac{4}{7}
@@ -483,7 +486,8 @@ weights(pf)
   Combined with the argument \code{classification = FALSE}, the above
   methods can be used to easily compute loss ratios:
 <<echo=TRUE>>=
-aggregate(pf, classif = FALSE) / weights(pf, classif = FALSE)
+aggregate(pf, classif = FALSE)/
+    weights(pf, classif = FALSE)
 @
   \qed
 \end{example}

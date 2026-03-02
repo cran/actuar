@@ -6,9 +6,10 @@
 
   \title{Inventory of continuous and discrete distributions
     in \pkg{actuar}}
-  \author{Christophe Dutang \\ Université Paris Dauphine \\[3ex]
-    Vincent Goulet \\ Université Laval \\[3ex]
-    Nicholas Langevin \\ Université Laval \\[3ex]
+  \author{Jérémy Déraspe \\ Université Laval \\[2ex]
+    Christophe Dutang \\ Université Paris Dauphine \\[2ex]
+    Vincent Goulet \\ Université Laval \\[2ex]
+    Nicholas Langevin \\ Université Laval \\[2ex]
     Mathieu Pigeon \\ Université du Québec à Montréal}
   \date{}
 
@@ -55,7 +56,7 @@ distributions.
 
 \autoref{tab:continuous} lists the distributions supported by
 \pkg{actuar} along with the root names of the R functions.
-\autoref{sec:app:continuous} details the formulas implemented and the
+\autoref{app:continuous} details the formulas implemented and the
 name of the argument corresponding to each parameter. By default, all
 functions (except those for the Pareto distribution) use a rate
 parameter equal to the inverse of the scale parameter. This differs
@@ -373,7 +374,7 @@ The package provides \code{d}, \code{p}, \code{r}, \code{m} and
 \code{mgf} functions for phase-type distributions. The root is
 \code{phtype} and parameters $\mat{\pi}$ and $\mat{T}$ are named
 \code{prob} and \code{rates}, respectively; see also
-\autoref{sec:app:phase-type}.
+\autoref{app:phase-type}.
 
 For the package, function \code{pphtype} is central to the evaluation
 of the ruin probabilities; see \code{?ruin} and the \code{risk}
@@ -383,10 +384,10 @@ vignette.
 \section{Extensions to standard discrete distributions}
 \label{sec:discrete}
 
-The package introduces support functions for counting distributions
-commonly used in loss frequency modeling. A counting distribution is a
-discrete distribution defined on the non-negative integers
-$0, 1, 2, \dots$.
+The package introduces support functions for additional counting
+distributions commonly used in loss frequency modeling. A counting
+distribution is a discrete distribution defined on the non-negative
+integers $0, 1, 2, \dots$.
 
 Let $N$ be the counting random variable. We denote $p_k$ the
 probability that the random variable $N$ takes the value $k$, that is:
@@ -449,10 +450,27 @@ $\bar{P}^T(k) = 1 - P^T(k)$ is
   = \frac{\bar{P}(k)}{1 - p_0}.
 \end{equation*}
 
+Finally, let $\kappa_n$ denote the $n$\textsuperscript{th} cumulant of
+a distribution. The first three cumulants of a zero-truncated
+distribution are
+\begin{equation}
+  \label{eq:cumulants}
+  \begin{split}
+    \kappa_1^T &= c \kappa_1 \\
+    \kappa_2^T &= c \kappa_2 + (1 - c) c \kappa_1^2 \\
+    \kappa_3^T &= c m_3 - 3 c^2 m_1 m_2 + 2 c^3 m_1^3,
+  \end{split}
+\end{equation}
+where $m_k$ is the $k$\textsuperscript{th} raw moment as defined in
+\autoref{sec:continuous}, and with
+\begin{equation*}
+  c = \frac{1}{1 - p_0}.
+\end{equation*}
+
 Package \pkg{actuar} provides \code{d}, \code{p}, \code{q} and
 \code{r} functions for the all the zero-truncated distributions
 mentioned above. \autoref{tab:discrete} lists the root names of the
-functions; see \autoref{sec:app:discrete} for additional details.
+functions; see \autoref{app:discrete} for additional details.
 
 \begin{table}
   \centering
@@ -543,14 +561,22 @@ corresponding zero-truncated distribution:
   p_k^M = p_0^M \mathbb{1}_{\{k = 0\}} + (1 - p_0^M)\, p_k^T.
 \end{equation}
 
+The first three cumulants $\kappa_1^M$, $\kappa_2^M$, $\kappa_3^M$ of
+a zero-modified distribution are given by the corresponding right hand
+sides of \eqref{eq:cumulants} with
+\begin{equation}
+  \label{eq:c-in-cumulants-zm}
+  c = \frac{1 - p_0^M}{1 - p_0}.
+\end{equation}
+
 The members of the subclass are the zero-modified Poisson,
 zero-modified binomial, zero-modified negative binomial and
 zero-modified geometric, together with the zero-modified logarithmic
 as a limiting case of the zero-modified negative binomial.
 \autoref{tab:discrete} lists the root names of the support functions
-provided in \pkg{actuar}; see also \autoref{sec:app:discrete}.
+provided in \pkg{actuar}; see also \autoref{app:discrete}.
 
-Quite obviously, zero-truncated distributions are zero-modified
+Clearly, zero-truncated distributions are zero-modified
 distributions with $p_0^M = 0$. However, using the dedicated functions
 in R will be more efficient.
 
@@ -570,7 +596,7 @@ The literature proposes many different expressions for the pmf of the
 PIG
 \citep{Holla:PIG:1966,Shaban:PIG:1981,Johnson:discrete:2005,LossModels4e}.
 Using the parametrization for the inverse Gaussian found in
-\autoref{sec:app:continuous}, we have:
+\autoref{app:continuous}, we have:
 \begin{equation}
   \label{eq:pig:px}
   \begin{split}
@@ -616,7 +642,7 @@ central moment are, respectively,
 For the limiting case $\mu = \infty$, the underlying inverse Gaussian
 has an inverse chi-squared distribution. The latter has no finite
 strictly positive, integer moments and, consequently, neither does the
-Poisson-inverse Gaussian. See \autoref{sec:app:discrete:pig} for the
+Poisson-inverse Gaussian. See \autoref{app:discrete:pig} for the
 formulas in this case.
 
 
@@ -624,7 +650,7 @@ formulas in this case.
 \label{sec:special-integrals}
 
 Many of the cumulative distribution functions of
-\autoref{sec:app:continuous} are expressed in terms of the incomplete
+\autoref{app:continuous} are expressed in terms of the incomplete
 gamma function or the incomplete beta function.
 
 From a probability theory perspective, the incomplete gamma function
@@ -750,9 +776,9 @@ The actual workhorses behind the R functions presented in this
 document are C routines that the package exposes to other packages
 through an API. The header file \file{include/actuarAPI.h} in the
 package installation directory contains declarations for %
-the continuous distributions of \autoref{sec:app:continuous}, %
-the phase-type distributions of \autoref{sec:app:phase-type}, %
-the discrete distributions of \autoref{sec:app:discrete}, %
+the continuous distributions of \autoref{app:continuous}, %
+the phase-type distributions of \autoref{app:phase-type}, %
+the discrete distributions of \autoref{app:discrete}, %
 and the beta integral of \autoref{sec:special-integrals}.
 
 The prototypes of the C routines for probability distributions all
@@ -895,7 +921,7 @@ and, therefore, for the  Poisson-inverse Gaussian pmf.
 \appendix
 
 \section{Continuous distributions}
-\label{sec:app:continuous}
+\label{app:continuous}
 
 This appendix gives the root name and the parameters of the
 R support functions for the distributions of
@@ -915,7 +941,7 @@ Unless otherwise stated, all parameters are finite and strictly
 positive, and the functions are defined for $x > 0$.
 
 \subsection{Feller--Pareto family}
-\label{sec:app:continuous:feller-pareto}
+\label{app:continuous:feller-pareto}
 
 \subsubsection{Feller--Pareto}
 
@@ -1321,7 +1347,7 @@ and is usually set in advance.
 \end{align*}
 
 \subsection{Transformed gamma family}
-\label{sec:app:continuous:transformed-gamma}
+\label{app:continuous:transformed-gamma}
 
 \subsubsection{Transformed gamma}
 
@@ -1445,7 +1471,7 @@ and is usually set in advance.
 \end{align*}
 
 \subsection{Other distributions}
-\label{sec:app:continuous:other}
+\label{app:continuous:other}
 
 \subsubsection{Loggamma}
 
@@ -1562,7 +1588,7 @@ with $\alpha = 1/2$ and $\lambda = 2\phi$ (or inverse chi-squared).
 
 
 \section{Phase-type distributions}
-\label{sec:app:phase-type}
+\label{app:phase-type}
 
 Consider a continuous-time Markov process with $m$ transient
 states and one absorbing state. Let
@@ -1610,23 +1636,28 @@ $\mat{e} = [1]_{m \times 1}$ is a column vector of ones. %
 
 
 \section{Discrete distributions}
-\label{sec:app:discrete}
+\label{app:discrete}
 
-This appendix gives the root name and the parameters of the
-R support functions for the members of the $(a, b, 0)$ and
-$(a, b, 1)$ discrete distributions as defined in \citet{LossModels4e};
-the values of $a$, $b$ and $p_0$ in the representation; the pmf; the
-relationship with other distributions, when there is one. The appendix
-also provides the main characteristics of the Poisson-inverse Gaussian
-distribution.
+This appendix gives the root name and the parameters of the R support
+functions for the members of the $(a, b, 0)$ and $(a, b, 1)$ discrete
+distributions as defined in \citet{LossModels4e}; the values of $a$,
+$b$ and $p_0$ in the representation; the pmf; the relationship to
+other distributions, when there is one. Since at some point we
+developed the formulas for the first three cumulants\footnote{%
+  Hence the mean, variance and skewness.} %
+of the distributions of the $(a, b, 1)$ class, they are also recorded
+here for posterity.
 
-\subsection[The (a, b, 0) class]{The $(a, b, 0)$ class}
-\label{sec:app:discrete:a-b-0}
+The appendix also provides the main characteristics of the
+Poisson-inverse Gaussian distribution.
 
-The distributions in this section are all supported in base
-R. Their pmf can be computed recursively by fixing $p_0$ to
-the specified value and then using $p_k = (a + b/k) p_{k - 1}$, for
-$k = 1, 2, \dots$.
+\subsection{Standard distributions}
+\label{app:discrete:a-b-0}
+
+This section contains distributions of the $(a, b, 0)$ class. They are
+all supported in base R. Their pmf can be computed recursively by
+fixing $p_0$ to the specified value and then using
+$p_k = (a + b/k) p_{k - 1}$, for $k = 1, 2, \dots$.
 
 All parameters are finite.
 
@@ -1687,18 +1718,19 @@ All parameters are finite.
 \end{itemize}
 
 
-\subsection[The zero-truncated (a, b, 1) class]{The zero-truncated $(a, b, 1)$ class}
-\label{sec:app:discrete:zt}
+\subsection{Zero-truncated distributions}
+\label{app:discrete:zt}
 
-Package \pkg{actuar} provides support for the distributions in this
-section. Zero-truncated distributions have probability at zero
-$p_0^T = 0$. Their pmf can be computed recursively by fixing $p_1$ to
-the value specified below and then using $p_k = (a + b/k) p_{k - 1}$,
-for $k = 2, 3, \dots$. The distributions are all defined on
-$k = 1, 2, \dots$.
+Package \pkg{actuar} provides support for the distributions of the
+$(a, b, 1)$ class in this section. Zero-truncated distributions have
+probability at zero $p_0^T = 0$. Their pmf can be computed recursively
+by fixing $p_1$ to the value specified below and then using
+$p_k = (a + b/k) p_{k - 1}$, for $k = 2, 3, \dots$. The distributions
+are all defined on $k = 1, 2, \dots$. The cumulants are developed
+using \eqref{eq:cumulants}.
 
-The limiting case of zero-truncated distributions when $p_1$ is
-infinite is a point mass in $k = 1$.
+A limiting case of all zero-truncated distributions is a single point
+mass in $k = 1$.
 
 \subsubsection{Zero-truncated Poisson}
 
@@ -1709,7 +1741,11 @@ infinite is a point mass in $k = 1$.
 \begin{align*}
   a &= 0, \qquad b = \lambda, \qquad
       p_1 = \frac{\lambda}{e^\lambda - 1} \\
-  p_k &= \frac{\lambda^k}{k! (e^\lambda - 1)}
+  p_k &= \frac{\lambda^k}{k! (e^\lambda - 1)} \displaybreak[0] \\[0.5\baselineskip]
+  \kappa_1 &= c \lambda, \qquad c = \frac{1}{1 - e^{-\lambda}} \\
+  \kappa_2 &= c \lambda + c(1 - c) \lambda^2 \\
+  \kappa_3 &= c(1 - c)(1 - 2c) \lambda^3
+           + 3c(1 - c) \lambda^2 + c \lambda
 \end{align*}
 
 \subsubsection{Zero-truncated negative binomial}
@@ -1722,7 +1758,11 @@ infinite is a point mass in $k = 1$.
 \begin{align*}
   a &= 1 - p, \qquad b = (r - 1)(1 - p), \qquad
       p_1 = \frac{r p^r (1 - p)}{1 - p^r} \\
-  p_k &= \binom{r+k-1}{k} \frac{p^r (1 - p)^k}{1 - p^r}
+  p_k &= \binom{r+k-1}{k} \frac{p^r (1 - p)^k}{1 - p^r} \displaybreak[0] \\[0.5\baselineskip]
+  \kappa_1 &= crd, \qquad c = \frac{1}{1 - p^r}, \qquad d = \frac{1 - p}{p} \\
+  \kappa_2 &= crd(d + 1) + c(1 - c) r^2 d^2 \\
+  \kappa_3 &= crd(3rd(d + 1) + r^2 d^2 + (d + 1)(2d + 1)) \\
+    &\phantom{=} - 3(crd)^2(rd + d + 1) + 2(crd)^3
 \end{align*}
 
 \begin{itemize}
@@ -1738,7 +1778,10 @@ infinite is a point mass in $k = 1$.
 \end{itemize}
 \begin{align*}
   a &= 1 - p, \qquad b = 0, \qquad p_1 = p \\
-  p_k &= p (1 - p)^{k - 1}
+  p_k &= p (1 - p)^{k - 1} \displaybreak[0] \\[0.5\baselineskip]
+  \kappa_1 &= \frac{1}{p} \\
+  \kappa_2 &= \frac{1 - p}{p^2} \\
+  \kappa_3 &= \frac{(1 - p)(2 - p)}{p^3}
 \end{align*}
 
 \subsubsection{Zero-truncated binomial}
@@ -1752,7 +1795,11 @@ infinite is a point mass in $k = 1$.
   a &= -\frac{p}{1 - p}, \qquad b = \frac{(n + 1)p}{1 - p}, \qquad
       p_1 = \frac{n p (1 - p)^{n - 1}}{1 - (1 - p)^n} \\
   p_k &= \binom{n}{k} \frac{p^k (1 - p)^{n - k}}{1 - (1 - p)^n}, \quad
-        k = 1, 2, \dots, n
+        k = 1, 2, \dots, n \displaybreak[0] \\[0.5\baselineskip]
+  \kappa_1 &= cnp, \qquad c = \frac{1}{1 - (1 - p)^n} \\
+  \kappa_2 &= cnp(1 - p) + c(1 - c)n^2p^2 \\
+  \kappa_3 &= cnp(1 + 3(n - 1)p + (n - 1)(n - 2)p^2) \\
+  &\phantom{=} - 3(cnp)^2(1 + (n - 1)p) + 2(cnp)^3
 \end{align*}
 
 \subsubsection{Logarithmic}
@@ -1764,24 +1811,32 @@ infinite is a point mass in $k = 1$.
 \begin{align*}
   a &= p, \qquad b = -p, \qquad
       p_1 = - \frac{p}{\log (1 - p)} \\
-  p_k &= - \frac{p^k}{k \log (1 - p)}
+  p_k &= - \frac{p^k}{k \log (1 - p)} \displaybreak[0] \\[0.5\baselineskip]
+  \kappa_1 &= \frac{-p}{\ln(1 - p)(1 - p)} \\
+  \kappa_2 &= \frac{-p(p + 2\ln(1 - p)) + p\ln(1 - p)}%
+             {\ln(1 - p)^2(1 - p)^2} \\
+  \kappa_3 &= \frac{p(p + 1)\ln(1 - p)^2(1 - p)^3(p - 1)^{-3} -
+             3p^2 \ln(1 - p) - 2p^3}%
+             {-(-p(p + 2 \ln(1 - p)) + p \ln(1 - p))^{3/2}}
 \end{align*}
 
-\subsection[The zero-modified (a, b, 1) class]{The zero-modified $(a, b, 1)$ class}
-\label{sec:app:discrete:zm}
+\subsection{Zero-modified distributions}
+\label{app:discrete:zm}
 
-Package \pkg{actuar} provides support for the distributions in this
-section. Zero-modified distributions have an arbitrary probability at
-zero $p_0^M \neq p_0$, where $p_0$ is the probability at zero for the
-corresponding member of the $(a, b, 0)$ class. Their pmf can be
-computed recursively by fixing $p_1$ to the value specified below and
-then using $p_k = (a + b/k) p_{k - 1}$, for $k = 2, 3, \dots$. The
-distributions are all defined on $k = 0, 1, 2, \dots$.
+Package \pkg{actuar} provides support for the distributions of the
+$(a, b, 1)$ class in this section. Zero-modified distributions have an
+arbitrary probability at zero $p_0^M \neq p_0$, where $p_0$ is the
+probability at zero for the corresponding member of the $(a, b, 0)$
+class. Their pmf can be computed recursively by fixing $p_1$ to the
+value specified below and then using $p_k = (a + b/k) p_{k - 1}$, for
+$k = 2, 3, \dots$. The distributions are all defined on
+$k = 0, 1, 2, \dots$. The cumulants are developed using
+\eqref{eq:cumulants} with $c$ as defined in
+\eqref{eq:c-in-cumulants-zm}.
 
-The limiting case of zero-modified distributions when $p_1$ is
-infinite is a discrete mixture between a point mass in $k = 0$ (with
-probability $p_0^M$) and a point mass in $k = 1$ (with probability
-$1 - p_0^M$).
+A limiting case of all zero-modified distributions is a discrete
+mixture between a point mass in $k = 0$ (with probability $p_0^M$) and
+a point mass in $k = 1$ (with probability $1 - p_0^M$).
 
 \subsubsection{Zero-modified Poisson}
 
@@ -1793,7 +1848,11 @@ $1 - p_0^M$).
 \begin{align*}
   a &= 0, \qquad b = \lambda, \qquad
       p_1 = \frac{(1 - p_0^M) \lambda}{e^\lambda - 1} \\
-  p_k &= \frac{(1 - p_0^M) \lambda^k}{k! (e^\lambda - 1)}
+  p_k &= \frac{(1 - p_0^M) \lambda^k}{k! (e^\lambda - 1)} \displaybreak[0] \\[0.5\baselineskip]
+  \kappa_1 &= c \lambda, \qquad c = \frac{1 - p_0^M}{1 - e^{-\lambda}} \\
+  \kappa_2 &= c \lambda + c(1 - c) \lambda^2 \\
+  \kappa_3 &= c(1 - c)(1 - 2c) \lambda^3
+           + 3c(1 - c) \lambda^2 + c \lambda
 \end{align*}
 
 \subsubsection{Zero-modified negative binomial}
@@ -1807,7 +1866,11 @@ $1 - p_0^M$).
 \begin{align*}
   a &= 1 - p, \qquad b = (r - 1)(1 - p), \qquad
       p_1 = \frac{(1 - p_0^M) r p^r (1 - p)}{1 - p^r} \\
-  p_k &= \binom{r+k-1}{k} \frac{(1 - p_0^M) p^r (1 - p)^k}{1 - p^r}
+  p_k &= \binom{r+k-1}{k} \frac{(1 - p_0^M) p^r (1 - p)^k}{1 - p^r} \displaybreak[0] \\[0.5\baselineskip]
+  \kappa_1 &= crd, \qquad c = \frac{1 - p_0^M}{1 - p^r}, \qquad d = \frac{1 - p}{p} \\
+  \kappa_2 &= crd(d + 1) + c(1 - c) r^2 d^2 \\
+  \kappa_3 &= crd(3rd(d + 1) + r^2 d^2 + (d + 1)(2d + 1)) \\
+    &\phantom{=} - 3(crd)^2(rd + d + 1) + 2(crd)^3
 \end{align*}
 
 \begin{itemize}
@@ -1824,7 +1887,11 @@ $1 - p_0^M$).
 \end{itemize}
 \begin{align*}
   a &= 1 - p, \qquad b = 0, \qquad p_1 = (1 - p_0^M) p \\
-  p_k &= (1 - p_0^M) p (1 - p)^{k - 1}
+  p_k &= (1 - p_0^M) p (1 - p)^{k - 1} \displaybreak[0] \\[0.5\baselineskip]
+  \kappa_1 &= \frac{1 - p_0^M}{p} \\
+  \kappa_2 &= \frac{(1 - p_0^M)(1 - p + p_0^M)}{p^2} \\
+  \kappa_3 &= \frac{(1 - p_0^M)(6 - 6p + p^2) - 3(1 - p_0^M)^2(2 - p)
+             + 2(1 - p_0^M)^3}{p^3}
 \end{align*}
 
 \subsubsection{Zero-modified binomial}
@@ -1839,7 +1906,11 @@ $1 - p_0^M$).
   a &= -\frac{p}{1 - p}, \qquad b = \frac{(n + 1)p}{1 - p}, \qquad
       p_1^M = \frac{n (1 - p_0^M) p (1 - p)^{n - 1}}{1 - (1 - p)^n} \\
   p_k &= \binom{n}{k} \frac{(1 - p_0^M) p^k (1 - p)^{n - k}}{1 - (1 - p)^n}, \quad
-        k = 1, 2, \dots, n
+        k = 1, 2, \dots, n \displaybreak[0] \\[0.5\baselineskip]
+  \kappa_1 &= cnp, \qquad c = \frac{1 - p_0^M}{1 - (1 - p)^n} \\
+  \kappa_2 &= cnp(1 - p) + c(1 - c)n^2p^2 \\
+  \kappa_3 &= cnp(1 + 3(n - 1)p + (n - 1)(n - 2)p^2) \\
+  &\phantom{=} - 3(cnp)^2(1 + (n - 1)p) + 2(cnp)^3
 \end{align*}
 
 \subsubsection{Zero-modified logarithmic}
@@ -1852,14 +1923,18 @@ $1 - p_0^M$).
 \begin{align*}
   a &= p, \qquad b = -p, \qquad
       p_1 = - \frac{(1 - p_0^M) p}{\log (1 - p)} \\
-  p_k &= - \frac{(1 - p_0^M) p^k}{k \log (1 - p)}
+  p_k &= - \frac{(1 - p_0^M) p^k}{k \log (1 - p)} \displaybreak[0] \\[0.5\baselineskip]
+  \kappa_1 &= \frac{-cp}{\ln(1 - p)(1 - p)}, \qquad c = 1 - p_0^M \\
+  \kappa_2 &= \frac{-cp(p + 2 \ln(1 - p)) + c^2 p \ln(1 - p)}%
+             {\ln(1 - p)^2 (1 - p)^2} \\
+  \kappa_3 &= \frac{cp(p + 1) \ln(1 - p)^2(1 - p)^3(p - 1)^{-3} -
+             3c^2 p^2 \ln(1 - p) - 2c^3 p^3}%
+             {-(-cp(p + 2 \ln(1 - p)) + c^2 p \ln(1 - p))^{3/2}}
 \end{align*}
 
 
-\subsection{Other distribution}
-\label{sec:app:discrete:pig}
-
-\subsubsection{Poisson-inverse Gaussian}
+\subsection{Poisson-inverse Gaussian}
+\label{app:discrete:pig}
 
 \begin{itemize}
 \item Root: \code{poisinvgauss}, \code{pig}

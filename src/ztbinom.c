@@ -5,37 +5,28 @@
  *  zero-truncated binomial distribution. See
  *  ../R/ZeroTruncatedBinomial.R for details.
  *
- *  Zero-truncated distributions have density
+ *  Let X ~ Binomial(size, prob). The probability mass function of the
+ *  zero-truncated Binomial random variable Z is
  *
- *      Pr[Z = x] = Pr[X = x]/(1 - Pr[X = 0]),
+ *    Pr[Z = 0] = 0
+ *    Pr[Z = x] = Pr[X = x]/(1 - (1 - prob)^size), x = 1, 2, ...
  *
- *  and distribution function
+ *  The distribution function is, for all x = 0, 1, 2, ...,
  *
- *      Pr[Z <= x] = (Pr[X <= x] - Pr[X = 0])/(1 - Pr[X = 0])
+ *    Pr[Z <= x] = (Pr[X <= x] - (1 - prob)^size)/(1 - (1 - prob)^size)
  *
- *  or, alternatively, survival function
+ *  Limiting cases:
  *
- *      Pr[Z > x] = Pr[X > x]/(1 - Pr[X = 0]).
+ *    1. size == 1 is point mass at x = 1;
+ *    2. prob == 0 is point mass at x = 1.
  *
- *  AUTHOR: Vincent Goulet <vincent.goulet@act.ulaval.ca>
+ *  AUTHOR: Jérémy Déraspe and Vincent Goulet <vincent.goulet@act.ulaval.ca>
  */
 
 #include <R.h>
 #include <Rmath.h>
 #include "locale.h"
 #include "dpq.h"
-
-/* The binomial distribution has
- *
- *   F(0) = Pr[X = 0] = (1 - prob)^size.
- *
- * Support is x = 1, ..., size.
- *
- * Limiting cases:
- *
- * 1. size == 1 is point mass at x = 1;
- * 2. prob == 0 is point mass at x = 1.
- */
 
 double dztbinom(double x, double size, double prob, int give_log)
 {
@@ -80,38 +71,24 @@ double pztbinom(double x, double size, double prob, int lower_tail, int log_p)
     return ACT_DT_Cval(pbinom(x, size, prob, /*l._t.*/0, /*log_p*/0)/(-expm1(lp0)));
 }
 
-double qztbinom(double x, double size, double prob, int lower_tail, int log_p)
+double qztbinom(double p, double size, double prob, int lower_tail, int log_p)
 {
 #ifdef IEEE_754
-    if (ISNAN(x) || ISNAN(size) || ISNAN(prob))
-	return x + size + prob;
+    if (ISNAN(p) || ISNAN(size) || ISNAN(prob))
+	return p + size + prob;
 #endif
     if (prob < 0 || prob > 1 || size < 1) return R_NaN;
-
+    ACT_Q_P01_check(p);
     /* limiting cases as size -> 1 or prob -> 0 are point mass at one */
-    if (size == 1 || prob == 0)
-    {
-	/* simplified ACT_Q_P01_boundaries macro */
-	if (log_p)
-	{
-	    if (x > 0)
-		return R_NaN;
-	    return 1.0;
-	}
-	else /* !log_p */
-	{
-	    if (x < 0 || x > 1)
-		return R_NaN;
-	    return 1.0;
-	}
-    }
+    if (size == 1 || prob == 0) return 1.0;
+    if (p == ACT_DT_0) return 1.0;
+    if (p == ACT_DT_1) return R_PosInf;
 
-    ACT_Q_P01_boundaries(x, 1, size);
-    x = ACT_DT_qIv(x);
+    p = ACT_DT_qIv(p);
 
     double p0 = dbinom_raw(0, size, prob, 1 - prob, /*give_log*/0);
 
-    return qbinom(p0 + (1 - p0) * x, size, prob, /*l._t.*/1, /*log_p*/0);
+    return qbinom(p0 + (1 - p0) * p, size, prob, /*l._t.*/1, /*log_p*/0);
 }
 
 double rztbinom(double size, double prob)
